@@ -926,11 +926,8 @@ footer { padding: 1.5rem; text-align: center; }
 }
 .hero > * { position: relative; }
 .hero h1 .accent {
-  background: linear-gradient(135deg, var(--gold), var(--accent));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: var(--accent);
+  -webkit-text-fill-color: var(--accent);
 }
 .reaction.active[data-reaction="like"] { border-color: var(--accent); background: rgba(56, 189, 248, 0.15); }
 .reaction.active[data-reaction="star"] { border-color: var(--gold); background: rgba(251, 191, 36, 0.15); }
