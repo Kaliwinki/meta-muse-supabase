@@ -1265,3 +1265,15 @@ footer {
   box-shadow: 0 4px 14px rgba(248, 113, 113, 0.35);
 }
 #confirm-yes.danger:hover { background: linear-gradient(135deg, #dc2626, #f87171); }
+
+/* Boutons de confirmation : hauteur strictement égale (lot n° 8) */
+.confirm-actions { align-items: stretch; }
+.confirm-actions .confirm-btn {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding-top: 0;
+  padding-bottom: 0;
+}
