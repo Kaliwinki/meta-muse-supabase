@@ -15,6 +15,8 @@ const I18N = {
     "footer.text": "Pierre — a social network hosted free on GitHub Pages, with accounts and blog powered by Supabase.",
     "footer.privacy": "Privacy Policy",
     "settings.theme": "Theme",
+    "settings.accent": "Accent color",
+    "settings.accent_reset": "Reset",
     "theme.dark": "🌙 Dark",
     "theme.light": "☀️ Light",
     "feed.whats_new": "What's new, {u}?",
@@ -36,6 +38,17 @@ const I18N = {
     "photo.save_banner": "Save cover",
     "toast.published": "Post published!",
     "toast.commented": "Comment posted.",
+    "toast.link_copied": "Link copied!",
+    "toast.blocked": "Member blocked. You will no longer see their content.",
+    "toast.unblocked": "Member unblocked.",
+    "profile.verified": "Verified account",
+    "profile.block": "Block",
+    "profile.unblock": "Unblock",
+    "profile.block_confirm": "Block this member? You will no longer see their posts and comments, and you will stop following them.",
+    "profile.err_block": "Block failed: ",
+    "post.hidden_chip": "🚫 Hidden after reports — only you can see it",
+    "post.hidden_msg": "This post was hidden after several reports.",
+    "comment.hidden_chip": "🚫 Hidden after reports",
     "toast.avatar_saved": "Profile picture updated.",
     "toast.banner_saved": "Cover photo updated.",
     "toast.username_saved": "Username saved. Welcome!",
@@ -49,6 +62,8 @@ const I18N = {
     "post.deleted": "Post deleted.",
     "post.updated": "Post updated.",
     "comment.edit": "Edit",
+    "comment.reply": "Reply",
+    "comment.reply_ph": "Write a reply…",
     "comment.delete_confirm": "Delete this comment?",
     "comment.deleted": "Comment deleted.",
     "comment.updated": "Comment updated.",
@@ -58,6 +73,28 @@ const I18N = {
     "profile.following": "Following",
     "feed.all": "All",
     "feed.following": "Following",
+    "feed.trending": "🔥 Trending",
+    "feed.empty_trending": "No trending posts this week yet.",
+    "feed.saved": "🔖 Saved",
+    "feed.empty_saved": "No saved posts yet. Tap 🔖 on a post to save it here.",
+    "poll.add": "Add a poll",
+    "poll.opt_ph": "Option",
+    "poll.add_opt": "Add an option",
+    "poll.votes": "votes",
+    "poll.err_min": "A poll needs at least 2 options.",
+    "poll.err_vote": "Vote failed: ",
+    "post.save": "Save",
+    "post.saved": "Saved",
+    "post.share": "Share",
+    "post.pin": "Pin to my profile",
+    "post.unpin": "Unpin",
+    "post.err_bookmark": "Bookmark failed: ",
+    "post.err_pin": "Pin failed: ",
+    "profile.pinned": "Pinned post",
+    "toast.saved": "Saved to your bookmarks.",
+    "toast.unsaved": "Removed from your bookmarks.",
+    "toast.pinned": "Post pinned to your profile.",
+    "toast.unpinned": "Post unpinned.",
     "feed.following_empty": "Follow some members to see their posts here.",
     "search.posts": "Search posts…",
     "search.members": "Search members…",
@@ -65,6 +102,7 @@ const I18N = {
     "notif.title": "Notifications",
     "notif.empty": "No notifications yet.",
     "notif.comment": "{u} commented on your post",
+    "notif.mention": "{u} mentioned you",
     "notif.reaction": "{u} reacted to your post",
     "notif.follow": "{u} started following you",
     "notif.mark_all": "Mark all as read",
@@ -155,6 +193,9 @@ const I18N = {
     "post.react_like": "Like",
     "post.react_star": "Great",
     "post.react_heart": "Love",
+    "post.react_laugh": "Funny",
+    "post.react_wow": "Wow",
+    "post.react_sad": "Sad",
     "post.rate_label": "Rate this post:",
     "post.no_rating": "No ratings yet",
     "post.your_rating": "Your rating: {v}/5",
@@ -215,6 +256,8 @@ const I18N = {
     "footer.text": "Pierre — un réseau social hébergé gratuitement sur GitHub Pages, comptes et blog propulsés par Supabase.",
     "footer.privacy": "Politique de confidentialité",
     "settings.theme": "Thème",
+    "settings.accent": "Couleur d'accent",
+    "settings.accent_reset": "Réinitialiser",
     "theme.dark": "🌙 Sombre",
     "theme.light": "☀️ Clair",
     "feed.whats_new": "Quoi de neuf, {u} ?",
@@ -236,6 +279,17 @@ const I18N = {
     "photo.save_banner": "Enregistrer la bannière",
     "toast.published": "Article publié !",
     "toast.commented": "Commentaire publié.",
+    "toast.link_copied": "Lien copié !",
+    "toast.blocked": "Membre bloqué. Tu ne verras plus ses contenus.",
+    "toast.unblocked": "Membre débloqué.",
+    "profile.verified": "Compte vérifié",
+    "profile.block": "Bloquer",
+    "profile.unblock": "Débloquer",
+    "profile.block_confirm": "Bloquer ce membre ? Tu ne verras plus ses publications ni ses commentaires, et tu ne le suivras plus.",
+    "profile.err_block": "Échec du blocage : ",
+    "post.hidden_chip": "🚫 Masqué après des signalements — visible par toi seul",
+    "post.hidden_msg": "Cet article a été masqué après plusieurs signalements.",
+    "comment.hidden_chip": "🚫 Masqué après des signalements",
     "toast.avatar_saved": "Photo de profil mise à jour.",
     "toast.banner_saved": "Bannière mise à jour.",
     "toast.username_saved": "Pseudo enregistré. Bienvenue !",
@@ -249,6 +303,8 @@ const I18N = {
     "post.deleted": "Article supprimé.",
     "post.updated": "Article mis à jour.",
     "comment.edit": "Modifier",
+    "comment.reply": "Répondre",
+    "comment.reply_ph": "Écrire une réponse…",
     "comment.delete_confirm": "Supprimer ce commentaire ?",
     "comment.deleted": "Commentaire supprimé.",
     "comment.updated": "Commentaire mis à jour.",
@@ -258,6 +314,28 @@ const I18N = {
     "profile.following": "Abonnements",
     "feed.all": "Tous",
     "feed.following": "Mes abonnements",
+    "feed.trending": "🔥 Tendances",
+    "feed.empty_trending": "Pas encore d'article tendance cette semaine.",
+    "feed.saved": "🔖 Enregistrés",
+    "feed.empty_saved": "Aucun article enregistré. Touche 🔖 sur un article pour le retrouver ici.",
+    "poll.add": "Ajouter un sondage",
+    "poll.opt_ph": "Option",
+    "poll.add_opt": "Ajouter une option",
+    "poll.votes": "votes",
+    "poll.err_min": "Un sondage demande au moins 2 options.",
+    "poll.err_vote": "Échec du vote : ",
+    "post.save": "Enregistrer",
+    "post.saved": "Enregistré",
+    "post.share": "Partager",
+    "post.pin": "Épingler à mon profil",
+    "post.unpin": "Retirer l'épingle",
+    "post.err_bookmark": "Échec de l'enregistrement : ",
+    "post.err_pin": "Échec de l'épingle : ",
+    "profile.pinned": "Article épinglé",
+    "toast.saved": "Enregistré dans tes favoris.",
+    "toast.unsaved": "Retiré de tes favoris.",
+    "toast.pinned": "Article épinglé à ton profil.",
+    "toast.unpinned": "Épingle retirée.",
     "feed.following_empty": "Suis des membres pour voir leurs publications ici.",
     "search.posts": "Rechercher un article…",
     "search.members": "Rechercher un membre…",
@@ -265,6 +343,7 @@ const I18N = {
     "notif.title": "Notifications",
     "notif.empty": "Aucune notification pour le moment.",
     "notif.comment": "{u} a commenté ton article",
+    "notif.mention": "{u} t'a mentionné",
     "notif.reaction": "{u} a réagi à ton article",
     "notif.follow": "{u} s'est abonné à toi",
     "notif.mark_all": "Tout marquer comme lu",
@@ -355,6 +434,9 @@ const I18N = {
     "post.react_like": "J'aime",
     "post.react_star": "Super",
     "post.react_heart": "Coup de cœur",
+    "post.react_laugh": "Drôle",
+    "post.react_wow": "Waouh",
+    "post.react_sad": "Triste",
     "post.rate_label": "Note cette publication :",
     "post.no_rating": "Aucune note pour le moment",
     "post.your_rating": "Ta note : {v}/5",
@@ -458,6 +540,42 @@ function excerpt(text, max = 160) {
   return t2.length > max ? t2.slice(0, max).trimEnd() + "…" : t2;
 }
 
+/**
+ * Texte enrichi : échappement HTML puis transformation des #tags et @mentions
+ * en liens cliquables (sur le texte échappé, # et @ sont intacts).
+ */
+function richText(text) {
+  let html = esc(text).replaceAll("\n", "<br>");
+  html = html.replace(/#([\p{L}\p{N}_]{1,30})/gu, (m, tag) =>
+    `<a href="#/blog" class="tag-link" data-tag="${esc(tag.toLowerCase())}">#${esc(tag)}</a>`);
+  html = html.replace(/(^|\s)@([a-z0-9_-]{3,20})/g, (m, sp, name) =>
+    profileByUsername[name]
+      ? `${sp}<a href="#/user/${esc(name)}" class="tag-link">@${esc(name)}</a>`
+      : m);
+  return html;
+}
+
+/** Extrait les profils @mentionnés dans un texte (pseudos existants, uniques). */
+function mentionedProfiles(text) {
+  const found = new Map();
+  for (const m of String(text ?? "").matchAll(/@([a-z0-9_-]{3,20})/g)) {
+    const pr = profileByUsername[m[1]];
+    if (pr && !found.has(pr.id)) found.set(pr.id, pr);
+  }
+  return [...found.values()];
+}
+
+/** Envoie une notification « mention » à chaque @pseudo du texte (hors soi-même et hors exceptions). */
+async function notifyMentions(text, postId, excludeIds = []) {
+  if (!session?.user) return;
+  const done = new Set();
+  for (const pr of mentionedProfiles(text)) {
+    if (pr.id === session.user.id || excludeIds.includes(pr.id) || done.has(pr.id)) continue;
+    done.add(pr.id);
+    await notify(pr.id, "mention", postId);
+  }
+}
+
 function showModalMessage(text, kind = "info") {
   const box = $("auth-message");
   box.textContent = text;
@@ -497,10 +615,14 @@ function authorName(row) {
 
 /** Avatar public du compte (ou rien). */
 let profilesById = {};
+let profileByUsername = {};
 /** Badges des membres : userId -> [{emoji, key}]. */
 let badgesById = {};
 /** Abonnements : qui je suis, et compteurs par membre. */
 let followingSet = new Set();
+let myBookmarks = new Set();
+let myBlocks = new Set();
+let pollsCache = { optionsByPost: {}, votesByOption: {}, myVote: {} };
 let followerCountById = {};
 let followingCountById = {};
 function avatarFor(userId) {
@@ -607,14 +729,22 @@ function badgeEmojis(uid, max = 3) {
   return shown + more;
 }
 /** Pseudo cliquable vers la page personnelle, avec mini avatar et badges s'ils existent. */
+/** Coche bleue des comptes vérifiés (attribuée depuis le dashboard uniquement). */
+function verifiedMark(userId) {
+  return profilesById[userId]?.verified
+    ? `<span class="verified" title="${esc(t("profile.verified"))}">✓</span>`
+    : "";
+}
+
 function authorHtml(row) {
   const name = authorName(row);
   const av = avatarFor(row?.user_id);
   const avHtml = av ? `<img class="mini-avatar" src="${esc(av)}" alt="">` : "";
   const bHtml = badgeEmojis(row?.user_id);
+  const vHtml = verifiedMark(row?.user_id);
   return row?.author_username
-    ? `<a class="author-link" href="#/user/${esc(row.author_username)}">${avHtml}${esc(name)}${bHtml}</a>`
-    : `${avHtml}${esc(name)}${bHtml}`;
+    ? `<a class="author-link" href="#/user/${esc(row.author_username)}">${avHtml}${esc(name)}${vHtml}${bHtml}</a>`
+    : `${avHtml}${esc(name)}${vHtml}${bHtml}`;
 }
 
 /** Avatar 40px du fil social (photo ou initiale). */
@@ -698,7 +828,7 @@ async function refreshBadges() {
 }
 
 function notifItemHtml(n) {
-  const key = n.type === "comment" ? "notif.comment" : n.type === "reaction" ? "notif.reaction" : "notif.follow";
+  const key = n.type === "comment" ? "notif.comment" : n.type === "reaction" ? "notif.reaction" : n.type === "mention" ? "notif.mention" : "notif.follow";
   const who = n.actor_username || "?";
   return `
     <div class="notif-item" data-notif="${esc(n.id)}">
@@ -790,7 +920,10 @@ async function uploadPhoto(file, kind) {
 const REACTION_TYPES = [
   { type: "like", icon: "👍", labelKey: "post.react_like" },
   { type: "star", icon: "⭐", labelKey: "post.react_star" },
-  { type: "heart", icon: "❤️", labelKey: "post.react_heart" }
+  { type: "heart", icon: "❤️", labelKey: "post.react_heart" },
+  { type: "laugh", icon: "😂", labelKey: "post.react_laugh" },
+  { type: "wow", icon: "😮", labelKey: "post.react_wow" },
+  { type: "sad", icon: "😢", labelKey: "post.react_sad" }
 ];
 
 // ---------- Authentification ----------
@@ -1042,6 +1175,38 @@ document.querySelectorAll(".settings-item[data-theme]").forEach((btn) => {
   btn.addEventListener("click", () => { setTheme(btn.dataset.theme); });
 });
 
+// ---------- Couleur d'accent personnalisée ----------
+function applyAccent(color) {
+  if (color) document.documentElement.style.setProperty("--accent", color);
+  else document.documentElement.style.removeProperty("--accent");
+}
+function currentAccent() {
+  return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+}
+(function restoreAccent() {
+  try {
+    const saved = localStorage.getItem("mm_accent");
+    if (saved) applyAccent(saved);
+  } catch { /* stockage indisponible */ }
+})();
+$("accent-picker").addEventListener("input", async (e) => {
+  const color = e.target.value;
+  applyAccent(color);
+  try { localStorage.setItem("mm_accent", color); } catch { /* stockage indisponible */ }
+  if (session?.user && profilesById[session.user.id]) {
+    profilesById[session.user.id].accent_color = color;
+    await supabase.from("profiles").update({ accent_color: color }).eq("id", session.user.id);
+  }
+});
+$("accent-reset").addEventListener("click", async () => {
+  applyAccent(null);
+  try { localStorage.removeItem("mm_accent"); } catch { /* stockage indisponible */ }
+  if (session?.user && profilesById[session.user.id]) {
+    profilesById[session.user.id].accent_color = null;
+    await supabase.from("profiles").update({ accent_color: null }).eq("id", session.user.id);
+  }
+});
+
 // ---------- Délégation globale : suivre, signaler, notifications ----------
 document.addEventListener("click", (e) => {
   const fb = e.target.closest("[data-follow-btn]");
@@ -1074,7 +1239,15 @@ $("report-form").addEventListener("submit", async (e) => {
   });
   closeReportModal();
   if (error) showToast(t("report.err"), "error");
-  else showToast(t("report.thanks"), "success");
+  else {
+    showToast(t("report.thanks"), "success");
+    // Masquage automatique à partir de 3 signalements (fonction côté base)
+    try {
+      if (reportTarget.postId) await supabase.rpc("check_post_reports", { p_post_id: reportTarget.postId });
+      if (reportTarget.commentId) await supabase.rpc("check_comment_reports", { p_comment_id: reportTarget.commentId });
+    } catch { /* silencieux */ }
+    if (currentRoute().name === "post") render();
+  }
 });
 
 // ---------- Application installable (PWA) ----------
@@ -1221,20 +1394,28 @@ async function loadPosts() {
 }
 
 async function loadAggregates() {
-  const [reactionsRes, ratingsRes, commentsRes, profilesRes, postsAllRes, followsRes] = await Promise.all([
+  const [reactionsRes, ratingsRes, commentsRes, profilesRes, postsAllRes, followsRes, bookmarksRes, blocksRes] = await Promise.all([
     supabase.from("reactions").select("post_id,type,user_id"),
     supabase.from("ratings").select("post_id,value,user_id"),
     supabase.from("comments").select("post_id,user_id"),
-    supabase.from("profiles").select("id,username,avatar_url,created_at,bio"),
+    supabase.from("profiles").select("id,username,avatar_url,created_at,bio,verified,accent_color,pinned_post_id"),
     supabase.from("posts").select("id,user_id,image_url,created_at"),
-    supabase.from("follows").select("follower_id,following_id")
+    supabase.from("follows").select("follower_id,following_id"),
+    session?.user ? supabase.from("bookmarks").select("post_id") : Promise.resolve({ data: [] }),
+    session?.user ? supabase.from("blocks").select("blocked_id") : Promise.resolve({ data: [] })
   ]);
+  myBookmarks = new Set((bookmarksRes.data || []).map((b) => b.post_id));
+  myBlocks = new Set((blocksRes.data || []).map((b) => b.blocked_id));
   if (reactionsRes.error) throw reactionsRes.error;
   if (ratingsRes.error) throw ratingsRes.error;
   if (commentsRes.error) throw commentsRes.error;
   if (!profilesRes.error) {
     profilesById = {};
-    for (const pr of profilesRes.data) profilesById[pr.id] = pr;
+    profileByUsername = {};
+    for (const pr of profilesRes.data) {
+      profilesById[pr.id] = pr;
+      profileByUsername[pr.username] = pr;
+    }
   }
 
   const reactionsByPost = {};
@@ -1328,9 +1509,11 @@ function postCardHtml(p, agg) {
         </div>
       </div>
       <h2><a href="#/post/${esc(p.id)}">${esc(p.title)}</a></h2>
+      ${p.hidden ? `<div class="hidden-chip">${esc(t("post.hidden_chip"))}</div>` : ""}
       ${p.image_url ? `<img class="post-image" src="${esc(p.image_url)}" alt="">` : ""}
-      <p class="post-excerpt">${esc(excerpt(p.content))}</p>
-      <div class="post-stats">${stats}</div>
+      <p class="post-excerpt">${richText(excerpt(p.content))}</p>
+      ${pollHtml(p.id)}
+      <div class="post-stats">${stats}<button class="bm-btn" data-share="${esc(p.id)}" title="${esc(t("post.share"))}">🔗</button><button class="bm-btn${myBookmarks.has(p.id) ? " active" : ""}" data-bookmark="${esc(p.id)}" title="${esc(t("post.save"))}">🔖</button></div>
     </article>`;
 }
 
@@ -1345,6 +1528,7 @@ function bindPostCards() {
 
 // ---------- Vue Blog (liste) ----------
 let feedMode = "all";
+let blogTag = null;
 let blogCache = null;
 
 function postsZoneHtml() {
@@ -1352,9 +1536,29 @@ function postsZoneHtml() {
   const { posts, agg } = blogCache;
   if (!posts.length) return `<section class="card"><p class="empty">${esc(t("blog.empty"))}</p></section>`;
   let list = posts;
+  if (session?.user) {
+    if (myBlocks.size) list = list.filter((p) => !myBlocks.has(p.user_id));
+    list = list.filter((p) => !p.hidden || p.user_id === session.user.id);
+  }
   if (feedMode === "following" && session?.user) {
     list = list.filter((p) => followingSet.has(p.user_id) || p.user_id === session.user.id);
     if (!list.length) return `<section class="card"><p class="empty">${esc(t("feed.following_empty"))}</p></section>`;
+  }
+  if (feedMode === "saved" && session?.user) {
+    list = list.filter((p) => myBookmarks.has(p.id));
+    if (!list.length) return `<section class="card"><p class="empty">${esc(t("feed.empty_saved"))}</p></section>`;
+  }
+  if (feedMode === "trending") {
+    const weekAgo = Date.now() - 7 * 864e5;
+    list = list
+      .filter((p) => new Date(p.created_at).getTime() >= weekAgo)
+      .sort((a, b) => totalReactions(b, agg) - totalReactions(a, agg));
+    if (!list.length) return `<section class="card"><p class="empty">${esc(t("feed.empty_trending"))}</p></section>`;
+  }
+  if (blogTag) {
+    const needle = "#" + blogTag;
+    list = list.filter((p) => (p.content || "").toLowerCase().includes(needle));
+    if (!list.length) return `<section class="card"><p class="empty">${esc(t("search.no_results"))}</p></section>`;
   }
   const q = ($("post-search")?.value || "").trim().toLowerCase();
   if (q) {
@@ -1366,6 +1570,170 @@ function postsZoneHtml() {
   }
   return `<div class="posts-grid">${list.map((p) => postCardHtml(p, agg)).join("")}</div>`;
 }
+
+/** Nombre total de réactions sur un article (tous types). */
+function totalReactions(p, agg) {
+  const rc = agg.reactionsByPost[p.id] || {};
+  return Object.values(rc).reduce((s, n) => s + n, 0);
+}
+
+/** Charge les sondages et les votes pour une liste d'articles. */
+async function loadPolls(postIds) {
+  const clean = (postIds || []).filter(Boolean);
+  if (!clean.length) return { optionsByPost: {}, votesByOption: {}, myVote: {} };
+  const [{ data: opts }, { data: votes }] = await Promise.all([
+    supabase.from("poll_options").select("*").in("post_id", clean).order("position"),
+    supabase.from("poll_votes").select("*").in("post_id", clean)
+  ]);
+  const optionsByPost = {}, votesByOption = {}, myVote = {};
+  for (const o of opts || []) (optionsByPost[o.post_id] ??= []).push(o);
+  for (const v of votes || []) {
+    votesByOption[v.option_id] = (votesByOption[v.option_id] ?? 0) + 1;
+    if (session?.user && v.user_id === session.user.id) myVote[v.post_id] = v.option_id;
+  }
+  return { optionsByPost, votesByOption, myVote };
+}
+
+/** Bloc de sondage (résultats en barres + vote en un clic). */
+function pollHtml(postId) {
+  const opts = pollsCache.optionsByPost[postId];
+  if (!opts?.length) return "";
+  const total = opts.reduce((s, o) => s + (pollsCache.votesByOption[o.id] ?? 0), 0);
+  return `
+    <div class="poll" data-poll="${esc(postId)}">
+      ${opts.map((o) => {
+        const n = pollsCache.votesByOption[o.id] ?? 0;
+        const pct = total ? Math.round((n / total) * 100) : 0;
+        const mine = pollsCache.myVote[postId] === o.id;
+        return `
+        <button type="button" class="poll-opt-btn${mine ? " mine" : ""}" data-vote="${esc(o.id)}" data-post="${esc(postId)}">
+          <span class="poll-bar" style="width:${pct}%"></span>
+          <span class="poll-label">${esc(o.text)}${mine ? " ✓" : ""}</span>
+          <span class="poll-pct">${pct}% · ${n}</span>
+        </button>`;
+      }).join("")}
+      <div class="small">${total} ${esc(t("poll.votes"))}</div>
+    </div>`;
+}
+
+// Vote / changement de vote dans un sondage (mise à jour sur place)
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest("[data-vote]");
+  if (!btn) return;
+  if (!session?.user) { openAuthModal("login"); return; }
+  if (!requireUsername()) return;
+  const postId = btn.dataset.post;
+  const optionId = btn.dataset.vote;
+  const current = pollsCache.myVote[postId];
+  let res;
+  if (current === optionId) {
+    res = await supabase.from("poll_votes").delete().eq("post_id", postId).eq("user_id", session.user.id);
+    if (!res.error) { pollsCache.myVote[postId] = undefined; pollsCache.votesByOption[optionId] = Math.max(0, (pollsCache.votesByOption[optionId] ?? 1) - 1); }
+  } else if (current) {
+    res = await supabase.from("poll_votes").update({ option_id: optionId }).eq("post_id", postId).eq("user_id", session.user.id);
+    if (!res.error) {
+      pollsCache.votesByOption[current] = Math.max(0, (pollsCache.votesByOption[current] ?? 1) - 1);
+      pollsCache.votesByOption[optionId] = (pollsCache.votesByOption[optionId] ?? 0) + 1;
+      pollsCache.myVote[postId] = optionId;
+    }
+  } else {
+    res = await supabase.from("poll_votes").insert({ post_id: postId, option_id: optionId, user_id: session.user.id });
+    if (!res.error) { pollsCache.votesByOption[optionId] = (pollsCache.votesByOption[optionId] ?? 0) + 1; pollsCache.myVote[postId] = optionId; }
+  }
+  if (res.error) { showToast(t("poll.err_vote") + res.error.message, "error"); return; }
+  document.querySelectorAll(`[data-poll="${postId}"]`).forEach((el) => { el.outerHTML = pollHtml(postId); });
+});
+
+// Favoris : ajout / retrait en un clic (mise à jour sur place)
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest("[data-bookmark]");
+  if (!btn) return;
+  e.preventDefault();
+  if (!session?.user) { openAuthModal("login"); return; }
+  if (!requireUsername()) return;
+  const postId = btn.dataset.bookmark;
+  const had = myBookmarks.has(postId);
+  if (had) myBookmarks.delete(postId); else myBookmarks.add(postId);
+  document.querySelectorAll(`[data-bookmark="${postId}"]`).forEach((b) => b.classList.toggle("active", !had));
+  const { error } = had
+    ? await supabase.from("bookmarks").delete().eq("user_id", session.user.id).eq("post_id", postId)
+    : await supabase.from("bookmarks").insert({ user_id: session.user.id, post_id: postId });
+  if (error) {
+    if (had) myBookmarks.add(postId); else myBookmarks.delete(postId);
+    document.querySelectorAll(`[data-bookmark="${postId}"]`).forEach((b) => b.classList.toggle("active", had));
+    showToast(t("post.err_bookmark") + error.message, "error");
+  } else {
+    showToast(t(had ? "toast.unsaved" : "toast.saved"), "success");
+    if (feedMode === "saved" && currentRoute().name === "blog") renderBlog();
+  }
+});
+
+// Épingler / retirer l'épingle d'un article sur son profil
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest("[data-pin]");
+  if (!btn) return;
+  if (!session?.user || !requireUsername()) return;
+  const postId = btn.dataset.pin;
+  const pinned = profilesById[session.user.id]?.pinned_post_id;
+  const next = pinned === postId ? null : postId;
+  const { error } = await supabase.from("profiles").update({ pinned_post_id: next }).eq("id", session.user.id);
+  if (error) { showToast(t("post.err_pin") + error.message, "error"); return; }
+  if (profilesById[session.user.id]) profilesById[session.user.id].pinned_post_id = next;
+  if (currentUsername && profileByUsername[currentUsername]) profileByUsername[currentUsername].pinned_post_id = next;
+  showToast(t(next ? "toast.pinned" : "toast.unpinned"), "success");
+  render();
+});
+
+// Partager un article (partage natif ou copie du lien)
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest("[data-share]");
+  if (!btn) return;
+  const url = `${location.origin}${location.pathname}#/post/${btn.dataset.share}`;
+  if (navigator.share) {
+    try { await navigator.share({ title: "Pierre", url }); } catch { /* partage annulé */ }
+  } else {
+    try {
+      await navigator.clipboard.writeText(url);
+      showToast(t("toast.link_copied"), "success");
+    } catch { showToast(url, "info"); }
+  }
+});
+
+// Bloquer / débloquer un membre
+document.addEventListener("click", async (e) => {
+  const blockBtn = e.target.closest("[data-block]");
+  const unblockBtn = e.target.closest("[data-unblock]");
+  if (blockBtn) {
+    if (!session?.user) return;
+    if (!confirm(t("profile.block_confirm"))) return;
+    const uid = blockBtn.dataset.block;
+    const { error } = await supabase.from("blocks").insert({ blocker_id: session.user.id, blocked_id: uid });
+    if (error) { showToast(t("profile.err_block") + error.message, "error"); return; }
+    await supabase.from("follows").delete().eq("follower_id", session.user.id).eq("following_id", uid);
+    followingSet.delete(uid);
+    myBlocks.add(uid);
+    showToast(t("toast.blocked"), "success");
+    render();
+  }
+  if (unblockBtn) {
+    if (!session?.user) return;
+    const uid = unblockBtn.dataset.unblock;
+    const { error } = await supabase.from("blocks").delete().eq("blocker_id", session.user.id).eq("blocked_id", uid);
+    if (error) { showToast(t("profile.err_block") + error.message, "error"); return; }
+    myBlocks.delete(uid);
+    showToast(t("toast.unblocked"), "success");
+    render();
+  }
+});
+
+// Clic sur un #tag : filtre le blog par ce tag
+document.addEventListener("click", (e) => {
+  const link = e.target.closest("[data-tag]");
+  if (!link) return;
+  blogTag = link.dataset.tag || null;
+  feedMode = "all";
+  if (currentRoute().name === "blog") render();
+});
 
 async function renderBlog() {
   view.innerHTML = skeletonHtml(3);
@@ -1384,6 +1752,14 @@ async function renderBlog() {
             <input id="post-title" maxlength="120" required placeholder="${esc(t("blog.post_title_ph"))}">
             <label for="post-content">${esc(t("blog.post_content"))}</label>
             <textarea id="post-content" rows="4" maxlength="5000" required placeholder="${esc(t("blog.post_content_ph"))}"></textarea>
+            <label class="poll-toggle"><input type="checkbox" id="poll-toggle"> ${esc(t("poll.add"))}</label>
+            <div id="poll-fields" class="hidden">
+              <div class="poll-opts">
+                <input class="poll-opt" maxlength="80" placeholder="${esc(t("poll.opt_ph"))} 1">
+                <input class="poll-opt" maxlength="80" placeholder="${esc(t("poll.opt_ph"))} 2">
+              </div>
+              <button type="button" class="btn small" id="poll-add-opt">${esc(t("poll.add_opt"))}</button>
+            </div>
             <label for="post-image">${esc(t("photo.add"))}</label>
             <input id="post-image" type="file" accept="image/*">
             <button type="submit" class="primary">${esc(t("blog.publish"))}</button>
@@ -1396,22 +1772,42 @@ async function renderBlog() {
         </section>`;
 
     blogCache = { posts, agg };
+    pollsCache = await loadPolls(posts.map((p) => p.id));
 
-    const tabs = session?.user
-      ? `<div class="seg-tabs">
-           <button class="seg-tab${feedMode === "all" ? " active" : ""}" data-feed="all" type="button">${esc(t("feed.all"))}</button>
-           <button class="seg-tab${feedMode === "following" ? " active" : ""}" data-feed="following" type="button">${esc(t("feed.following"))}</button>
-         </div>`
-      : "";
+    const pollToggle = $("poll-toggle");
+    if (pollToggle) {
+      pollToggle.addEventListener("change", () => $("poll-fields").classList.toggle("hidden", !pollToggle.checked));
+      $("poll-add-opt").addEventListener("click", () => {
+        const wrap = document.querySelector(".poll-opts");
+        if (wrap.children.length >= 6) return;
+        const input = document.createElement("input");
+        input.className = "poll-opt";
+        input.maxLength = 80;
+        input.placeholder = `${t("poll.opt_ph")} ${wrap.children.length + 1}`;
+        wrap.appendChild(input);
+      });
+    }
+
+    const tabs = `
+      <div class="seg-tabs">
+        <button class="seg-tab${feedMode === "all" ? " active" : ""}" data-feed="all" type="button">${esc(t("feed.all"))}</button>
+        ${session?.user ? `<button class="seg-tab${feedMode === "following" ? " active" : ""}" data-feed="following" type="button">${esc(t("feed.following"))}</button>` : ""}
+        <button class="seg-tab${feedMode === "trending" ? " active" : ""}" data-feed="trending" type="button">${esc(t("feed.trending"))}</button>
+        ${session?.user ? `<button class="seg-tab${feedMode === "saved" ? " active" : ""}" data-feed="saved" type="button">${esc(t("feed.saved"))}</button>` : ""}
+      </div>`;
 
     view.innerHTML = `
       <div class="blog-header"><h1>${esc(t("blog.title"))}</h1></div>
       ${composer}
       ${tabs}
       <input id="post-search" class="search-input" type="search" placeholder="${esc(t("search.posts"))}">
+      ${blogTag ? `<div class="tag-chip">🏷️ #${esc(blogTag)} <button type="button" id="clear-tag" title="✖">✖</button></div>` : ""}
       <div id="posts-zone">${postsZoneHtml()}</div>`;
 
     bindPostCards();
+
+    const clearTag = $("clear-tag");
+    if (clearTag) clearTag.addEventListener("click", () => { blogTag = null; renderBlog(); });
 
     document.querySelectorAll("[data-feed]").forEach((b) => {
       b.addEventListener("click", () => {
@@ -1437,24 +1833,35 @@ async function renderBlog() {
         const title = $("post-title").value.trim();
         const content = $("post-content").value.trim();
         if (!title || !content) return;
+        let pollOptions = [];
+        if ($("poll-toggle")?.checked) {
+          pollOptions = [...document.querySelectorAll(".poll-opt")].map((i) => i.value.trim()).filter(Boolean);
+          if (pollOptions.length < 2) { showToast(t("poll.err_min"), "error"); return; }
+        }
         const imageFile = $("post-image").files[0];
         let imageUrl = null;
         if (imageFile) {
           imageUrl = await uploadPhoto(imageFile, "posts");
           if (imageUrl === undefined) return; // échec d'envoi, déjà signalé
         }
-        const { error } = await supabase.from("posts").insert({
+        const { data: newPost, error } = await supabase.from("posts").insert({
           title,
           content,
           user_id: session.user.id,
           author_email: session.user.email,
           author_username: currentUsername,
           image_url: imageUrl
-        });
+        }).select("id").single();
         if (error) {
           showToast(t("blog.err_publish") + error.message, "error");
         } else {
+          if (pollOptions.length) {
+            await supabase.from("poll_options").insert(
+              pollOptions.map((text, i) => ({ post_id: newPost.id, text, position: i }))
+            );
+          }
           showToast(t("toast.published"), "success");
+          await notifyMentions(content, newPost.id);
           await renderBlog();
         }
       });
@@ -1478,6 +1885,14 @@ async function renderPostDetail(postId, instant = false) {
       return;
     }
     if (comErr) throw comErr;
+    pollsCache = await loadPolls([postId]);
+
+    if (post.hidden && session?.user?.id !== post.user_id) {
+      view.innerHTML = `<section class="card"><p class="message error">${esc(t("post.hidden_msg"))}</p><a class="back-link" href="#/blog">${esc(t("post.back"))}</a></section>`;
+      return;
+    }
+    const visibleComments = comments.filter((c) =>
+      !c.hidden || c.user_id === session?.user?.id || session?.user?.id === post.user_id);
 
     const avg = avgRating(agg.ratingsByPost, post.id);
     const rc = agg.reactionsByPost[post.id] ?? {};
@@ -1493,25 +1908,30 @@ async function renderPostDetail(postId, instant = false) {
       `<button class="star${v <= myRating ? " filled" : ""}" data-star="${v}" ${loggedIn ? "" : "disabled"} title="${v} ★">★</button>`
     ).join("");
 
-    const commentsHtml = comments.length === 0
-      ? `<p class="empty">${esc(t("post.no_comments"))}</p>`
-      : comments.map((c) => {
-          const isCommentOwner = session?.user?.id === c.user_id;
-          const actions = loggedIn
-            ? `<div class="comment-actions">
-                 ${isCommentOwner
-                   ? `<button type="button" data-edit-btn="${esc(c.id)}">${esc(t("comment.edit"))}</button>
-                      <button type="button" class="link-danger" data-del-btn="${esc(c.id)}">${esc(t("common.delete").replace("🗑️ ", ""))}</button>`
-                   : `<button type="button" data-report-comment="${esc(c.id)}">${esc(t("report.button"))}</button>`}
-               </div>`
-            : "";
-          return `
-        <div class="comment">
+    const childrenOf = {};
+    const topComments = visibleComments.filter((c) => !c.parent_id);
+    for (const c of visibleComments) if (c.parent_id) (childrenOf[c.parent_id] ??= []).push(c);
+
+    function commentHtml(c, isReply) {
+      const isCommentOwner = session?.user?.id === c.user_id;
+      const actions = loggedIn
+        ? `<div class="comment-actions">
+             ${isCommentOwner
+               ? `<button type="button" data-edit-btn="${esc(c.id)}">${esc(t("comment.edit"))}</button>
+                  <button type="button" class="link-danger" data-del-btn="${esc(c.id)}">${esc(t("common.delete").replace("🗑️ ", ""))}</button>`
+               : `${!isReply ? `<button type="button" data-reply-btn="${esc(c.id)}">${esc(t("comment.reply"))}</button>` : ""}
+                  <button type="button" data-report-comment="${esc(c.id)}">${esc(t("report.button"))}</button>`}
+           </div>`
+        : "";
+      const children = (childrenOf[c.id] || []).map((ch) => commentHtml(ch, true)).join("");
+      return `
+        <div class="comment${isReply ? " reply" : ""}">
           <div class="comment-head">
             <span class="comment-author">${authorHtml(c)}</span>
             <span class="comment-date">${fmtDate(c.created_at)}</span>
           </div>
-          <p class="comment-body">${esc(c.content)}</p>
+          <p class="comment-body">${richText(c.content)}</p>
+          ${c.hidden ? `<div class="hidden-chip">${esc(t("comment.hidden_chip"))}</div>` : ""}
           <form class="form comment-edit-form hidden" data-edit-form="${esc(c.id)}">
             <textarea rows="3" maxlength="2000" required>${esc(c.content)}</textarea>
             <div class="comment-actions">
@@ -1520,8 +1940,20 @@ async function renderPostDetail(postId, instant = false) {
             </div>
           </form>
           ${actions}
+          <form class="form reply-form hidden" data-reply-form="${esc(c.id)}">
+            <textarea rows="2" maxlength="2000" required placeholder="${esc(t("comment.reply_ph"))}"></textarea>
+            <div class="comment-actions">
+              <button type="submit">${esc(t("comment.reply"))}</button>
+              <button type="button" data-reply-cancel="${esc(c.id)}">${esc(t("common.cancel"))}</button>
+            </div>
+          </form>
+          ${children ? `<div class="replies">${children}</div>` : ""}
         </div>`;
-        }).join("");
+    }
+
+    const commentsHtml = topComments.length === 0
+      ? `<p class="empty">${esc(t("post.no_comments"))}</p>`
+      : topComments.map((c) => commentHtml(c, false)).join("");
 
     const commentForm = loggedIn
       ? `
@@ -1545,6 +1977,7 @@ async function renderPostDetail(postId, instant = false) {
       ? `
         <div class="owner-actions">
           <button class="btn small" id="edit-post-btn" type="button">${esc(t("post.edit"))}</button>
+          <button class="btn small" data-pin="${esc(post.id)}" type="button">${profilesById[session.user.id]?.pinned_post_id === post.id ? esc(t("post.unpin")) : "📌 " + esc(t("post.pin"))}</button>
           <button class="btn small danger" id="delete-post-btn" type="button">${esc(t("common.delete"))}</button>
         </div>
         <form id="edit-post-form" class="form hidden">
@@ -1570,8 +2003,13 @@ async function renderPostDetail(postId, instant = false) {
         <h1>${esc(post.title)}</h1>
         <div class="post-meta">${esc(t("post.by"))} ${authorHtml(post)} · ${fmtDate(post.created_at)}</div>
         ${ownerBlock}
-        <p>${esc(post.content)}</p>
+        <p>${richText(post.content)}</p>
         ${post.image_url ? `<img class="post-image-full" src="${esc(post.image_url)}" alt="">` : ""}
+        ${pollHtml(post.id)}
+        <div class="post-tools">
+          <button type="button" class="btn small bm-detail${myBookmarks.has(post.id) ? " active" : ""}" data-bookmark="${esc(post.id)}">🔖 ${esc(t("post.save"))}</button>
+          <button type="button" class="btn small" data-share="${esc(post.id)}">🔗 ${esc(t("post.share"))}</button>
+        </div>
         <div class="reactions">${reactionsHtml}</div>
         <div class="rating-block">
           <div class="label">${esc(t("post.rate_label"))}</div>
@@ -1588,7 +2026,7 @@ async function renderPostDetail(postId, instant = false) {
         <div class="card side-card">
           <h3>${esc(t("post.stats"))}</h3>
           <ul class="stat-list">
-            <li><span>${esc(t("post.stat_comments"))}</span><strong data-stat="comments">${comments.length}</strong></li>
+            <li><span>${esc(t("post.stat_comments"))}</span><strong data-stat="comments">${visibleComments.length}</strong></li>
             <li><span>${esc(t("post.stat_likes"))}</span><strong data-stat="like">${rc.like ?? 0}</strong></li>
             <li><span>${esc(t("post.stat_stars"))}</span><strong data-stat="star">${rc.star ?? 0}</strong></li>
             <li><span>${esc(t("post.stat_hearts"))}</span><strong data-stat="heart">${rc.heart ?? 0}</strong></li>
@@ -1598,7 +2036,7 @@ async function renderPostDetail(postId, instant = false) {
       </aside>
       </div>
       <section class="card comments">
-        <h3>${esc(t("post.comments"))} (${comments.length})</h3>
+        <h3>${esc(t("post.comments"))} (${visibleComments.length})</h3>
         <div id="comments-list">${commentsHtml}</div>
         ${commentForm}
       </section>`;
@@ -1675,6 +2113,41 @@ async function renderPostDetail(postId, instant = false) {
         const { error } = await supabase.from("comments").delete().eq("id", btn.dataset.delBtn);
         if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
         showToast(t("comment.deleted"), "success");
+        await rerenderKeepScroll();
+      });
+    });
+
+    // --- Répondre à un commentaire (réponses imbriquées, un niveau) ---
+    document.querySelectorAll("[data-reply-btn]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (!requireUsername()) return;
+        document.querySelectorAll(".reply-form").forEach((f) => f.classList.add("hidden"));
+        document.querySelector(`[data-reply-form="${btn.dataset.replyBtn}"]`)?.classList.remove("hidden");
+      });
+    });
+    document.querySelectorAll("[data-reply-cancel]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelector(`[data-reply-form="${btn.dataset.replyCancel}"]`)?.classList.add("hidden");
+      });
+    });
+    document.querySelectorAll("[data-reply-form]").forEach((form) => {
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!requireUsername()) return;
+        const content = form.querySelector("textarea").value.trim();
+        if (!content) return;
+        const { error } = await supabase.from("comments").insert({
+          post_id: post.id,
+          parent_id: form.dataset.replyForm,
+          user_id: session.user.id,
+          author_email: session.user.email,
+          author_username: currentUsername,
+          content
+        });
+        if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
+        showToast(t("toast.commented"), "success");
+        notify(post.user_id, "comment", post.id);
+        await notifyMentions(content, post.id, [post.user_id]);
         await rerenderKeepScroll();
       });
     });
@@ -1792,6 +2265,7 @@ async function renderPostDetail(postId, instant = false) {
         } else {
           showToast(t("toast.commented"), "success");
           notify(post.user_id, "comment", post.id);
+          await notifyMentions(content, post.id, [post.user_id]);
           await rerenderKeepScroll();
         }
       });
@@ -1822,6 +2296,9 @@ async function renderProfile(username) {
       supabase.from("comments").select("id", { count: "exact", head: true }).eq("user_id", profile.id)
     ]);
     const posts = postsData || [];
+    pollsCache = await loadPolls(posts.map((p) => p.id));
+    const pinned = profile.pinned_post_id ? posts.find((p) => p.id === profile.pinned_post_id) || null : null;
+    const rest = pinned ? posts.filter((p) => p.id !== pinned.id) : posts;
 
     let reactionsReceived = 0;
     let ratingSum = 0;
@@ -1866,6 +2343,9 @@ async function renderProfile(username) {
       ? `<div class="owner-actions">
            ${followButtonHtml(profile.id)}
            <a class="btn" href="#/messages/${esc(profile.username)}">${esc(t("msg.button"))}</a>
+           ${myBlocks.has(profile.id)
+             ? `<button class="btn" type="button" data-unblock="${esc(profile.id)}">${esc(t("profile.unblock"))}</button>`
+             : `<button class="btn danger" type="button" data-block="${esc(profile.id)}">${esc(t("profile.block"))}</button>`}
          </div>`
       : "";
     const bioBlock = profile.bio ? `<p>${esc(profile.bio)}</p>` : "";
@@ -1885,7 +2365,7 @@ async function renderProfile(username) {
         <div class="profile-head">
           ${avatarBlock}
           <div class="profile-info">
-            <h1>${esc(profile.username)}</h1>
+            <h1>${esc(profile.username)}${profile.verified ? `<span class="verified" title="${esc(t("profile.verified"))}">✓</span>` : ""}</h1>
             <p class="small">${esc(t("profile.member_since"))} ${fmtDate(profile.created_at)}</p>
             ${badgeRow}
             ${bioBlock}
@@ -1907,9 +2387,15 @@ async function renderProfile(username) {
         </ul>
       </section>
       <h2 class="profile-posts-title">${esc(t("profile.posts"))} (${posts.length})</h2>
-      ${posts.length === 0
+      ${pinned
+        ? `<h3>📌 ${esc(t("profile.pinned"))}</h3><div class="posts-grid">${postCardHtml(pinned, agg)}</div>` : ""}
+      ${rest.length === 0 && !pinned
         ? `<section class="card"><p class="empty">${esc(t("profile.no_posts"))}</p></section>`
-        : `<div class="posts-grid">${posts.map((p) => postCardHtml(p, agg)).join("")}</div>`}`;
+        : `<div class="posts-grid">${rest.map((p) => `
+            <div class="post-pin-wrap">
+              ${postCardHtml(p, agg)}
+              ${isOwner ? `<div class="pin-row"><button type="button" class="btn small" data-pin="${esc(p.id)}">${pinned?.id === p.id ? esc(t("post.unpin")) : "📌 " + esc(t("post.pin"))}</button></div>` : ""}
+            </div>`).join("")}</div>`}`;
 
     bindPostCards();
 
@@ -1971,7 +2457,7 @@ function memberCardHtml(m) {
       <div class="member-top">
         ${av}
         <div>
-          <a class="author-link" href="#/user/${esc(m.username)}">${esc(m.username)}</a>${badges}
+          <a class="author-link" href="#/user/${esc(m.username)}">${esc(m.username)}</a>${verifiedMark(m.id)}${badges}
           <p class="small">${esc(t("profile.followers"))} : ${followerCountById[m.id] ?? 0}</p>
         </div>
       </div>
@@ -1982,7 +2468,8 @@ function memberCardHtml(m) {
 
 function membersZoneHtml(members) {
   const q = ($("member-search")?.value || "").trim().toLowerCase();
-  const list = q ? members.filter((m) => m.username.toLowerCase().includes(q)) : members;
+  let list = q ? members.filter((m) => m.username.toLowerCase().includes(q)) : members;
+  if (session?.user && myBlocks.size) list = list.filter((m) => !myBlocks.has(m.id));
   if (!list.length) return `<section class="card"><p class="empty">${esc(t("search.no_results"))}</p></section>`;
   return `<div class="member-grid">${list.map(memberCardHtml).join("")}</div>`;
 }
@@ -2178,6 +2665,18 @@ async function loadThreadMessages(otherId, quiet = false) {
 async function applySession(newSession, event = "RESTORED") {
   session = newSession ?? null;
   currentUsername = await fetchUsername();
+  // Couleur d'accent personnelle enregistrée dans le profil
+  if (session?.user) {
+    try {
+      const { data } = await supabase.from("profiles").select("accent_color").eq("id", session.user.id).maybeSingle();
+      if (data?.accent_color) {
+        applyAccent(data.accent_color);
+        const picker = $("accent-picker");
+        if (picker) picker.value = data.accent_color;
+        try { localStorage.setItem("mm_accent", data.accent_color); } catch { /* stockage indisponible */ }
+      }
+    } catch { /* silencieux */ }
+  }
   renderAuthArea();
   render();
   // Après une connexion sociale (Google/Facebook), le compte n'a pas encore de pseudo :

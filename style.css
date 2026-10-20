@@ -1005,3 +1005,130 @@ footer {
   background: linear-gradient(135deg, var(--gold), var(--accent));
   transition: width 0.4s ease;
 }
+
+/* ---------- Pack 2 (étape A) : tags, tendances, réponses ---------- */
+.tag-link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+.tag-link:hover { text-decoration: underline; }
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--card);
+  border: 1px solid var(--gold);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  margin: 0.8rem 0 0;
+  font-weight: 600;
+}
+.tag-chip button {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0;
+}
+.tag-chip button:hover { color: var(--text); }
+.replies {
+  margin-left: 1.4rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--border);
+}
+.comment.reply { margin-top: 0.7rem; }
+.reply-form { margin-top: 0.6rem; }
+.reaction.active[data-reaction="laugh"] { border-color: #f59e0b; background: rgba(245, 158, 11, 0.15); }
+.reaction.active[data-reaction="laugh"] .count { color: #f59e0b; }
+.reaction.active[data-reaction="wow"] { border-color: #a78bfa; background: rgba(167, 139, 250, 0.15); }
+.reaction.active[data-reaction="wow"] .count { color: #a78bfa; }
+.reaction.active[data-reaction="sad"] { border-color: #60a5fa; background: rgba(96, 165, 250, 0.15); }
+.reaction.active[data-reaction="sad"] .count { color: #60a5fa; }
+
+/* ---------- Pack 2 (étape B) : sondages, favoris, épingles ---------- */
+.poll { margin: 0.8rem 0 0.4rem; display: flex; flex-direction: column; gap: 0.45rem; }
+.poll-opt-btn {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  overflow: hidden;
+  text-align: left;
+  font: inherit;
+}
+.poll-opt-btn:hover { border-color: var(--accent); }
+.poll-opt-btn.mine { border-color: var(--gold); }
+.poll-bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: rgba(56, 189, 248, 0.16);
+  z-index: 0;
+}
+.poll-label, .poll-pct { position: relative; z-index: 1; }
+.poll-pct { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
+.poll-toggle { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; cursor: pointer; }
+.poll-opts { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem; }
+.bm-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  opacity: 0.45;
+  padding: 0.1rem 0.3rem;
+  margin-left: auto;
+  filter: grayscale(1);
+}
+.bm-btn.active { opacity: 1; filter: none; }
+.bm-detail.active { border-color: var(--gold); color: var(--gold); }
+.post-tools { display: flex; gap: 0.6rem; margin: 0.9rem 0 0.2rem; flex-wrap: wrap; }
+.pin-row { margin-top: 0.5rem; }
+
+/* ---------- Pack 2 (étape C) : vérifié, partage, blocage, masquage ---------- */
+.verified {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.05em;
+  height: 1.05em;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.72em;
+  margin-left: 0.35rem;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.settings-accent {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+.settings-accent input[type="color"] {
+  width: 3rem;
+  height: 2.2rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  cursor: pointer;
+  padding: 0.2rem;
+}
+.hidden-chip {
+  display: inline-block;
+  background: rgba(244, 114, 182, 0.12);
+  border: 1px solid rgba(244, 114, 182, 0.5);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.8rem;
+  margin: 0.4rem 0;
+}

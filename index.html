@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pierre — Home</title>
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0f172a">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -32,6 +32,12 @@
           <div class="settings-title" data-i18n="settings.theme">Theme</div>
           <button class="settings-item" data-theme="dark" type="button" data-i18n="theme.dark">🌙 Dark</button>
           <button class="settings-item" data-theme="light" type="button" data-i18n="theme.light">☀️ Light</button>
+          <div class="settings-title" data-i18n="settings.accent">Accent color</div>
+          <div class="settings-accent">
+            <input type="color" id="accent-picker" value="#38bdf8" aria-label="Accent color">
+            <button class="btn small" id="accent-reset" type="button" data-i18n="settings.accent_reset">Reset</button>
+          </div>
+          <p class="small" id="accent-hint"></p>
         </div>
       </div>
     </div>
@@ -112,6 +118,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=3"></script>
+  <script type="module" src="app.js?v=4"></script>
 </body>
 </html>
