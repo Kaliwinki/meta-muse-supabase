@@ -21,6 +21,17 @@ const I18N = {
     "badge.new": "Newcomer",
     "badge.active": "Active member",
     "badge.star": "Blog star",
+    "badge.author": "Author",
+    "badge.prolific": "Prolific author",
+    "badge.chatty": "Chatterbox",
+    "badge.generous": "Generous",
+    "badge.critic": "Critic",
+    "badge.superstar": "Superstar",
+    "badge.veteran": "Veteran",
+    "badge.popular": "Popular",
+    "badge.pioneer": "Pioneer",
+    "badge.photographer": "Photographer",
+    "badge.collector": "Collector",
     "photo.change_banner": "Change cover photo",
     "photo.save_banner": "Save cover",
     "toast.published": "Post published!",
@@ -204,6 +215,17 @@ const I18N = {
     "badge.new": "Nouveau",
     "badge.active": "Membre actif",
     "badge.star": "Star du blog",
+    "badge.author": "Auteur",
+    "badge.prolific": "Auteur prolifique",
+    "badge.chatty": "Bavard",
+    "badge.generous": "Généreux",
+    "badge.critic": "Critique",
+    "badge.superstar": "Superstar",
+    "badge.veteran": "Ancien",
+    "badge.popular": "Populaire",
+    "badge.pioneer": "Pionnier",
+    "badge.photographer": "Photographe",
+    "badge.collector": "Collectionneur",
     "photo.change_banner": "Changer la bannière",
     "photo.save_banner": "Enregistrer la bannière",
     "toast.published": "Article publié !",
@@ -473,19 +495,58 @@ function avatarFor(userId) {
   return userId ? profilesById[userId]?.avatar_url : null;
 }
 
+/** Catalogue des badges, du plus prestigieux au plus simple. */
+const BADGE_ORDER = [
+  { id: "superstar", emoji: "👑", key: "badge.superstar" },
+  { id: "star", emoji: "🏆", key: "badge.star" },
+  { id: "pioneer", emoji: "🥇", key: "badge.pioneer" },
+  { id: "popular", emoji: "🌟", key: "badge.popular" },
+  { id: "collector", emoji: "💯", key: "badge.collector" },
+  { id: "prolific", emoji: "📚", key: "badge.prolific" },
+  { id: "photographer", emoji: "📸", key: "badge.photographer" },
+  { id: "chatty", emoji: "💬", key: "badge.chatty" },
+  { id: "generous", emoji: "❤️", key: "badge.generous" },
+  { id: "critic", emoji: "⭐", key: "badge.critic" },
+  { id: "active", emoji: "🔥", key: "badge.active" },
+  { id: "author", emoji: "✍️", key: "badge.author" },
+  { id: "veteran", emoji: "🎂", key: "badge.veteran" },
+  { id: "new", emoji: "🌱", key: "badge.new" }
+];
+
 /** Statistiques d'activité par utilisateur, utilisées pour les badges. */
-function computeBadges(statsByUser) {
+function computeBadges(statsByUser, rankById) {
   badgesById = {};
   for (const [uid, pr] of Object.entries(profilesById)) {
-    const badges = [];
-    const created = pr.created_at ? new Date(pr.created_at).getTime() : null;
-    if (created && Date.now() - created < 7 * 864e5) badges.push({ emoji: "🌱", key: "badge.new" });
-    const st = statsByUser[uid] || { posts: 0, comments: 0, reactionsReceived: 0, ratingCount: 0, ratingSum: 0 };
-    if (st.posts >= 5 || st.comments >= 10) badges.push({ emoji: "🔥", key: "badge.active" });
-    if (st.ratingCount >= 3 && st.ratingSum / st.ratingCount >= 4.5) badges.push({ emoji: "🏆", key: "badge.star" });
-    else if (st.reactionsReceived >= 20) badges.push({ emoji: "🏆", key: "badge.star" });
-    if (badges.length) badgesById[uid] = badges;
+    const st = statsByUser[uid] || { posts: 0, comments: 0, reactionsReceived: 0, ratingCount: 0, ratingSum: 0, reactionsGiven: 0, ratingsGiven: 0, photoPosts: 0 };
+    const ageMs = pr.created_at ? Date.now() - new Date(pr.created_at).getTime() : 0;
+    const earned = new Set();
+    if (ageMs < 7 * 864e5) earned.add("new");
+    if (st.posts >= 1) earned.add("author");
+    if (st.posts >= 10) earned.add("prolific");
+    if (st.posts >= 5 || st.comments >= 10) earned.add("active");
+    if (st.comments >= 25) earned.add("chatty");
+    if (st.reactionsGiven >= 25) earned.add("generous");
+    if (st.ratingsGiven >= 10) earned.add("critic");
+    if ((st.ratingCount >= 3 && st.ratingSum / st.ratingCount >= 4.5) || st.reactionsReceived >= 20) earned.add("star");
+    if (st.reactionsReceived >= 50) earned.add("superstar");
+    if (ageMs >= 30 * 864e5) earned.add("veteran");
+    if ((followerCountById[uid] ?? 0) >= 5) earned.add("popular");
+    if ((rankById[uid] ?? 999) <= 10) earned.add("pioneer");
+    if (st.photoPosts >= 3) earned.add("photographer");
+    if (earned.size >= 5) earned.add("collector");
+    const ordered = BADGE_ORDER.filter((b) => earned.has(b.id)).map((b) => ({ emoji: b.emoji, key: b.key }));
+    if (ordered.length) badgesById[uid] = ordered;
   }
+}
+
+/** Emojis de badges (3 max + compteur) pour l'affichage compact près des pseudos. */
+function badgeEmojis(uid, max = 3) {
+  const badges = badgesById[uid] || [];
+  const shown = badges.slice(0, max)
+    .map((b) => `<span class="badge" title="${esc(t(b.key))}">${b.emoji}</span>`).join("");
+  const more = badges.length > max
+    ? `<span class="badge" title="${badges.length}">+${badges.length - max}</span>` : "";
+  return shown + more;
 }
 
 /** Pseudo cliquable vers la page personnelle, avec mini avatar et badges s'ils existent. */
@@ -493,8 +554,7 @@ function authorHtml(row) {
   const name = authorName(row);
   const av = avatarFor(row?.user_id);
   const avHtml = av ? `<img class="mini-avatar" src="${esc(av)}" alt="">` : "";
-  const badges = badgesById[row?.user_id] || [];
-  const bHtml = badges.map((b) => `<span class="badge" title="${esc(t(b.key))}">${b.emoji}</span>`).join("");
+  const bHtml = badgeEmojis(row?.user_id);
   return row?.author_username
     ? `<a class="author-link" href="#/user/${esc(row.author_username)}">${avHtml}${esc(name)}${bHtml}</a>`
     : `${avHtml}${esc(name)}${bHtml}`;
@@ -1106,7 +1166,7 @@ async function loadAggregates() {
     supabase.from("ratings").select("post_id,value,user_id"),
     supabase.from("comments").select("post_id,user_id"),
     supabase.from("profiles").select("id,username,avatar_url,created_at,bio"),
-    supabase.from("posts").select("id,user_id"),
+    supabase.from("posts").select("id,user_id,image_url"),
     supabase.from("follows").select("follower_id,following_id")
   ]);
   if (reactionsRes.error) throw reactionsRes.error;
@@ -1141,13 +1201,16 @@ async function loadAggregates() {
 
   // --- Statistiques par membre (badges) ---
   const statsByUser = {};
-  const stOf = (uid) => (statsByUser[uid] ??= { posts: 0, comments: 0, reactionsReceived: 0, ratingCount: 0, ratingSum: 0 });
+  const stOf = (uid) => (statsByUser[uid] ??= { posts: 0, comments: 0, reactionsReceived: 0, ratingCount: 0, ratingSum: 0, reactionsGiven: 0, ratingsGiven: 0, photoPosts: 0 });
   const postOwner = {};
   for (const p of postsAllRes.data || []) {
     postOwner[p.id] = p.user_id;
     stOf(p.user_id).posts += 1;
+    if (p.image_url) stOf(p.user_id).photoPosts += 1;
   }
   for (const c of commentsRes.data) stOf(c.user_id).comments += 1;
+  for (const r of reactionsRes.data) stOf(r.user_id).reactionsGiven += 1;
+  for (const r of ratingsRes.data) stOf(r.user_id).ratingsGiven += 1;
   for (const [pid, byType] of Object.entries(reactionsByPost)) {
     const owner = postOwner[pid];
     if (owner) stOf(owner).reactionsReceived += (byType.like ?? 0) + (byType.star ?? 0) + (byType.heart ?? 0);
@@ -1156,7 +1219,6 @@ async function loadAggregates() {
     const owner = postOwner[pid];
     if (owner) { stOf(owner).ratingCount += rAgg.count; stOf(owner).ratingSum += rAgg.sum; }
   }
-  computeBadges(statsByUser);
 
   // --- Abonnements ---
   followingSet = new Set();
@@ -1167,6 +1229,13 @@ async function loadAggregates() {
     followerCountById[f.following_id] = (followerCountById[f.following_id] ?? 0) + 1;
     followingCountById[f.follower_id] = (followingCountById[f.follower_id] ?? 0) + 1;
   }
+
+  // Rang d'ancienneté (par date d'inscription) puis calcul des badges
+  const rankById = {};
+  Object.values(profilesById)
+    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+    .forEach((pr, i) => { rankById[pr.id] = i + 1; });
+  computeBadges(statsByUser, rankById);
 
   return { reactionsByPost, myReactions, ratingsByPost, myRatings, commentsCountByPost };
 }
@@ -1475,6 +1544,13 @@ async function renderPostDetail(postId) {
     const detailLogin = $("detail-login");
     if (detailLogin) detailLogin.addEventListener("click", () => openAuthModal("login"));
 
+    // Recharge la vue sans perdre la position de défilement (pas de retour en haut)
+    async function rerenderKeepScroll() {
+      const y = window.scrollY;
+      await renderPostDetail(post.id);
+      window.scrollTo(0, y);
+    }
+
     // --- Modifier / supprimer l'article (propriétaire) ---
     const editPostBtn = $("edit-post-btn");
     if (editPostBtn) {
@@ -1502,7 +1578,7 @@ async function renderPostDetail(postId) {
         const { error } = await supabase.from("posts").update(updates).eq("id", post.id);
         if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
         showToast(t("post.updated"), "success");
-        await renderPostDetail(post.id);
+        await rerenderKeepScroll();
       });
     }
 
@@ -1528,7 +1604,7 @@ async function renderPostDetail(postId) {
           .update({ content }).eq("id", form.dataset.editForm);
         if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
         showToast(t("comment.updated"), "success");
-        await renderPostDetail(post.id);
+        await rerenderKeepScroll();
       });
     });
     document.querySelectorAll("[data-del-btn]").forEach((btn) => {
@@ -1537,17 +1613,24 @@ async function renderPostDetail(postId) {
         const { error } = await supabase.from("comments").delete().eq("id", btn.dataset.delBtn);
         if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
         showToast(t("comment.deleted"), "success");
-        await renderPostDetail(post.id);
+        await rerenderKeepScroll();
       });
     });
 
+    // --- Réactions : mise à jour directe, sans recharger la page ---
     document.querySelectorAll(".reaction").forEach((btn) => {
       btn.addEventListener("click", async () => {
         if (!requireUsername()) return;
         const type = btn.dataset.reaction;
         const key = `${post.id}:${type}`;
+        const countEl = btn.querySelector(".count");
+        const wasActive = btn.classList.contains("active");
+        // Mise à jour immédiate de l'affichage (la page ne bouge pas)
+        btn.classList.toggle("active", !wasActive);
+        countEl.textContent = Math.max(0, (parseInt(countEl.textContent, 10) || 0) + (wasActive ? -1 : 1));
+        if (wasActive) delete agg.myReactions[key]; else agg.myReactions[key] = true;
         try {
-          if (agg.myReactions[key]) {
+          if (wasActive) {
             const { error } = await supabase.from("reactions")
               .delete()
               .eq("post_id", post.id)
@@ -1563,17 +1646,50 @@ async function renderPostDetail(postId) {
             if (error) throw error;
             notify(post.user_id, "reaction", post.id);
           }
-          await renderPostDetail(post.id);
         } catch (err) {
+          // Échec : on remet l'état précédent
+          btn.classList.toggle("active", wasActive);
+          countEl.textContent = Math.max(0, (parseInt(countEl.textContent, 10) || 0) + (wasActive ? 1 : -1));
+          if (wasActive) agg.myReactions[key] = true; else delete agg.myReactions[key];
           showToast(t("post.err_react") + (err.message ?? ""), "error");
         }
       });
     });
 
+    // --- Notes : mise à jour directe, sans recharger la page ---
+    function adjustRating(from, to) {
+      const data = agg.ratingsByPost[post.id] ?? { sum: 0, count: 0 };
+      let { sum, count } = data;
+      if (from > 0) sum -= from; else count += 1;
+      if (to > 0) sum += to; else count -= 1;
+      if (sum < 0) sum = 0;
+      if (count < 0) count = 0;
+      agg.ratingsByPost[post.id] = { sum, count };
+      if (to > 0) agg.myRatings[post.id] = to; else delete agg.myRatings[post.id];
+    }
+    function paintStars() {
+      const myV = agg.myRatings[post.id] ?? 0;
+      document.querySelectorAll(".star").forEach((s) => {
+        s.classList.toggle("filled", Number(s.dataset.star) <= myV);
+      });
+      const summary = document.querySelector(".rating-summary");
+      if (summary) {
+        const data = agg.ratingsByPost[post.id] ?? { sum: 0, count: 0 };
+        const bits = [
+          data.count ? `<strong>★ ${(data.sum / data.count).toFixed(1)}/5</strong> — ${data.count}` : esc(t("post.no_rating")),
+          myV ? esc(t("post.your_rating").replace("{v}", myV)) : ""
+        ].filter(Boolean).join(" · ");
+        summary.innerHTML = bits;
+      }
+    }
     document.querySelectorAll(".star").forEach((btn) => {
       btn.addEventListener("click", async () => {
         if (!requireUsername()) return;
         const value = Number(btn.dataset.star);
+        const oldValue = agg.myRatings[post.id] ?? 0;
+        if (value === oldValue) return; // déjà la même note
+        adjustRating(oldValue, value);
+        paintStars();
         try {
           const { error } = await supabase.from("ratings").upsert({
             post_id: post.id,
@@ -1581,8 +1697,9 @@ async function renderPostDetail(postId) {
             value
           }, { onConflict: "post_id,user_id" });
           if (error) throw error;
-          await renderPostDetail(post.id);
         } catch (err) {
+          adjustRating(value, oldValue);
+          paintStars();
           showToast(t("post.err_rate") + (err.message ?? ""), "error");
         }
       });
@@ -1607,7 +1724,7 @@ async function renderPostDetail(postId) {
         } else {
           showToast(t("toast.commented"), "success");
           notify(post.user_id, "comment", post.id);
-          await renderPostDetail(post.id);
+          await rerenderKeepScroll();
         }
       });
     }
@@ -1776,7 +1893,7 @@ applyStaticTexts();
 
 // ---------- Annuaire des membres ----------
 function memberCardHtml(m) {
-  const badges = (badgesById[m.id] || []).map((b) => `<span class="badge" title="${esc(t(b.key))}">${b.emoji}</span>`).join("");
+  const badges = badgeEmojis(m.id);
   const av = m.avatar_url
     ? `<img class="feed-avatar" src="${esc(m.avatar_url)}" alt="">`
     : `<div class="feed-avatar feed-avatar-letter">${esc(m.username.charAt(0).toUpperCase())}</div>`;

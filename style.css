@@ -283,7 +283,8 @@ main {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(2, 6, 23, 0.7);
+  background: rgba(2, 6, 23, 0.75);
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -295,6 +296,11 @@ main {
   width: 100%;
   max-width: 420px;
   position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
 }
 
 .modal-close {
@@ -894,3 +900,58 @@ footer { padding: 1.5rem; text-align: center; }
   resize: vertical;
 }
 .msg-form .primary { width: auto; margin-top: 0; padding: 0.7rem 1.2rem; }
+
+/* ---------- Polissage esthétique 2 ---------- */
+.navbar { box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25); }
+.brand {
+  background: linear-gradient(135deg, var(--gold), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.btn.primary, .primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35);
+}
+.btn.primary:hover, .primary:hover {
+  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+}
+.hero { position: relative; overflow: hidden; }
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.18), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(251, 191, 36, 0.14), transparent 45%);
+  pointer-events: none;
+}
+.hero > * { position: relative; }
+.hero h1 .accent {
+  background: linear-gradient(135deg, var(--gold), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.reaction.active[data-reaction="like"] { border-color: var(--accent); background: rgba(56, 189, 248, 0.15); }
+.reaction.active[data-reaction="star"] { border-color: var(--gold); background: rgba(251, 191, 36, 0.15); }
+.reaction.active[data-reaction="star"] .count { color: var(--gold); }
+.reaction.active[data-reaction="heart"] { border-color: #f472b6; background: rgba(244, 114, 182, 0.15); }
+.reaction.active[data-reaction="heart"] .count { color: #f472b6; }
+.post-card .post-image { transition: transform 0.3s ease; }
+.post-card:hover .post-image { transform: scale(1.02); }
+.seg-tab.active { box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3); }
+.badge { box-shadow: 0 2px 8px rgba(251, 191, 36, 0.22); }
+footer {
+  border-top: 1px solid var(--border);
+  background: var(--nav-bg);
+  margin-top: 2rem;
+}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #475569; border-radius: 8px; }
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+::selection { background: rgba(56, 189, 248, 0.35); }
