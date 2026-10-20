@@ -3,25 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meta Muse — Espace membres</title>
+  <title>Meta Muse — Accueil</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Meta Muse</h1>
-    <p class="tagline">Site test avec de vrais comptes utilisateurs</p>
-  </header>
+  <!-- Barre de navigation : onglets à gauche, connexion en haut à droite -->
+  <nav class="navbar">
+    <a class="brand" href="#/">Meta Muse</a>
+    <div class="nav-links">
+      <a href="#/" data-nav="accueil">Accueil</a>
+      <a href="#/blog" data-nav="blog">Blog</a>
+    </div>
+    <div id="auth-area" class="auth-area"></div>
+  </nav>
 
-  <main>
-    <!-- Message d'état (erreurs, succès, configuration) -->
-    <div id="message" class="message hidden" role="alert"></div>
+  <main id="view"></main>
 
-    <!-- Zone visiteur : inscription / connexion -->
-    <section id="auth-zone" class="card">
+  <footer>
+    <p class="small">Meta Muse — site hébergé gratuitement sur GitHub Pages, comptes et blog propulsés par Supabase.</p>
+  </footer>
+
+  <!-- Fenêtre de connexion / inscription -->
+  <div id="auth-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <button id="modal-close" class="modal-close" type="button" aria-label="Fermer">×</button>
       <div class="tabs">
         <button id="tab-login" class="tab active" type="button">Connexion</button>
         <button id="tab-signup" class="tab" type="button">Inscription</button>
       </div>
+      <div id="auth-message" class="message hidden" role="alert"></div>
 
       <form id="login-form" class="form">
         <h2>Se connecter</h2>
@@ -40,20 +50,8 @@
         <input id="signup-password" type="password" autocomplete="new-password" minlength="6" required>
         <button type="submit" class="primary">S'inscrire</button>
       </form>
-    </section>
-
-    <!-- Zone membre : visible seulement une fois connecté -->
-    <section id="member-zone" class="card hidden">
-      <h2>Bienvenue 👋</h2>
-      <p>Tu es connecté avec l'adresse : <strong id="user-email"></strong></p>
-      <p class="small">Identifiant du compte : <span id="user-uid"></span></p>
-      <button id="logout-btn" class="primary" type="button">Se déconnecter</button>
-    </section>
-  </main>
-
-  <footer>
-    <p class="small">Site hébergé sur GitHub Pages — authentification par Supabase (plan gratuit).</p>
-  </footer>
+    </div>
+  </div>
 
   <script type="module" src="app.js"></script>
 </body>
