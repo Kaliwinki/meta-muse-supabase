@@ -498,6 +498,7 @@ footer { padding: 1.5rem; text-align: center; }
   vertical-align: -4px;
   margin-right: 0.35rem;
 }
+.mini-letter { display: inline-flex; align-items: center; justify-content: center; background: var(--accent); color: #fff; font-size: 0.62rem; font-weight: 800; }
 .post-image {
   width: 100%;
   max-height: 320px;

@@ -1151,7 +1151,9 @@ function verifiedMark(userId) {
 function authorHtml(row) {
   const name = authorName(row);
   const av = avatarFor(row?.user_id);
-  const avHtml = av ? `<img class="mini-avatar" src="${esc(av)}" alt="">` : "";
+  const avHtml = av
+    ? `<img class="mini-avatar" src="${esc(av)}" alt="">`
+    : `<span class="mini-avatar mini-letter">${esc(name.charAt(0).toUpperCase())}</span>`;
   const bHtml = badgeIcons(row?.user_id);
   const vHtml = verifiedMark(row?.user_id);
   return row?.author_username
@@ -1733,6 +1735,7 @@ function setActiveNav(name) {
   });
 }
 
+let lastRouteKey = "";
 async function render() {
   if (msgPoll) { clearInterval(msgPoll); msgPoll = null; }
   if (session?.user) {
@@ -1745,6 +1748,8 @@ async function render() {
     }
   }
   const route = currentRoute();
+  const routeKey = route.name + ":" + (route.id || route.username || "");
+  if (routeKey !== lastRouteKey) { lastRouteKey = routeKey; window.scrollTo(0, 0); }
   setActiveNav(route.name);
   if (route.name === "blog") {
     await renderBlog();
@@ -1970,7 +1975,6 @@ function postCardHtml(p, agg) {
   return `
     <article class="card post-card" data-post-id="${esc(p.id)}">
       <div class="post-head">
-        ${feedAvatarHtml(p)}
         <div class="post-head-info">
           <div class="post-head-name">${authorHtml(p)}</div>
           <div class="post-head-date">${fmtDate(p.created_at)}</div>
