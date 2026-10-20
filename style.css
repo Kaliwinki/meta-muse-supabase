@@ -26,13 +26,19 @@ body {
   position: sticky;
   top: 0;
   z-index: 50;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 0.7rem 1.2rem;
   background: rgba(15, 23, 42, 0.92);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid #334155;
+}
+
+.nav-inner {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0.7rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .brand {
@@ -102,9 +108,9 @@ body {
 /* ---------- Contenu ---------- */
 main {
   width: 100%;
-  max-width: 760px;
+  max-width: 1140px;
   margin: 0 auto;
-  padding: 2rem 1rem 3rem;
+  padding: 2rem 1.5rem 3rem;
   min-height: 70vh;
 }
 
@@ -358,6 +364,60 @@ main {
 .empty { color: var(--muted); font-style: italic; }
 
 footer { padding: 1.5rem; text-align: center; }
+
+/* Grille des articles du blog (2 colonnes sur ordinateur) */
+.posts-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+.posts-grid .post-card { margin-bottom: 0; }
+
+/* Mise en page d'un article : contenu + barre latérale (ordinateur) */
+.post-layout {
+  display: grid;
+  gap: 1.2rem;
+  grid-template-columns: 1fr;
+}
+.post-side { display: flex; flex-direction: column; gap: 1.2rem; }
+.side-card h3 { margin: 0 0 0.6rem; font-size: 1rem; }
+.side-card p { margin: 0.2rem 0; }
+.stat-list { list-style: none; padding: 0; margin: 0; }
+.stat-list li {
+  padding: 0.55rem 0;
+  border-bottom: 1px solid #334155;
+  font-size: 0.92rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.stat-list li:last-child { border-bottom: none; }
+.stat-list strong { color: var(--gold); }
+
+/* ---------- Améliorations ordinateur ---------- */
+@media (min-width: 900px) {
+  .hero { padding: 4.5rem 2rem; }
+  .hero h1 { font-size: 3.2rem; }
+  .hero p { font-size: 1.2rem; }
+
+  .home-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    align-items: start;
+  }
+  .home-grid .card { margin-bottom: 0; }
+
+  .features { grid-template-columns: repeat(3, 1fr); }
+
+  .posts-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .post-layout {
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+    align-items: start;
+  }
+  .post-side { position: sticky; top: 90px; }
+}
 
 @media (max-width: 560px) {
   .auth-area .user-email { display: none; }

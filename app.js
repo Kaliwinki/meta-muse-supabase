@@ -176,6 +176,7 @@ function renderHome() {
       </div>
     </section>
 
+    <div class="home-grid">
     <section class="card">
       <h2>Ce que tu peux faire ici</h2>
       <div class="features">
@@ -201,7 +202,8 @@ function renderHome() {
         <li><strong>Publie sur le blog</strong><p>Ouvre l'onglet Blog et partage ton premier article avec la communauté.</p></li>
         <li><strong>Échange</strong><p>Commente les publications, laisse des réactions et note tes coups de cœur de 1 à 5 étoiles.</p></li>
       </ol>
-    </section>`;
+    </section>
+    </div>`;
 
   const heroSignup = $("hero-signup");
   if (heroSignup) heroSignup.addEventListener("click", () => openAuthModal("signup"));
@@ -305,7 +307,7 @@ async function renderBlog() {
     view.innerHTML = `
       <div class="blog-header"><h1>Blog</h1></div>
       ${composer}
-      <div id="posts-list">${list}</div>`;
+      <div id="posts-list" class="posts-grid">${list}</div>`;
 
     document.querySelectorAll(".post-card").forEach((card) => {
       card.addEventListener("click", (e) => {
@@ -393,6 +395,7 @@ async function renderPostDetail(postId) {
 
     view.innerHTML = `
       <a class="back-link" href="#/blog">← Retour au blog</a>
+      <div class="post-layout">
       <article class="card post-full">
         <h1>${esc(post.title)}</h1>
         <div class="post-meta">Par ${esc(post.author_email)} · ${fmtDate(post.created_at)}</div>
@@ -408,6 +411,24 @@ async function renderPostDetail(postId) {
           </div>
         </div>
       </article>
+      <aside class="post-side">
+        <div class="card side-card">
+          <h3>À propos</h3>
+          <p><strong>${esc(post.author_email)}</strong></p>
+          <p class="small">Publié le ${fmtDate(post.created_at)}</p>
+        </div>
+        <div class="card side-card">
+          <h3>Statistiques</h3>
+          <ul class="stat-list">
+            <li><span>💬 Commentaires</span><strong>${comments.length}</strong></li>
+            <li><span>👍 J'aime</span><strong>${rc.like ?? 0}</strong></li>
+            <li><span>⭐ Super</span><strong>${rc.star ?? 0}</strong></li>
+            <li><span>❤️ Coups de cœur</span><strong>${rc.heart ?? 0}</strong></li>
+            <li><span>★ Note moyenne</span><strong>${avg ? avg.avg.toFixed(1) + "/5" : "—"}</strong></li>
+          </ul>
+        </div>
+      </aside>
+      </div>
       <section class="card comments">
         <h3>Commentaires (${comments.length})</h3>
         <div id="comments-list">${commentsHtml}</div>

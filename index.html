@@ -9,12 +9,14 @@
 <body>
   <!-- Barre de navigation : onglets à gauche, connexion en haut à droite -->
   <nav class="navbar">
-    <a class="brand" href="#/">Meta Muse</a>
-    <div class="nav-links">
-      <a href="#/" data-nav="accueil">Accueil</a>
-      <a href="#/blog" data-nav="blog">Blog</a>
+    <div class="nav-inner">
+      <a class="brand" href="#/">Meta Muse</a>
+      <div class="nav-links">
+        <a href="#/" data-nav="accueil">Accueil</a>
+        <a href="#/blog" data-nav="blog">Blog</a>
+      </div>
+      <div id="auth-area" class="auth-area"></div>
     </div>
-    <div id="auth-area" class="auth-area"></div>
   </nav>
 
   <main id="view"></main>
