@@ -56,6 +56,9 @@ const I18N = {
     "nav.badges": "Badges",
     "common.save": "Save",
     "common.cancel": "Cancel",
+    "common.yes": "Yes",
+    "common.no": "No",
+    "nav.logout_confirm": "Log out of your account?",
     "common.delete": "🗑️ Delete",
     "post.edit": "✏️ Edit",
     "post.delete_confirm": "Delete this post permanently?",
@@ -297,6 +300,9 @@ const I18N = {
     "nav.badges": "Badges",
     "common.save": "Enregistrer",
     "common.cancel": "Annuler",
+    "common.yes": "Oui",
+    "common.no": "Non",
+    "nav.logout_confirm": "Te déconnecter de ton compte ?",
     "common.delete": "🗑️ Supprimer",
     "post.edit": "✏️ Modifier",
     "post.delete_confirm": "Supprimer définitivement cet article ?",
@@ -546,8 +552,10 @@ function excerpt(text, max = 160) {
  */
 function richText(text) {
   let html = esc(text).replaceAll("\n", "<br>");
-  html = html.replace(/#([\p{L}\p{N}_]{1,30})/gu, (m, tag) =>
-    `<a href="#/blog" class="tag-link" data-tag="${esc(tag.toLowerCase())}">#${esc(tag)}</a>`);
+  // Un vrai hashtag : # en début de mot (pas précédé de & — sinon l'entité &#39;
+  // des apostrophes devient un faux tag « #39 ») et au moins une lettre ou _ .
+  html = html.replace(/(^|[^\p{L}\p{N}_&])#((?=[\p{L}\p{N}_]{0,29}[\p{L}_])[\p{L}\p{N}_]{1,30})/gu, (m, pre, tag) =>
+    `${pre}<a href="#/blog" class="tag-link" data-tag="${esc(tag.toLowerCase())}">#${esc(tag)}</a>`);
   html = html.replace(/(^|\s)@([a-z0-9_-]{3,20})/g, (m, sp, name) =>
     profileByUsername[name]
       ? `${sp}<a href="#/user/${esc(name)}" class="tag-link">@${esc(name)}</a>`
@@ -580,6 +588,33 @@ function showModalMessage(text, kind = "info") {
   const box = $("auth-message");
   box.textContent = text;
   box.className = `message ${kind}`;
+}
+
+/**
+ * Confirmation Oui/Non dans une fenêtre du site (remplace confirm() du navigateur,
+ * à la demande de l'utilisateur : déconnexion, suppressions…). Résout true = Oui.
+ * Cliquer sur le voile = Non.
+ */
+function confirmYesNo(message) {
+  return new Promise((resolve) => {
+    const modal = $("confirm-modal");
+    const yesBtn = $("confirm-yes");
+    const noBtn = $("confirm-no");
+    $("confirm-text").textContent = message;
+    yesBtn.textContent = t("common.yes");
+    noBtn.textContent = t("common.no");
+    modal.classList.remove("hidden");
+    const done = (val) => {
+      modal.classList.add("hidden");
+      yesBtn.onclick = null;
+      noBtn.onclick = null;
+      modal.onclick = null;
+      resolve(val);
+    };
+    yesBtn.onclick = () => done(true);
+    noBtn.onclick = () => done(false);
+    modal.onclick = (e) => { if (e.target === modal) done(false); };
+  });
 }
 
 // ---------- Configuration ----------
@@ -959,6 +994,7 @@ function renderAuthArea() {
       ${nameHtml}
       <button class="btn" id="logout-btn" type="button">${esc(t("nav.logout"))}</button>`;
     $("logout-btn").addEventListener("click", async () => {
+      if (!(await confirmYesNo(t("nav.logout_confirm")))) return;
       const { error } = await supabase.auth.signOut();
       if (error) showToast(authErrorMessage(error.message), "error");
     });
@@ -1705,7 +1741,7 @@ document.addEventListener("click", async (e) => {
   const unblockBtn = e.target.closest("[data-unblock]");
   if (blockBtn) {
     if (!session?.user) return;
-    if (!confirm(t("profile.block_confirm"))) return;
+    if (!(await confirmYesNo(t("profile.block_confirm")))) return;
     const uid = blockBtn.dataset.block;
     const { error } = await supabase.from("blocks").insert({ blocker_id: session.user.id, blocked_id: uid });
     if (error) { showToast(t("profile.err_block") + error.message, "error"); return; }
@@ -1774,20 +1810,6 @@ async function renderBlog() {
     blogCache = { posts, agg };
     pollsCache = await loadPolls(posts.map((p) => p.id));
 
-    const pollToggle = $("poll-toggle");
-    if (pollToggle) {
-      pollToggle.addEventListener("change", () => $("poll-fields").classList.toggle("hidden", !pollToggle.checked));
-      $("poll-add-opt").addEventListener("click", () => {
-        const wrap = document.querySelector(".poll-opts");
-        if (wrap.children.length >= 6) return;
-        const input = document.createElement("input");
-        input.className = "poll-opt";
-        input.maxLength = 80;
-        input.placeholder = `${t("poll.opt_ph")} ${wrap.children.length + 1}`;
-        wrap.appendChild(input);
-      });
-    }
-
     const tabs = `
       <div class="seg-tabs">
         <button class="seg-tab${feedMode === "all" ? " active" : ""}" data-feed="all" type="button">${esc(t("feed.all"))}</button>
@@ -1824,6 +1846,24 @@ async function renderBlog() {
 
     const blogLogin = $("blog-login");
     if (blogLogin) blogLogin.addEventListener("click", () => openAuthModal("login"));
+
+    // Sondage du compositeur : à lier APRÈS l'insertion du formulaire dans le DOM.
+    // (Avant ce correctif, la liaison se faisait sur le squelette de chargement :
+    // les éléments n'existaient pas encore, la case ne révélait jamais les options
+    // et la publication restait bloquée sur « au moins 2 options ».)
+    const pollToggle = $("poll-toggle");
+    if (pollToggle) {
+      pollToggle.addEventListener("change", () => $("poll-fields").classList.toggle("hidden", !pollToggle.checked));
+      $("poll-add-opt").addEventListener("click", () => {
+        const wrap = document.querySelector(".poll-opts");
+        if (wrap.children.length >= 6) return;
+        const input = document.createElement("input");
+        input.className = "poll-opt";
+        input.maxLength = 80;
+        input.placeholder = `${t("poll.opt_ph")} ${wrap.children.length + 1}`;
+        wrap.appendChild(input);
+      });
+    }
 
     const postForm = $("post-form");
     if (postForm) {
@@ -2057,7 +2097,7 @@ async function renderPostDetail(postId, instant = false) {
       editPostBtn.addEventListener("click", () => $("edit-post-form").classList.toggle("hidden"));
       $("edit-cancel").addEventListener("click", () => $("edit-post-form").classList.add("hidden"));
       $("delete-post-btn").addEventListener("click", async () => {
-        if (!confirm(t("post.delete_confirm"))) return;
+        if (!(await confirmYesNo(t("post.delete_confirm")))) return;
         const { error } = await supabase.from("posts").delete().eq("id", post.id);
         if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
         showToast(t("post.deleted"), "success");
@@ -2109,7 +2149,7 @@ async function renderPostDetail(postId, instant = false) {
     });
     document.querySelectorAll("[data-del-btn]").forEach((btn) => {
       btn.addEventListener("click", async () => {
-        if (!confirm(t("comment.delete_confirm"))) return;
+        if (!(await confirmYesNo(t("comment.delete_confirm")))) return;
         const { error } = await supabase.from("comments").delete().eq("id", btn.dataset.delBtn);
         if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
         showToast(t("comment.deleted"), "success");
