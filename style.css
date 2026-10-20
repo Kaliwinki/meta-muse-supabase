@@ -716,6 +716,41 @@ footer { padding: 1.5rem; text-align: center; }
   .hero h1 { font-size: 2rem; }
 }
 
+/* ---------- Navigation mobile : 2 lignes, aucun débordement horizontal ---------- */
+@media (max-width: 860px) {
+  body { overflow-x: hidden; }
+  .nav-inner {
+    flex-wrap: wrap;
+    gap: 0.45rem 0.7rem;
+    padding: 0.55rem 0.9rem;
+  }
+  .brand { order: 1; }
+  .auth-area {
+    order: 2;
+    margin-left: auto;
+    gap: 0.45rem;
+    flex-wrap: nowrap;
+  }
+  .auth-area .user-email { display: none; }
+  .auth-area .btn { padding: 0.45rem 0.6rem; }
+  .settings-wrap { order: 3; }
+  .nav-links {
+    order: 4;
+    flex: 1 1 100%;
+    justify-content: space-between;
+    gap: 0.25rem;
+  }
+  .nav-links a { padding: 0.4rem 0.55rem; font-size: 0.95rem; }
+  /* Le panneau de notifications devient plein largeur utile, bien cadré */
+  .notif-panel {
+    position: fixed;
+    top: 7rem;
+    right: 0.6rem;
+    left: 0.6rem;
+    width: auto;
+  }
+}
+
 /* ---------- Pack social : onglets, recherche, notifications, messages ---------- */
 .seg-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
 .seg-tab {
@@ -949,6 +984,46 @@ footer {
 [data-theme="light"] ::-webkit-scrollbar-thumb { background: #cbd5e1; }
 ::selection { background: rgba(56, 189, 248, 0.35); }
 
+/* ---------- Médailles des badges (dessinées, paliers métal) ---------- */
+.medal {
+  --m1: #f4f6f8;
+  --m2: #9aa7b4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 52%),
+    linear-gradient(145deg, var(--m1), var(--m2));
+  box-shadow: inset 0 0 0 2px rgba(15, 23, 42, 0.22), inset 0 -3px 6px rgba(15, 23, 42, 0.18), 0 2px 6px rgba(0, 0, 0, 0.35);
+  color: #263445;
+  flex: none;
+}
+.medal svg { width: 62%; height: 62%; }
+.medal-bronze { --m1: #f3bc85; --m2: #a96a2e; color: #4d2c0d; }
+.medal-silver { --m1: #fbfdff; --m2: #93a5b5; color: #2e3d4d; }
+.medal-gold { --m1: #ffedb0; --m2: #dfa00c; color: #5c3d05; }
+.medal-diamond { --m1: #e3f7ff; --m2: #57b9dd; color: #0c4356; }
+.medal-sm { width: 22px; height: 22px; }
+.medal-md { width: 34px; height: 34px; }
+.medal-lg { width: 76px; height: 76px; }
+.badge-ico { display: inline-flex; margin-left: 0.3rem; vertical-align: -5px; }
+.badge-more {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.08rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--gold);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  margin-left: 0.3rem;
+  vertical-align: 1px;
+}
+.badge-row .badge { padding-left: 0.3rem; }
+.blog-header h1 .medal { vertical-align: -7px; }
+
 /* ---------- Page Récompenses (badges) ---------- */
 .badges-grid {
   display: grid;
@@ -970,15 +1045,15 @@ footer {
   border-color: var(--gold);
   box-shadow: 0 6px 20px rgba(251, 191, 36, 0.18);
 }
-.badge-card.locked .badge-card-emoji {
+.badge-card.locked .badge-card-medal {
   filter: grayscale(1);
-  opacity: 0.4;
+  opacity: 0.45;
 }
-.badge-card-emoji {
-  font-size: 2.4rem;
-  margin-bottom: 0.4rem;
+.badge-card-medal {
+  margin-bottom: 0.5rem;
   line-height: 1;
 }
+.badge-card-lock svg { width: 16px; height: 16px; display: block; }
 .badge-card-name {
   font-weight: 700;
   margin-bottom: 0.3rem;

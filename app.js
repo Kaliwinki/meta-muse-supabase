@@ -651,7 +651,7 @@ function authorName(row) {
 /** Avatar public du compte (ou rien). */
 let profilesById = {};
 let profileByUsername = {};
-/** Badges des membres : userId -> [{emoji, key}]. */
+/** Badges des membres : userId -> [badgeId, …] (ordre de prestige du catalogue). */
 let badgesById = {};
 /** Abonnements : qui je suis, et compteurs par membre. */
 let followingSet = new Set();
@@ -664,41 +664,161 @@ function avatarFor(userId) {
   return userId ? profilesById[userId]?.avatar_url : null;
 }
 
-/** Catalogue des badges (33), du plus prestigieux au plus simple. Nom et condition en anglais et en français. */
+/** Icônes des badges : dessins vectoriels (SVG, style trait) — fini les émojis (demande de l'utilisateur). */
+const BADGE_ICONS = {
+  trophy: '<path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v6a5 5 0 0 1-10 0V4z"/><path d="M7 6H4c0 2.5 1.2 4 3 4"/><path d="M17 6h3c0 2.5-1.2 4-3 4"/>',
+  crown: '<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-1.6 10H4.6L3 8z"/><path d="M5 21h14"/>',
+  rocket: '<path d="M12 2.5c3 2 4.5 5.8 4.5 9.5l-4.5 4.5-4.5-4.5C7.5 8.3 9 4.5 12 2.5z"/><circle cx="12" cy="9" r="1.8"/><path d="M7.6 12.6C6.2 13.2 5 14 4 14c0-1 .3-2.5 1-4"/><path d="M16.4 12.6c1.4.6 2.6 1.4 3.6 1.4 0-1-.3-2.5-1-4"/><path d="M10 18.2c.4 1.4 1 2.4 2 3.3.9-.9 1.6-1.9 2-3.3"/>',
+  gem: '<path d="M7 3h10l3.5 5L12 21 3.5 8L7 3z"/><path d="M3.5 8h17"/><path d="M12 21L8.5 8L12 3l3.5 5L12 21"/>',
+  star: '<path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.9 6.4 20l1.3-6.2L3 9.5l6.3-.7L12 3z"/>',
+  medal: '<circle cx="12" cy="14" r="5.5"/><path d="M8.6 9.6L5 3h4l2.2 3.8"/><path d="M15.4 9.6L19 3h-4l-2.2 3.8"/>',
+  flame: '<path d="M12 3s5.5 5.2 5.5 10a5.5 5.5 0 0 1-11 0c0-2 1-3.8 2.3-5.3.4 1 1 1.8 2 2.3C10.9 7.6 11.3 5 12 3z"/>',
+  leaf: '<path d="M12 21v-8"/><path d="M12 13c0-3.5-2.8-6-7-6 0 4.2 2.5 7 7 6z"/><path d="M12 11c0-3 2.2-5 5.5-5 0 3.5-2 5.8-5.5 5z"/>',
+  zap: '<path d="M13 2L4.5 13.5H11L9.8 22 19 10h-6.5L13 2z"/>',
+  calendar: '<rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/>',
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  camera: '<path d="M4 8h3l2-2.5h6L17 8h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/>',
+  image: '<rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 3 3 3.5-3.5L20 17"/>',
+  mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/>',
+  megaphone: '<path d="M4 10v4l3 .5V9.5L4 10z"/><path d="M7 9.5L20 5v14l-13-4.5"/><path d="M9.5 15v3.5a1.8 1.8 0 0 0 3.6 0v-2.4"/>',
+  message: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  messages: '<path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.5 0-3-.4-4.2-1.1L3 20l1.1-5.3A8.5 8.5 0 1 1 21 11.5z"/>',
+  heart: '<path d="M12 20.7C6 16.9 3 13.6 3 9.9 3 7.2 5 5 7.6 5c1.8 0 3.4 1 4.4 2.6C13 6 14.6 5 16.4 5 19 5 21 7.2 21 9.9c0 3.7-3 7-9 10.8z"/>',
+  thumbsup: '<path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.3a2 2 0 0 0 2-1.7l1.2-8a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h3"/>',
+  laugh: '<circle cx="12" cy="12" r="9"/><path d="M8 14h8a4.5 4.5 0 0 1-8 0z"/><circle cx="9" cy="9.5" r="0.4" fill="currentColor"/><circle cx="15" cy="9.5" r="0.4" fill="currentColor"/>',
+  wow: '<circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="0.4" fill="currentColor"/><circle cx="15" cy="10" r="0.4" fill="currentColor"/><ellipse cx="12" cy="15.8" rx="1.8" ry="2.3"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M20.5 20.5L16.7 16.7"/>',
+  book: '<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20"/>',
+  feather: '<path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><path d="M16 8L2 22"/><path d="M17.5 15H9"/>',
+  edit: '<path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>',
+  file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h6"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.2 3.4-5 6.5-5s5.7 1.8 6.5 5"/><path d="M16 5a3.5 3.5 0 0 1 0 6.5"/><path d="M17.5 15.3c2 .6 3.5 2.2 4 4.7"/>',
+  userplus: '<circle cx="10" cy="8" r="3.5"/><path d="M4 20c.7-3 3-4.7 6-4.7 1.5 0 2.8.4 3.8 1.2"/><path d="M18.5 5v6"/><path d="M15.5 8h6"/>',
+  usercheck: '<circle cx="10" cy="8" r="3.5"/><path d="M4 20c.7-3 3-4.7 6-4.7 1.2 0 2.3.3 3.2.8"/><path d="M14.5 17.5l2 2 3.5-3.5"/>',
+  poll: '<path d="M6 20v-6"/><path d="M12 20V5"/><path d="M18 20v-9"/><path d="M3 20h18"/>',
+  vote: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>',
+  gift: '<rect x="4" y="11" width="16" height="9"/><path d="M12 11v9"/><path d="M4 7.5h16V11H4z"/><path d="M12 7.5c-4 0-4.5-4-2.4-4.4C11.4 2.7 12 4.5 12 7.5z"/><path d="M12 7.5c4 0 4.5-4 2.4-4.4C12.6 2.7 12 4.5 12 7.5z"/>',
+  target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/>',
+  compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  rotate: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
+  award: '<circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/>',
+  shield: '<path d="M12 3l8 3v6c0 4.5-3.2 7.7-8 9-4.8-1.3-8-4.5-8-9V6l8-3z"/><path d="M9 11.5l2 2 4-4"/>',
+  sparkles: '<path d="M11 4l1.7 4.6L17.5 10l-4.8 1.7L11 16.5l-1.7-4.8L4.5 10l4.8-1.4L11 4z"/><path d="M18.5 15l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9.9-2.4z"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 3.8 5.6 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.6-3.8-9S9.5 5.5 12 3z"/>',
+  film: '<rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M7.5 4v16"/><path d="M16.5 4v16"/><path d="M3.5 9h4"/><path d="M3.5 15h4"/><path d="M16.5 9h4"/><path d="M16.5 15h4"/>',
+  landmark: '<path d="M3 21h18"/><path d="M5 21v-9"/><path d="M9.5 21v-9"/><path d="M14.5 21v-9"/><path d="M19 21v-9"/><path d="M2.5 9.5L12 3l9.5 6.5"/>',
+  gradcap: '<path d="M2.5 9.5L12 5l9.5 4.5L12 14 2.5 9.5z"/><path d="M6.5 11.5V16c0 1.5 2.5 3 5.5 3s5.5-1.5 5.5-3v-4.5"/><path d="M21.5 9.5V15"/>',
+  lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1" fill="currentColor" stroke="none"/>'
+};
+
+/** Médaille dessinée d'un badge : pastille métallique (bronze/argent/or/diamant) + icône SVG. */
+function badgeMedalHtml(b, size = "sm") {
+  const inner = BADGE_ICONS[b.icon] || BADGE_ICONS.medal;
+  return `<span class="medal medal-${b.tier} medal-${size}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${inner}</svg></span>`;
+}
+
+/** Catalogue des badges (100), du plus prestigieux au plus simple. Icône + palier métal, nom et condition EN/FR. */
 const BADGES = [
-  { id: "phenomene", emoji: "🚀", en: { name: "Phenomenon", desc: "Received 150 reactions" }, fr: { name: "Phénomène", desc: "150 réactions reçues" } },
-  { id: "exceptionnel", emoji: "💎", en: { name: "Exceptional", desc: "Average rating of 4.75+ with at least 5 ratings" }, fr: { name: "Exceptionnel", desc: "Note moyenne ≥ 4,75 avec au moins 5 notes" } },
-  { id: "superstar", emoji: "👑", en: { name: "Superstar", desc: "Received 50 reactions" }, fr: { name: "Superstar", desc: "50 réactions reçues" } },
-  { id: "star", emoji: "🏆", en: { name: "Blog star", desc: "Received 20 reactions or an average rating of 4.5+" }, fr: { name: "Star du blog", desc: "20 réactions reçues ou note moyenne ≥ 4,5" } },
-  { id: "celebrite", emoji: "🎬", en: { name: "Celebrity", desc: "30 followers" }, fr: { name: "Célébrité", desc: "30 abonnés" } },
-  { id: "legende", emoji: "🏛️", en: { name: "Legend", desc: "Published 25 posts" }, fr: { name: "Légende", desc: "25 articles publiés" } },
-  { id: "bien_note", emoji: "🌟", en: { name: "Well rated", desc: "Average rating of 4.0+ with at least 5 ratings" }, fr: { name: "Bien noté", desc: "Note moyenne ≥ 4,0 avec au moins 5 notes" } },
-  { id: "influent", emoji: "🎤", en: { name: "Influential", desc: "15 followers" }, fr: { name: "Influent", desc: "15 abonnés" } },
-  { id: "populaire", emoji: "📣", en: { name: "Popular", desc: "5 followers" }, fr: { name: "Populaire", desc: "5 abonnés" } },
-  { id: "expert", emoji: "🎓", en: { name: "Expert", desc: "Gave 25 ratings" }, fr: { name: "Expert", desc: "25 notes données" } },
-  { id: "artiste", emoji: "🎨", en: { name: "Visual artist", desc: "Published 20 posts with photos" }, fr: { name: "Artiste visuel", desc: "20 articles avec photo" } },
-  { id: "reporter", emoji: "📷", en: { name: "Reporter", desc: "Published 10 posts with photos" }, fr: { name: "Reporter", desc: "10 articles avec photo" } },
-  { id: "tribun", emoji: "📢", en: { name: "Town crier", desc: "Wrote 150 comments" }, fr: { name: "Tribun", desc: "150 commentaires écrits" } },
-  { id: "orateur", emoji: "🎙️", en: { name: "Orator", desc: "Wrote 75 comments" }, fr: { name: "Orateur", desc: "75 commentaires écrits" } },
-  { id: "collector", emoji: "💯", en: { name: "Collector", desc: "Unlocked 8 other badges" }, fr: { name: "Collectionneur", desc: "8 autres badges débloqués" } },
-  { id: "prolific", emoji: "📚", en: { name: "Prolific author", desc: "Published 10 posts" }, fr: { name: "Auteur prolifique", desc: "10 articles publiés" } },
-  { id: "coeur_or", emoji: "💛", en: { name: "Heart of gold", desc: "Gave 75 reactions" }, fr: { name: "Cœur d'or", desc: "75 réactions données" } },
-  { id: "bavard", emoji: "💬", en: { name: "Chatterbox", desc: "Wrote 25 comments" }, fr: { name: "Bavard", desc: "25 commentaires écrits" } },
-  { id: "critic", emoji: "⭐", en: { name: "Critic", desc: "Gave 10 ratings" }, fr: { name: "Critique", desc: "10 notes données" } },
-  { id: "photographe", emoji: "📸", en: { name: "Photographer", desc: "Published 3 posts with photos" }, fr: { name: "Photographe", desc: "3 articles avec photo" } },
-  { id: "generous", emoji: "❤️", en: { name: "Generous", desc: "Gave 25 reactions" }, fr: { name: "Généreux", desc: "25 réactions données" } },
-  { id: "causeur", emoji: "💭", en: { name: "Chatty", desc: "Wrote 5 comments" }, fr: { name: "Causeur", desc: "5 commentaires écrits" } },
-  { id: "decouvreur", emoji: "🤝", en: { name: "Networker", desc: "Follow 10 members" }, fr: { name: "Réseauteur", desc: "Suit 10 membres" } },
-  { id: "sympathique", emoji: "👋", en: { name: "Friendly", desc: "Gave 10 reactions" }, fr: { name: "Amical", desc: "10 réactions données" } },
-  { id: "curieux", emoji: "🔍", en: { name: "Curious", desc: "Gave 5 ratings" }, fr: { name: "Curieux", desc: "5 notes données" } },
-  { id: "active", emoji: "🔥", en: { name: "Active member", desc: "Published 5 posts or wrote 10 comments" }, fr: { name: "Membre actif", desc: "5 articles publiés ou 10 commentaires" } },
-  { id: "apprecie", emoji: "👍", en: { name: "Appreciated", desc: "Received 10 reactions" }, fr: { name: "Apprécié", desc: "10 réactions reçues" } },
-  { id: "author", emoji: "✍️", en: { name: "Author", desc: "Published your first post" }, fr: { name: "Auteur", desc: "Premier article publié" } },
-  { id: "veteran", emoji: "🎂", en: { name: "Veteran", desc: "Member for 30 days" }, fr: { name: "Ancien", desc: "Membre depuis 30 jours" } },
-  { id: "dinosaure", emoji: "🦕", en: { name: "Dinosaur", desc: "Member for 180 days" }, fr: { name: "Dinosaure", desc: "Membre depuis 180 jours" } },
-  { id: "pioneer", emoji: "🥇", en: { name: "Pioneer", desc: "Among the first 10 members" }, fr: { name: "Pionnier", desc: "Parmi les 10 premiers membres" } },
-  { id: "eclair", emoji: "⚡", en: { name: "Lightning", desc: "Published on the day you joined" }, fr: { name: "Éclair", desc: "A publié le jour de son inscription" } },
-  { id: "new", emoji: "🌱", en: { name: "Newcomer", desc: "Joined less than 7 days ago" }, fr: { name: "Nouveau", desc: "Inscrit depuis moins de 7 jours" } }
+  { id: "mythe", icon: "rocket", tier: "diamond", en: { name: "Myth", desc: "Received 500 reactions" }, fr: { name: "Mythe", desc: "500 réactions reçues" } },
+  { id: "idole", icon: "crown", tier: "diamond", en: { name: "Idol", desc: "Received 300 reactions" }, fr: { name: "Idole", desc: "300 réactions reçues" } },
+  { id: "phenomene", icon: "sparkles", tier: "diamond", en: { name: "Phenomenon", desc: "Received 150 reactions" }, fr: { name: "Phénomène", desc: "150 réactions reçues" } },
+  { id: "exceptionnel", icon: "gem", tier: "diamond", en: { name: "Exceptional", desc: "Average rating of 4.75+ with at least 5 ratings" }, fr: { name: "Exceptionnel", desc: "Note moyenne ≥ 4,75 avec au moins 5 notes" } },
+  { id: "parfait", icon: "star", tier: "diamond", en: { name: "Flawless", desc: "Perfect 5.0 average with at least 3 ratings" }, fr: { name: "Sans faute", desc: "Note moyenne de 5,0 avec au moins 3 notes" } },
+  { id: "machine", icon: "feather", tier: "diamond", en: { name: "Writing machine", desc: "Published 100 posts" }, fr: { name: "Machine à écrire", desc: "100 articles publiés" } },
+  { id: "voix", icon: "megaphone", tier: "diamond", en: { name: "Voice of Pierre", desc: "Wrote 500 comments" }, fr: { name: "Voix de Pierre", desc: "500 commentaires écrits" } },
+  { id: "ame_genereuse", icon: "heart", tier: "diamond", en: { name: "Generous soul", desc: "Gave 500 reactions" }, fr: { name: "Âme généreuse", desc: "500 réactions données" } },
+  { id: "marathonien", icon: "award", tier: "diamond", en: { name: "Marathoner", desc: "500 total actions (posts, comments, reactions, ratings)" }, fr: { name: "Marathonien", desc: "500 actions au total (articles, commentaires, réactions, notes)" } },
+  { id: "musee", icon: "gem", tier: "diamond", en: { name: "Living museum", desc: "Unlocked 40 other badges" }, fr: { name: "Musée vivant", desc: "40 autres badges débloqués" } },
+  { id: "monument", icon: "landmark", tier: "diamond", en: { name: "Monument", desc: "Member for 2 years" }, fr: { name: "Monument", desc: "Membre depuis 2 ans" } },
+  { id: "influenceur", icon: "users", tier: "diamond", en: { name: "Influencer", desc: "100 followers" }, fr: { name: "Influenceur", desc: "100 abonnés" } },
+  { id: "galerie", icon: "image", tier: "diamond", en: { name: "Gallery", desc: "Published 50 posts with photos" }, fr: { name: "Galerie", desc: "50 articles avec photo" } },
+  { id: "podium", icon: "trophy", tier: "diamond", en: { name: "Podium", desc: "Among the first 3 members" }, fr: { name: "Podium", desc: "Parmi les 3 premiers membres" } },
+  { id: "vedette", icon: "star", tier: "gold", en: { name: "Headliner", desc: "Received 100 reactions" }, fr: { name: "Vedette", desc: "100 réactions reçues" } },
+  { id: "superstar", icon: "crown", tier: "gold", en: { name: "Superstar", desc: "Received 50 reactions" }, fr: { name: "Superstar", desc: "50 réactions reçues" } },
+  { id: "star", icon: "trophy", tier: "gold", en: { name: "Blog star", desc: "Received 20 reactions or an average rating of 4.5+" }, fr: { name: "Star du blog", desc: "20 réactions reçues ou note moyenne ≥ 4,5" } },
+  { id: "celebrite", icon: "film", tier: "gold", en: { name: "Celebrity", desc: "30 followers" }, fr: { name: "Célébrité", desc: "30 abonnés" } },
+  { id: "star_montee", icon: "users", tier: "gold", en: { name: "Rising star", desc: "50 followers" }, fr: { name: "Star montante", desc: "50 abonnés" } },
+  { id: "legende", icon: "landmark", tier: "gold", en: { name: "Legend", desc: "Published 25 posts" }, fr: { name: "Légende", desc: "25 articles publiés" } },
+  { id: "romancier", icon: "book", tier: "gold", en: { name: "Novelist", desc: "Published 50 posts" }, fr: { name: "Romancier", desc: "50 articles publiés" } },
+  { id: "tribun", icon: "megaphone", tier: "gold", en: { name: "Town crier", desc: "Wrote 150 comments" }, fr: { name: "Tribun", desc: "150 commentaires écrits" } },
+  { id: "debatteur", icon: "megaphone", tier: "gold", en: { name: "Debater", desc: "Wrote 250 comments" }, fr: { name: "Débatteur", desc: "250 commentaires écrits" } },
+  { id: "expert", icon: "gradcap", tier: "gold", en: { name: "Expert", desc: "Gave 25 ratings" }, fr: { name: "Expert", desc: "25 notes données" } },
+  { id: "academie", icon: "gradcap", tier: "gold", en: { name: "The Academy", desc: "Gave 100 ratings" }, fr: { name: "Académie", desc: "100 notes données" } },
+  { id: "artiste", icon: "image", tier: "gold", en: { name: "Visual artist", desc: "Published 20 posts with photos" }, fr: { name: "Artiste visuel", desc: "20 articles avec photo" } },
+  { id: "photographe_pro", icon: "camera", tier: "gold", en: { name: "Pro photographer", desc: "Published 30 posts with photos" }, fr: { name: "Photographe pro", desc: "30 articles avec photo" } },
+  { id: "collector", icon: "award", tier: "gold", en: { name: "Collector", desc: "Unlocked 8 other badges" }, fr: { name: "Collectionneur", desc: "8 autres badges débloqués" } },
+  { id: "grand_collectionneur", icon: "trophy", tier: "gold", en: { name: "Grand collector", desc: "Unlocked 20 other badges" }, fr: { name: "Grand collectionneur", desc: "20 autres badges débloqués" } },
+  { id: "coeur_or", icon: "heart", tier: "gold", en: { name: "Heart of gold", desc: "Gave 75 reactions" }, fr: { name: "Cœur d'or", desc: "75 réactions données" } },
+  { id: "bienfaiteur", icon: "gift", tier: "gold", en: { name: "Benefactor", desc: "Gave 150 reactions" }, fr: { name: "Bienfaiteur", desc: "150 réactions données" } },
+  { id: "philanthrope", icon: "gift", tier: "gold", en: { name: "Philanthropist", desc: "Gave 300 reactions" }, fr: { name: "Philanthrope", desc: "300 réactions données" } },
+  { id: "consensus", icon: "target", tier: "gold", en: { name: "Consensus", desc: "Average rating of 4.5+ with at least 10 ratings" }, fr: { name: "Consensus", desc: "Note moyenne ≥ 4,5 avec au moins 10 notes" } },
+  { id: "chef_doeuvre", icon: "gem", tier: "gold", en: { name: "Masterpiece", desc: "Received five 5-star ratings" }, fr: { name: "Chef-d'œuvre", desc: "5 notes de 5 étoiles reçues" } },
+  { id: "hyperactif", icon: "flame", tier: "gold", en: { name: "Hyperactive", desc: "100 posts and comments combined" }, fr: { name: "Hyperactif", desc: "100 articles et commentaires cumulés" } },
+  { id: "pilier", icon: "landmark", tier: "gold", en: { name: "Pillar", desc: "10 posts, 50 comments and 5 followers" }, fr: { name: "Pilier", desc: "10 articles, 50 commentaires et 5 abonnés" } },
+  { id: "animateur_disc", icon: "messages", tier: "gold", en: { name: "Discussion host", desc: "Received 50 comments on your posts" }, fr: { name: "Animateur de discussions", desc: "50 commentaires reçus sur tes articles" } },
+  { id: "ambassadeur", icon: "globe", tier: "gold", en: { name: "Ambassador", desc: "Follow 50 members" }, fr: { name: "Ambassadeur", desc: "Suit 50 membres" } },
+  { id: "democrate", icon: "vote", tier: "gold", en: { name: "Democrat", desc: "Voted in 25 polls" }, fr: { name: "Démocrate", desc: "A voté dans 25 sondages" } },
+  { id: "anniversaire", icon: "calendar", tier: "gold", en: { name: "One year", desc: "Member for 1 year" }, fr: { name: "Anniversaire", desc: "Membre depuis 1 an" } },
+  { id: "dinosaure", icon: "clock", tier: "gold", en: { name: "Dinosaur", desc: "Member for 180 days" }, fr: { name: "Dinosaure", desc: "Membre depuis 180 jours" } },
+  { id: "pioneer", icon: "medal", tier: "gold", en: { name: "Pioneer", desc: "Among the first 10 members" }, fr: { name: "Pionnier", desc: "Parmi les 10 premiers membres" } },
+  { id: "bien_note", icon: "star", tier: "silver", en: { name: "Well rated", desc: "Average rating of 4.0+ with at least 5 ratings" }, fr: { name: "Bien noté", desc: "Note moyenne ≥ 4,0 avec au moins 5 notes" } },
+  { id: "influent", icon: "mic", tier: "silver", en: { name: "Influential", desc: "15 followers" }, fr: { name: "Influent", desc: "15 abonnés" } },
+  { id: "cercle", icon: "users", tier: "silver", en: { name: "Inner circle", desc: "10 followers" }, fr: { name: "Cercle", desc: "10 abonnés" } },
+  { id: "reporter", icon: "camera", tier: "silver", en: { name: "Reporter", desc: "Published 10 posts with photos" }, fr: { name: "Reporter", desc: "10 articles avec photo" } },
+  { id: "orateur", icon: "mic", tier: "silver", en: { name: "Orator", desc: "Wrote 75 comments" }, fr: { name: "Orateur", desc: "75 commentaires écrits" } },
+  { id: "conversateur", icon: "messages", tier: "silver", en: { name: "Conversationalist", desc: "Wrote 50 comments" }, fr: { name: "Conversateur", desc: "50 commentaires écrits" } },
+  { id: "prolific", icon: "book", tier: "silver", en: { name: "Prolific author", desc: "Published 10 posts" }, fr: { name: "Auteur prolifique", desc: "10 articles publiés" } },
+  { id: "redacteur", icon: "edit", tier: "silver", en: { name: "Editor", desc: "Published 15 posts" }, fr: { name: "Rédacteur", desc: "15 articles publiés" } },
+  { id: "illustrateur", icon: "image", tier: "silver", en: { name: "Illustrator", desc: "Published 5 posts with photos" }, fr: { name: "Illustrateur", desc: "5 articles avec photo" } },
+  { id: "juge", icon: "award", tier: "silver", en: { name: "Judge", desc: "Gave 50 ratings" }, fr: { name: "Juge", desc: "50 notes données" } },
+  { id: "reconnu", icon: "award", tier: "silver", en: { name: "Recognized", desc: "Received 10 ratings" }, fr: { name: "Reconnu", desc: "10 notes reçues" } },
+  { id: "encourageant", icon: "heart", tier: "silver", en: { name: "Encourager", desc: "Gave 50 reactions" }, fr: { name: "Encourageant", desc: "50 réactions données" } },
+  { id: "marrant", icon: "laugh", tier: "silver", en: { name: "Funny", desc: "Received 10 laugh reactions" }, fr: { name: "Marrant", desc: "10 réactions « drôle » reçues" } },
+  { id: "coup_de_coeur", icon: "heart", tier: "silver", en: { name: "Crush", desc: "Received 10 heart reactions" }, fr: { name: "Coup de cœur", desc: "10 réactions « cœur » reçues" } },
+  { id: "stupefiant", icon: "wow", tier: "silver", en: { name: "Stunning", desc: "Received 10 wow reactions" }, fr: { name: "Stupéfiant", desc: "10 réactions « wow » reçues" } },
+  { id: "relanceur", icon: "messages", tier: "silver", en: { name: "Spark", desc: "Received 10 comments on your posts" }, fr: { name: "Relanceur", desc: "10 commentaires reçus sur tes articles" } },
+  { id: "explorateur", icon: "compass", tier: "silver", en: { name: "Explorer", desc: "Commented on 25 different posts" }, fr: { name: "Explorateur", desc: "A commenté 25 articles différents" } },
+  { id: "equilibre", icon: "compass", tier: "silver", en: { name: "Well-rounded", desc: "5 posts, 25 comments and 25 reactions given" }, fr: { name: "Équilibré", desc: "5 articles, 25 commentaires et 25 réactions données" } },
+  { id: "profil_complet", icon: "usercheck", tier: "silver", en: { name: "Complete profile", desc: "Bio written and profile picture set" }, fr: { name: "Profil complet", desc: "Bio écrite et photo de profil mise" } },
+  { id: "retour", icon: "rotate", tier: "silver", en: { name: "The Comeback", desc: "Published again after 30+ days without a post" }, fr: { name: "Le Retour", desc: "A publié après 30+ jours sans article" } },
+  { id: "animateur_sondages", icon: "poll", tier: "silver", en: { name: "Poll host", desc: "Created 5 polls" }, fr: { name: "Animateur de sondages", desc: "5 sondages créés" } },
+  { id: "citoyen", icon: "vote", tier: "silver", en: { name: "Citizen", desc: "Voted in 10 polls" }, fr: { name: "Citoyen", desc: "A voté dans 10 sondages" } },
+  { id: "connecte", icon: "users", tier: "silver", en: { name: "Connected", desc: "Follow 25 members" }, fr: { name: "Connecté", desc: "Suit 25 membres" } },
+  { id: "trimestriel", icon: "calendar", tier: "silver", en: { name: "Quarter", desc: "Member for 90 days" }, fr: { name: "Trimestriel", desc: "Membre depuis 90 jours" } },
+  { id: "veteran", icon: "calendar", tier: "silver", en: { name: "Veteran", desc: "Member for 30 days" }, fr: { name: "Ancien", desc: "Membre depuis 30 jours" } },
+  { id: "premiers25", icon: "medal", tier: "silver", en: { name: "Early member", desc: "Among the first 25 members" }, fr: { name: "Membre précoce", desc: "Parmi les 25 premiers membres" } },
+  { id: "eclair", icon: "zap", tier: "silver", en: { name: "Lightning", desc: "Published on the day you joined" }, fr: { name: "Éclair", desc: "A publié le jour de son inscription" } },
+  { id: "populaire", icon: "megaphone", tier: "bronze", en: { name: "Popular", desc: "5 followers" }, fr: { name: "Populaire", desc: "5 abonnés" } },
+  { id: "premier_abonne", icon: "userplus", tier: "bronze", en: { name: "First follower", desc: "Got your first follower" }, fr: { name: "Premier abonné", desc: "Premier abonné obtenu" } },
+  { id: "bavard", icon: "message", tier: "bronze", en: { name: "Chatterbox", desc: "Wrote 25 comments" }, fr: { name: "Bavard", desc: "25 commentaires écrits" } },
+  { id: "causeur", icon: "messages", tier: "bronze", en: { name: "Chatty", desc: "Wrote 5 comments" }, fr: { name: "Causeur", desc: "5 commentaires écrits" } },
+  { id: "premier_mot", icon: "message", tier: "bronze", en: { name: "First words", desc: "Wrote your first comment" }, fr: { name: "Premier mot", desc: "Premier commentaire écrit" } },
+  { id: "critic", icon: "star", tier: "bronze", en: { name: "Critic", desc: "Gave 10 ratings" }, fr: { name: "Critique", desc: "10 notes données" } },
+  { id: "curieux", icon: "search", tier: "bronze", en: { name: "Curious", desc: "Gave 5 ratings" }, fr: { name: "Curieux", desc: "5 notes données" } },
+  { id: "premier_avis", icon: "star", tier: "bronze", en: { name: "First opinion", desc: "Gave your first rating" }, fr: { name: "Premier avis", desc: "Première note donnée" } },
+  { id: "premiere_note", icon: "star", tier: "bronze", en: { name: "First rating received", desc: "Received your first rating" }, fr: { name: "Première note", desc: "Première note reçue" } },
+  { id: "photographe", icon: "camera", tier: "bronze", en: { name: "Photographer", desc: "Published 3 posts with photos" }, fr: { name: "Photographe", desc: "3 articles avec photo" } },
+  { id: "premier_cliche", icon: "camera", tier: "bronze", en: { name: "First shot", desc: "Published your first post with a photo" }, fr: { name: "Premier cliché", desc: "Premier article avec photo" } },
+  { id: "generous", icon: "heart", tier: "bronze", en: { name: "Generous", desc: "Gave 25 reactions" }, fr: { name: "Généreux", desc: "25 réactions données" } },
+  { id: "sympathique", icon: "thumbsup", tier: "bronze", en: { name: "Friendly", desc: "Gave 10 reactions" }, fr: { name: "Amical", desc: "10 réactions données" } },
+  { id: "premier_geste", icon: "heart", tier: "bronze", en: { name: "First gesture", desc: "Gave your first reaction" }, fr: { name: "Premier geste", desc: "Première réaction donnée" } },
+  { id: "blagueur", icon: "laugh", tier: "bronze", en: { name: "Joker", desc: "Gave 10 laugh reactions" }, fr: { name: "Blagueur", desc: "10 réactions « drôle » données" } },
+  { id: "decouvreur", icon: "compass", tier: "bronze", en: { name: "Networker", desc: "Follow 10 members" }, fr: { name: "Réseauteur", desc: "Suit 10 membres" } },
+  { id: "sociable", icon: "userplus", tier: "bronze", en: { name: "Sociable", desc: "Followed your first member" }, fr: { name: "Sociable", desc: "Premier membre suivi" } },
+  { id: "active", icon: "flame", tier: "bronze", en: { name: "Active member", desc: "Published 5 posts or wrote 10 comments" }, fr: { name: "Membre actif", desc: "5 articles publiés ou 10 commentaires" } },
+  { id: "apprecie", icon: "thumbsup", tier: "bronze", en: { name: "Appreciated", desc: "Received 10 reactions" }, fr: { name: "Apprécié", desc: "10 réactions reçues" } },
+  { id: "remarque", icon: "sparkles", tier: "bronze", en: { name: "Noticed", desc: "Received 5 reactions" }, fr: { name: "Remarqué", desc: "5 réactions reçues" } },
+  { id: "author", icon: "edit", tier: "bronze", en: { name: "Author", desc: "Published your first post" }, fr: { name: "Auteur", desc: "Premier article publié" } },
+  { id: "apprenti", icon: "feather", tier: "bronze", en: { name: "Apprentice author", desc: "Published 2 posts" }, fr: { name: "Apprenti auteur", desc: "2 articles publiés" } },
+  { id: "sondeur", icon: "poll", tier: "bronze", en: { name: "Pollster", desc: "Created your first poll" }, fr: { name: "Sondeur", desc: "Premier sondage créé" } },
+  { id: "votant", icon: "vote", tier: "bronze", en: { name: "Voter", desc: "Voted in your first poll" }, fr: { name: "Votant", desc: "Premier vote dans un sondage" } },
+  { id: "habitue", icon: "message", tier: "bronze", en: { name: "Regular", desc: "Commented on 10 different posts" }, fr: { name: "Habitué", desc: "A commenté 10 articles différents" } },
+  { id: "touche_a_tout", icon: "sparkles", tier: "bronze", en: { name: "Jack of all trades", desc: "Posted, commented, reacted and rated at least once" }, fr: { name: "Touche-à-tout", desc: "A publié, commenté, réagi et noté au moins une fois" } },
+  { id: "chasseur", icon: "target", tier: "bronze", en: { name: "Badge hunter", desc: "Unlocked 5 other badges" }, fr: { name: "Chasseur de badges", desc: "5 autres badges débloqués" } },
+  { id: "presente", icon: "edit", tier: "bronze", en: { name: "Introduced", desc: "Wrote your bio" }, fr: { name: "Présenté", desc: "Bio écrite" } },
+  { id: "visage", icon: "image", tier: "bronze", en: { name: "Has a face", desc: "Set a profile picture" }, fr: { name: "A un visage", desc: "Photo de profil mise" } },
+  { id: "cent_premiers", icon: "medal", tier: "bronze", en: { name: "First hundred", desc: "Among the first 100 members" }, fr: { name: "Cent premiers", desc: "Parmi les 100 premiers membres" } },
+  { id: "new", icon: "leaf", tier: "bronze", en: { name: "Newcomer", desc: "Joined less than 7 days ago" }, fr: { name: "Nouveau", desc: "Inscrit depuis moins de 7 jours" } }
 ];
 
 const getBadge = (id) => BADGES.find((b) => b.id === id);
@@ -709,58 +829,150 @@ function badgeDesc(b) { return lang === "fr" ? b.fr.desc : b.en.desc; }
 function computeBadges(statsByUser, rankById) {
   badgesById = {};
   for (const [uid, pr] of Object.entries(profilesById)) {
-    const st = statsByUser[uid] || { posts: 0, comments: 0, reactionsReceived: 0, ratingCount: 0, ratingSum: 0, reactionsGiven: 0, ratingsGiven: 0, photoPosts: 0, minPostAt: null };
+    const st = statsByUser[uid] || { posts: 0, comments: 0, reactionsReceived: 0, ratingCount: 0, ratingSum: 0, reactionsGiven: 0, ratingsGiven: 0, photoPosts: 0, minPostAt: null, fiveStars: 0, commentsReceived: 0, pollsCreated: 0, pollVotesGiven: 0, givenByType: {}, receivedByType: {}, distinctCommented: new Set(), postDates: [] };
     const ageMs = pr.created_at ? Date.now() - new Date(pr.created_at).getTime() : 0;
     const avg = st.ratingCount ? st.ratingSum / st.ratingCount : 0;
     const followers = followerCountById[uid] ?? 0;
     const following = followingCountById[uid] ?? 0;
+    const rank = rankById[uid] ?? 999;
     const earned = new Set();
+    // Réactions reçues
+    if (st.reactionsReceived >= 500) earned.add("mythe");
+    if (st.reactionsReceived >= 300) earned.add("idole");
     if (st.reactionsReceived >= 150) earned.add("phenomene");
-    if (st.ratingCount >= 5 && avg >= 4.75) earned.add("exceptionnel");
+    if (st.reactionsReceived >= 100) earned.add("vedette");
     if (st.reactionsReceived >= 50) earned.add("superstar");
     if ((st.ratingCount >= 3 && avg >= 4.5) || st.reactionsReceived >= 20) earned.add("star");
-    if (followers >= 30) earned.add("celebrite");
-    if (st.posts >= 25) earned.add("legende");
+    if (st.reactionsReceived >= 10) earned.add("apprecie");
+    if (st.reactionsReceived >= 5) earned.add("remarque");
+    // Qualité (notes reçues)
+    if (st.ratingCount >= 5 && avg >= 4.75) earned.add("exceptionnel");
+    if (st.ratingCount >= 3 && avg >= 5) earned.add("parfait");
+    if (st.ratingCount >= 10 && avg >= 4.5) earned.add("consensus");
+    if (st.fiveStars >= 5) earned.add("chef_doeuvre");
     if (st.ratingCount >= 5 && avg >= 4.0) earned.add("bien_note");
-    if (followers >= 15) earned.add("influent");
-    if (followers >= 5) earned.add("populaire");
-    if (st.ratingsGiven >= 25) earned.add("expert");
-    if (st.photoPosts >= 20) earned.add("artiste");
-    if (st.photoPosts >= 10) earned.add("reporter");
+    if (st.ratingCount >= 10) earned.add("reconnu");
+    if (st.ratingCount >= 1) earned.add("premiere_note");
+    // Articles
+    if (st.posts >= 100) earned.add("machine");
+    if (st.posts >= 50) earned.add("romancier");
+    if (st.posts >= 25) earned.add("legende");
+    if (st.posts >= 15) earned.add("redacteur");
+    if (st.posts >= 10) earned.add("prolific");
+    if (st.posts >= 2) earned.add("apprenti");
+    if (st.posts >= 1) earned.add("author");
+    // Commentaires écrits
+    if (st.comments >= 500) earned.add("voix");
+    if (st.comments >= 250) earned.add("debatteur");
     if (st.comments >= 150) earned.add("tribun");
     if (st.comments >= 75) earned.add("orateur");
-    if (st.posts >= 10) earned.add("prolific");
-    if (st.reactionsGiven >= 75) earned.add("coeur_or");
+    if (st.comments >= 50) earned.add("conversateur");
     if (st.comments >= 25) earned.add("bavard");
-    if (st.ratingsGiven >= 10) earned.add("critic");
-    if (st.photoPosts >= 3) earned.add("photographe");
-    if (st.reactionsGiven >= 25) earned.add("generous");
     if (st.comments >= 5) earned.add("causeur");
-    if (following >= 10) earned.add("decouvreur");
-    if (st.reactionsGiven >= 10) earned.add("sympathique");
-    if (st.ratingsGiven >= 5) earned.add("curieux");
+    if (st.comments >= 1) earned.add("premier_mot");
     if (st.posts >= 5 || st.comments >= 10) earned.add("active");
-    if (st.reactionsReceived >= 10) earned.add("apprecie");
-    if (st.posts >= 1) earned.add("author");
-    if (ageMs >= 30 * 864e5) earned.add("veteran");
+    // Réactions données
+    if (st.reactionsGiven >= 500) earned.add("ame_genereuse");
+    if (st.reactionsGiven >= 300) earned.add("philanthrope");
+    if (st.reactionsGiven >= 150) earned.add("bienfaiteur");
+    if (st.reactionsGiven >= 75) earned.add("coeur_or");
+    if (st.reactionsGiven >= 50) earned.add("encourageant");
+    if (st.reactionsGiven >= 25) earned.add("generous");
+    if (st.reactionsGiven >= 10) earned.add("sympathique");
+    if (st.reactionsGiven >= 1) earned.add("premier_geste");
+    // Notes données
+    if (st.ratingsGiven >= 100) earned.add("academie");
+    if (st.ratingsGiven >= 50) earned.add("juge");
+    if (st.ratingsGiven >= 25) earned.add("expert");
+    if (st.ratingsGiven >= 10) earned.add("critic");
+    if (st.ratingsGiven >= 5) earned.add("curieux");
+    if (st.ratingsGiven >= 1) earned.add("premier_avis");
+    // Photos
+    if (st.photoPosts >= 50) earned.add("galerie");
+    if (st.photoPosts >= 30) earned.add("photographe_pro");
+    if (st.photoPosts >= 20) earned.add("artiste");
+    if (st.photoPosts >= 10) earned.add("reporter");
+    if (st.photoPosts >= 5) earned.add("illustrateur");
+    if (st.photoPosts >= 3) earned.add("photographe");
+    if (st.photoPosts >= 1) earned.add("premier_cliche");
+    // Abonnés et abonnements
+    if (followers >= 100) earned.add("influenceur");
+    if (followers >= 50) earned.add("star_montee");
+    if (followers >= 30) earned.add("celebrite");
+    if (followers >= 15) earned.add("influent");
+    if (followers >= 10) earned.add("cercle");
+    if (followers >= 5) earned.add("populaire");
+    if (followers >= 1) earned.add("premier_abonne");
+    if (following >= 50) earned.add("ambassadeur");
+    if (following >= 25) earned.add("connecte");
+    if (following >= 10) earned.add("decouvreur");
+    if (following >= 1) earned.add("sociable");
+    // Sondages
+    if (st.pollsCreated >= 5) earned.add("animateur_sondages");
+    if (st.pollsCreated >= 1) earned.add("sondeur");
+    if (st.pollVotesGiven >= 25) earned.add("democrate");
+    if (st.pollVotesGiven >= 10) earned.add("citoyen");
+    if (st.pollVotesGiven >= 1) earned.add("votant");
+    // Réactions par type
+    if ((st.receivedByType.laugh ?? 0) >= 10) earned.add("marrant");
+    if ((st.givenByType.laugh ?? 0) >= 10) earned.add("blagueur");
+    if ((st.receivedByType.heart ?? 0) >= 10) earned.add("coup_de_coeur");
+    if ((st.receivedByType.wow ?? 0) >= 10) earned.add("stupefiant");
+    // Discussions reçues et exploration
+    if (st.commentsReceived >= 50) earned.add("animateur_disc");
+    if (st.commentsReceived >= 10) earned.add("relanceur");
+    if ((st.distinctCommented?.size ?? 0) >= 25) earned.add("explorateur");
+    if ((st.distinctCommented?.size ?? 0) >= 10) earned.add("habitue");
+    // Ancienneté et rang
+    if (ageMs >= 730 * 864e5) earned.add("monument");
+    if (ageMs >= 365 * 864e5) earned.add("anniversaire");
     if (ageMs >= 180 * 864e5) earned.add("dinosaure");
-    if ((rankById[uid] ?? 999) <= 10) earned.add("pioneer");
-    if (st.minPostAt && pr.created_at && (new Date(st.minPostAt).getTime() - new Date(pr.created_at).getTime()) < 864e5) earned.add("eclair");
+    if (ageMs >= 90 * 864e5) earned.add("trimestriel");
+    if (ageMs >= 30 * 864e5) earned.add("veteran");
     if (ageMs < 7 * 864e5) earned.add("new");
-    if (earned.size >= 8) earned.add("collector");
+    if (rank <= 3) earned.add("podium");
+    if (rank <= 10) earned.add("pioneer");
+    if (rank <= 25) earned.add("premiers25");
+    if (rank <= 100) earned.add("cent_premiers");
+    if (st.minPostAt && pr.created_at && (new Date(st.minPostAt).getTime() - new Date(pr.created_at).getTime()) < 864e5) earned.add("eclair");
+    // Retour après une longue pause entre deux articles
+    if (st.postDates?.length >= 2) {
+      const dates = [...st.postDates].sort();
+      for (let i = 1; i < dates.length; i++) {
+        if (new Date(dates[i]).getTime() - new Date(dates[i - 1]).getTime() >= 30 * 864e5) { earned.add("retour"); break; }
+      }
+    }
+    // Profil
+    const hasBio = !!(pr.bio && pr.bio.trim());
+    const hasAvatar = !!pr.avatar_url;
+    if (hasBio) earned.add("presente");
+    if (hasAvatar) earned.add("visage");
+    if (hasBio && hasAvatar) earned.add("profil_complet");
+    // Combos
+    if (st.posts >= 1 && st.comments >= 1 && st.reactionsGiven >= 1 && st.ratingsGiven >= 1) earned.add("touche_a_tout");
+    if (st.posts >= 5 && st.comments >= 25 && st.reactionsGiven >= 25) earned.add("equilibre");
+    if (st.posts + st.comments >= 100) earned.add("hyperactif");
+    if (st.posts >= 10 && st.comments >= 50 && followers >= 5) earned.add("pilier");
+    if (st.posts + st.comments + st.reactionsGiven + st.ratingsGiven >= 500) earned.add("marathonien");
+    // Collection (comptée sur les AUTRES badges, hors famille Collection)
+    const others = earned.size;
+    if (others >= 5) earned.add("chasseur");
+    if (others >= 8) earned.add("collector");
+    if (others >= 20) earned.add("grand_collectionneur");
+    if (others >= 40) earned.add("musee");
     const ordered = BADGES.filter((b) => earned.has(b.id)).map((b) => b.id);
     if (ordered.length) badgesById[uid] = ordered;
   }
 }
 
-/** Emojis de badges (3 max + compteur) pour l'affichage compact près des pseudos. */
-function badgeEmojis(uid, max = 3) {
+/** Médailles des badges (3 max + compteur) pour l'affichage compact près des pseudos. */
+function badgeIcons(uid, max = 3) {
   const ids = badgesById[uid] || [];
   const shown = ids.slice(0, max).map((id) => {
     const b = getBadge(id);
-    return `<span class="badge" title="${esc(badgeName(b))}">${b.emoji}</span>`;
+    return `<span class="badge-ico" title="${esc(badgeName(b))}">${badgeMedalHtml(b, "sm")}</span>`;
   }).join("");
-  const more = ids.length > max ? `<span class="badge">+${ids.length - max}</span>` : "";
+  const more = ids.length > max ? `<span class="badge-more">+${ids.length - max}</span>` : "";
   return shown + more;
 }
 /** Pseudo cliquable vers la page personnelle, avec mini avatar et badges s'ils existent. */
@@ -775,7 +987,7 @@ function authorHtml(row) {
   const name = authorName(row);
   const av = avatarFor(row?.user_id);
   const avHtml = av ? `<img class="mini-avatar" src="${esc(av)}" alt="">` : "";
-  const bHtml = badgeEmojis(row?.user_id);
+  const bHtml = badgeIcons(row?.user_id);
   const vHtml = verifiedMark(row?.user_id);
   return row?.author_username
     ? `<a class="author-link" href="#/user/${esc(row.author_username)}">${avHtml}${esc(name)}${vHtml}${bHtml}</a>`
@@ -1430,13 +1642,15 @@ async function loadPosts() {
 }
 
 async function loadAggregates() {
-  const [reactionsRes, ratingsRes, commentsRes, profilesRes, postsAllRes, followsRes, bookmarksRes, blocksRes] = await Promise.all([
+  const [reactionsRes, ratingsRes, commentsRes, profilesRes, postsAllRes, followsRes, pollOptRes, pollVoteRes, bookmarksRes, blocksRes] = await Promise.all([
     supabase.from("reactions").select("post_id,type,user_id"),
     supabase.from("ratings").select("post_id,value,user_id"),
     supabase.from("comments").select("post_id,user_id"),
     supabase.from("profiles").select("id,username,avatar_url,created_at,bio,verified,accent_color,pinned_post_id"),
     supabase.from("posts").select("id,user_id,image_url,created_at"),
     supabase.from("follows").select("follower_id,following_id"),
+    supabase.from("poll_options").select("post_id"),
+    supabase.from("poll_votes").select("user_id"),
     session?.user ? supabase.from("bookmarks").select("post_id") : Promise.resolve({ data: [] }),
     session?.user ? supabase.from("blocks").select("blocked_id") : Promise.resolve({ data: [] })
   ]);
@@ -1478,26 +1692,55 @@ async function loadAggregates() {
 
   // --- Statistiques par membre (badges) ---
   const statsByUser = {};
-  const stOf = (uid) => (statsByUser[uid] ??= { posts: 0, comments: 0, reactionsReceived: 0, ratingCount: 0, ratingSum: 0, reactionsGiven: 0, ratingsGiven: 0, photoPosts: 0, minPostAt: null });
+  const stOf = (uid) => (statsByUser[uid] ??= { posts: 0, comments: 0, reactionsReceived: 0, ratingCount: 0, ratingSum: 0, reactionsGiven: 0, ratingsGiven: 0, photoPosts: 0, minPostAt: null, fiveStars: 0, commentsReceived: 0, pollsCreated: 0, pollVotesGiven: 0, givenByType: {}, receivedByType: {}, distinctCommented: new Set(), postDates: [] });
   const postOwner = {};
   for (const p of postsAllRes.data || []) {
     postOwner[p.id] = p.user_id;
     const st = stOf(p.user_id);
     st.posts += 1;
+    st.postDates.push(p.created_at);
     if (p.image_url) st.photoPosts += 1;
     if (!st.minPostAt || new Date(p.created_at) < new Date(st.minPostAt)) st.minPostAt = p.created_at;
   }
-  for (const c of commentsRes.data) stOf(c.user_id).comments += 1;
-  for (const r of reactionsRes.data) stOf(r.user_id).reactionsGiven += 1;
-  for (const r of ratingsRes.data) stOf(r.user_id).ratingsGiven += 1;
+  for (const c of commentsRes.data || []) {
+    const st = stOf(c.user_id);
+    st.comments += 1;
+    st.distinctCommented.add(c.post_id);
+    const owner = postOwner[c.post_id];
+    if (owner && owner !== c.user_id) stOf(owner).commentsReceived += 1;
+  }
+  for (const r of reactionsRes.data) {
+    const st = stOf(r.user_id);
+    st.reactionsGiven += 1;
+    st.givenByType[r.type] = (st.givenByType[r.type] ?? 0) + 1;
+  }
+  for (const r of ratingsRes.data) {
+    stOf(r.user_id).ratingsGiven += 1;
+    const owner = postOwner[r.post_id];
+    if (owner && r.value === 5) stOf(owner).fiveStars += 1;
+  }
+  // Réactions reçues : TOUS les types comptent (avant : 👍⭐❤️ seulement, les 😂😮😢 du Pack 2 étaient ignorés)
   for (const [pid, byType] of Object.entries(reactionsByPost)) {
     const owner = postOwner[pid];
-    if (owner) stOf(owner).reactionsReceived += (byType.like ?? 0) + (byType.star ?? 0) + (byType.heart ?? 0);
+    if (!owner) continue;
+    const st = stOf(owner);
+    for (const [type, n] of Object.entries(byType)) {
+      st.reactionsReceived += n;
+      st.receivedByType[type] = (st.receivedByType[type] ?? 0) + n;
+    }
   }
   for (const [pid, rAgg] of Object.entries(ratingsByPost)) {
     const owner = postOwner[pid];
     if (owner) { stOf(owner).ratingCount += rAgg.count; stOf(owner).ratingSum += rAgg.sum; }
   }
+  // Sondages : créés (articles distincts ayant des options) et votes donnés
+  const pollPostsByOwner = {};
+  for (const o of pollOptRes.data || []) {
+    const owner = postOwner[o.post_id];
+    if (owner) (pollPostsByOwner[owner] ??= new Set()).add(o.post_id);
+  }
+  for (const [uid, set] of Object.entries(pollPostsByOwner)) stOf(uid).pollsCreated = set.size;
+  for (const v of pollVoteRes.data || []) stOf(v.user_id).pollVotesGiven += 1;
 
   // --- Abonnements ---
   followingSet = new Set();
@@ -2376,7 +2619,7 @@ async function renderProfile(username) {
       : "";
     const myBadges = badgesById[profile.id] || [];
     const badgeRow = myBadges.length
-      ? `<div class="badge-row">${myBadges.map((id) => { const b = getBadge(id); return `<span class="badge">${b.emoji} ${esc(badgeName(b))}</span>`; }).join("")}</div>
+      ? `<div class="badge-row">${myBadges.map((id) => { const b = getBadge(id); return `<span class="badge">${badgeMedalHtml(b, "sm")} ${esc(badgeName(b))}</span>`; }).join("")}</div>
          <p class="small" style="margin-top:0.5rem"><a class="author-link" href="#/badges">${esc(t("profile.see_all_badges"))}</a></p>`
       : `<p class="small" style="margin-top:0.5rem"><a class="author-link" href="#/badges">${esc(t("profile.see_all_badges"))}</a></p>`;
     const profileActions = !isOwner && session?.user
@@ -2488,7 +2731,7 @@ applyStaticTexts();
 
 // ---------- Annuaire des membres ----------
 function memberCardHtml(m) {
-  const badges = badgeEmojis(m.id);
+  const badges = badgeIcons(m.id);
   const av = m.avatar_url
     ? `<img class="feed-avatar" src="${esc(m.avatar_url)}" alt="">`
     : `<div class="feed-avatar feed-avatar-letter">${esc(m.username.charAt(0).toUpperCase())}</div>`;
@@ -2543,10 +2786,10 @@ async function renderBadgesPage() {
       const has = earned.has(b.id);
       return `
         <div class="badge-card${has ? " earned" : " locked"}">
-          <div class="badge-card-emoji">${b.emoji}</div>
+          <div class="badge-card-medal">${badgeMedalHtml(b, "lg")}</div>
           <div class="badge-card-name">${esc(badgeName(b))}</div>
           <div class="small">${esc(badgeDesc(b))}</div>
-          ${has ? "" : `<div class="badge-card-lock">🔒</div>`}
+          ${has ? "" : `<div class="badge-card-lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${BADGE_ICONS.lock}</svg></div>`}
         </div>`;
     }).join("");
     const intro = session?.user
@@ -2555,7 +2798,7 @@ async function renderBadgesPage() {
          <p><strong>${esc(t("badges.progress").replace("{a}", myIds.length).replace("{b}", BADGES.length))}</strong></p>`
       : `<p>${esc(t("badges.intro"))}</p><p class="empty">${esc(t("badges.login_cta"))}</p>`;
     view.innerHTML = `
-      <div class="blog-header"><h1>🏆 ${esc(t("badges.title"))}</h1></div>
+      <div class="blog-header"><h1>${badgeMedalHtml(getBadge("star"), "md")} ${esc(t("badges.title"))}</h1></div>
       <section class="card">${intro}</section>
       <div class="badges-grid">${grid}</div>`;
   } catch (err) {
