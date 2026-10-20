@@ -64,6 +64,27 @@
         <input id="signup-password" type="password" autocomplete="new-password" minlength="6" required>
         <button type="submit" class="primary" data-i18n="auth.submit_signup">Sign up</button>
       </form>
+
+      <div class="oauth-block">
+        <div class="oauth-sep"><span data-i18n="auth.or">or</span></div>
+        <button id="oauth-google" class="btn oauth-btn" type="button"><span class="oauth-icon">G</span><span data-i18n="auth.google">Continue with Google</span></button>
+        <button id="oauth-facebook" class="btn oauth-btn" type="button"><span class="oauth-icon">f</span><span data-i18n="auth.facebook">Continue with Facebook</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Choix du nom d'utilisateur (après une connexion Google/Facebook) -->
+  <div id="username-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <form id="username-form" class="form">
+        <h2 data-i18n="username.title">Choose your username</h2>
+        <p class="small" data-i18n="username.desc">Welcome to Pierre! Pick the username that will appear publicly. Your email stays private.</p>
+        <div id="username-message" class="message hidden" role="alert"></div>
+        <label for="username-input" data-i18n="username.label">Username</label>
+        <input id="username-input" type="text" autocomplete="username" maxlength="20" required>
+        <button type="submit" class="primary" data-i18n="username.save">Save my username</button>
+        <button type="button" class="btn" id="username-later" data-i18n="username.later">Later</button>
+      </form>
     </div>
   </div>
 

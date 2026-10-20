@@ -25,6 +25,9 @@ const I18N = {
     "auth.username_hint": "This is the name that will appear publicly on the blog — your email stays private.",
     "auth.submit_login": "Log in",
     "auth.submit_signup": "Sign up",
+    "auth.or": "or",
+    "auth.google": "Continue with Google",
+    "auth.facebook": "Continue with Facebook",
     "auth.err_registered": "This email address is already in use.",
     "auth.err_credentials": "Incorrect email or password.",
     "auth.err_not_confirmed": "Account not confirmed: check your inbox before logging in.",
@@ -109,7 +112,19 @@ const I18N = {
     "profile.stat_posts": "📝 Posts",
     "profile.stat_comments": "💬 Comments written",
     "profile.stat_reactions": "❤️ Reactions received",
-    "profile.stat_avg": "★ Average rating received"
+    "profile.stat_avg": "★ Average rating received",
+    "username.title": "Choose your username",
+    "username.desc": "Welcome to Pierre! Pick the username that will appear publicly. Your email stays private.",
+    "username.label": "Username",
+    "username.save": "Save my username",
+    "username.later": "Later",
+    "photo.add": "Add a photo (optional)",
+    "photo.change_avatar": "Change profile picture",
+    "photo.save_avatar": "Save photo",
+    "photo.too_big": "This image is too large (max 5 MB).",
+    "photo.not_image": "Please choose an image file.",
+    "photo.upload_error": "Photo upload failed. Please try again.",
+    "photo.need_username": "Choose your username first."
   },
   fr: {
     "meta.title": "Pierre — Accueil",
@@ -133,6 +148,9 @@ const I18N = {
     "auth.username_hint": "C'est ce pseudo qui apparaîtra publiquement sur le blog — ton adresse e-mail reste privée.",
     "auth.submit_login": "Se connecter",
     "auth.submit_signup": "S'inscrire",
+    "auth.or": "ou",
+    "auth.google": "Continuer avec Google",
+    "auth.facebook": "Continuer avec Facebook",
     "auth.err_registered": "Cette adresse e-mail est déjà utilisée par un compte.",
     "auth.err_credentials": "Adresse e-mail ou mot de passe incorrect.",
     "auth.err_not_confirmed": "Compte non confirmé : vérifie ta boîte e-mail avant de te connecter.",
@@ -217,7 +235,19 @@ const I18N = {
     "profile.stat_posts": "📝 Publications",
     "profile.stat_comments": "💬 Commentaires écrits",
     "profile.stat_reactions": "❤️ Réactions reçues",
-    "profile.stat_avg": "★ Note moyenne reçue"
+    "profile.stat_avg": "★ Note moyenne reçue",
+    "username.title": "Choisis ton nom d'utilisateur",
+    "username.desc": "Bienvenue sur Pierre ! Choisis le pseudo qui apparaîtra publiquement. Ton e-mail reste privé.",
+    "username.label": "Nom d'utilisateur",
+    "username.save": "Enregistrer mon pseudo",
+    "username.later": "Plus tard",
+    "photo.add": "Ajouter une photo (facultatif)",
+    "photo.change_avatar": "Changer la photo de profil",
+    "photo.save_avatar": "Enregistrer la photo",
+    "photo.too_big": "Cette image est trop lourde (max 5 Mo).",
+    "photo.not_image": "Choisis un fichier image.",
+    "photo.upload_error": "L'envoi de la photo a échoué. Réessaie.",
+    "photo.need_username": "Choisis d'abord ton nom d'utilisateur."
   }
 };
 
@@ -310,12 +340,46 @@ function authorName(row) {
   return row?.author_username || t("common.user");
 }
 
-/** Pseudo cliquable vers la page personnelle (texte seul s'il n'y a pas de pseudo). */
+/** Avatar public du compte (ou rien). */
+let profilesById = {};
+function avatarFor(userId) {
+  return userId ? profilesById[userId]?.avatar_url : null;
+}
+
+/** Pseudo cliquable vers la page personnelle, avec mini avatar s'il existe. */
 function authorHtml(row) {
   const name = authorName(row);
+  const av = avatarFor(row?.user_id);
+  const avHtml = av ? `<img class="mini-avatar" src="${esc(av)}" alt="">` : "";
   return row?.author_username
-    ? `<a class="author-link" href="#/user/${esc(row.author_username)}">${esc(name)}</a>`
-    : esc(name);
+    ? `<a class="author-link" href="#/user/${esc(row.author_username)}">${avHtml}${esc(name)}</a>`
+    : `${avHtml}${esc(name)}`;
+}
+
+/** True si l'utilisateur peut écrire (sinon, lui proposer de choisir son pseudo). */
+function requireUsername() {
+  if (!session?.user) return false;
+  if (!currentUsername) {
+    openUsernameModal();
+    showUsernameMessage(t("photo.need_username"), "info");
+    return false;
+  }
+  return true;
+}
+
+/** Envoie une photo dans le dossier personnel de l'utilisateur (kind: "posts" | "avatars").
+    Retourne : URL publique, null (pas de fichier), ou undefined (échec, message déjà affiché). */
+const MAX_PHOTO = 5 * 1024 * 1024;
+async function uploadPhoto(file, kind) {
+  if (!file) return null;
+  if (!file.type.startsWith("image/")) { alert(t("photo.not_image")); return undefined; }
+  if (file.size > MAX_PHOTO) { alert(t("photo.too_big")); return undefined; }
+  const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+  const path = `${kind}/${session.user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await supabase.storage.from("media").upload(path, file, { cacheControl: "3600", upsert: false });
+  if (error) { alert(t("photo.upload_error")); return undefined; }
+  const { data } = supabase.storage.from("media").getPublicUrl(path);
+  return data.publicUrl;
 }
 
 const REACTION_TYPES = [
@@ -445,6 +509,83 @@ $("signup-form").addEventListener("submit", async (e) => {
   }
 });
 
+// ---------- Connexion via Google / Facebook ----------
+async function signInWithProvider(provider) {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: { redirectTo: window.location.origin + window.location.pathname }
+  });
+  if (error) showModalMessage(authErrorMessage(error.message), "error");
+}
+
+$("oauth-google").addEventListener("click", () => signInWithProvider("google"));
+$("oauth-facebook").addEventListener("click", () => signInWithProvider("facebook"));
+
+// ---------- Choix du pseudo (après une connexion sociale) ----------
+let usernamePromptShown = false;
+
+function showUsernameMessage(text, kind = "info") {
+  const box = $("username-message");
+  box.textContent = text;
+  box.className = `message ${kind}`;
+}
+
+function suggestUsername() {
+  const md = session?.user?.user_metadata || {};
+  const candidates = [md.user_name, md.preferred_username, md.full_name, md.name, (session?.user?.email || "").split("@")[0]];
+  for (const c of candidates) {
+    const s = String(c || "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 20);
+    if (/^[a-z0-9_-]{3,20}$/.test(s)) return s;
+  }
+  return "";
+}
+
+function openUsernameModal() {
+  if (!$("username-input").value) $("username-input").value = suggestUsername();
+  $("username-message").className = "message hidden";
+  $("username-modal").classList.remove("hidden");
+}
+
+function closeUsernameModal() {
+  $("username-modal").classList.add("hidden");
+}
+
+$("username-later").addEventListener("click", closeUsernameModal);
+
+$("username-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const rawUsername = $("username-input").value.trim().toLowerCase();
+  if (!/^[a-z0-9_-]{3,20}$/.test(rawUsername)) {
+    showUsernameMessage(t("auth.err_username_format"), "error");
+    return;
+  }
+  try {
+    const { data: taken } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("username", rawUsername)
+      .maybeSingle();
+    if (taken && taken.id !== session.user.id) {
+      showUsernameMessage(t("auth.err_username_taken"), "error");
+      return;
+    }
+  } catch { /* la contrainte unique protège quand même */ }
+
+  const md = session?.user?.user_metadata || {};
+  const avatarUrl = md.avatar_url || md.picture || null;
+  const { error } = await supabase
+    .from("profiles")
+    .upsert({ id: session.user.id, username: rawUsername, avatar_url: avatarUrl }, { onConflict: "id" });
+  if (error) {
+    showUsernameMessage(t("auth.err_generic"), "error");
+    return;
+  }
+  currentUsername = rawUsername;
+  closeUsernameModal();
+  renderAuthArea();
+  render();
+});
+
 // ---------- Panneau paramètres (langue) ----------
 $("settings-btn").addEventListener("click", (e) => {
   e.stopPropagation();
@@ -556,14 +697,19 @@ async function loadPosts() {
 }
 
 async function loadAggregates() {
-  const [reactionsRes, ratingsRes, commentsRes] = await Promise.all([
+  const [reactionsRes, ratingsRes, commentsRes, profilesRes] = await Promise.all([
     supabase.from("reactions").select("post_id,type,user_id"),
     supabase.from("ratings").select("post_id,value,user_id"),
-    supabase.from("comments").select("post_id")
+    supabase.from("comments").select("post_id"),
+    supabase.from("profiles").select("id,username,avatar_url")
   ]);
   if (reactionsRes.error) throw reactionsRes.error;
   if (ratingsRes.error) throw ratingsRes.error;
   if (commentsRes.error) throw commentsRes.error;
+  if (!profilesRes.error) {
+    profilesById = {};
+    for (const pr of profilesRes.data) profilesById[pr.id] = pr;
+  }
 
   const reactionsByPost = {};
   const myReactions = {};
@@ -610,6 +756,7 @@ function postCardHtml(p, agg) {
     <article class="card post-card" data-post-id="${esc(p.id)}">
       <h2><a href="#/post/${esc(p.id)}">${esc(p.title)}</a></h2>
       <div class="post-meta">${esc(t("blog.by"))} ${authorHtml(p)} · ${fmtDate(p.created_at)}</div>
+      ${p.image_url ? `<img class="post-image" src="${esc(p.image_url)}" alt="">` : ""}
       <p class="post-excerpt">${esc(excerpt(p.content))}</p>
       <div class="post-stats">${stats}</div>
     </article>`;
@@ -639,6 +786,8 @@ async function renderBlog() {
             <input id="post-title" maxlength="120" required placeholder="${esc(t("blog.post_title_ph"))}">
             <label for="post-content">${esc(t("blog.post_content"))}</label>
             <textarea id="post-content" rows="4" maxlength="5000" required placeholder="${esc(t("blog.post_content_ph"))}"></textarea>
+            <label for="post-image">${esc(t("photo.add"))}</label>
+            <input id="post-image" type="file" accept="image/*">
             <button type="submit" class="primary">${esc(t("blog.publish"))}</button>
           </form>
         </section>`
@@ -666,15 +815,23 @@ async function renderBlog() {
     if (postForm) {
       postForm.addEventListener("submit", async (e) => {
         e.preventDefault();
+        if (!requireUsername()) return;
         const title = $("post-title").value.trim();
         const content = $("post-content").value.trim();
         if (!title || !content) return;
+        const imageFile = $("post-image").files[0];
+        let imageUrl = null;
+        if (imageFile) {
+          imageUrl = await uploadPhoto(imageFile, "posts");
+          if (imageUrl === undefined) return; // échec d'envoi, déjà signalé
+        }
         const { error } = await supabase.from("posts").insert({
           title,
           content,
           user_id: session.user.id,
           author_email: session.user.email,
-          author_username: currentUsername
+          author_username: currentUsername,
+          image_url: imageUrl
         });
         if (error) {
           alert(t("blog.err_publish") + error.message);
@@ -752,6 +909,7 @@ async function renderPostDetail(postId) {
         <h1>${esc(post.title)}</h1>
         <div class="post-meta">${esc(t("post.by"))} ${authorHtml(post)} · ${fmtDate(post.created_at)}</div>
         <p>${esc(post.content)}</p>
+        ${post.image_url ? `<img class="post-image-full" src="${esc(post.image_url)}" alt="">` : ""}
         <div class="reactions">${reactionsHtml}</div>
         <div class="rating-block">
           <div class="label">${esc(t("post.rate_label"))}</div>
@@ -788,6 +946,7 @@ async function renderPostDetail(postId) {
 
     document.querySelectorAll(".reaction").forEach((btn) => {
       btn.addEventListener("click", async () => {
+        if (!requireUsername()) return;
         const type = btn.dataset.reaction;
         const key = `${post.id}:${type}`;
         try {
@@ -815,6 +974,7 @@ async function renderPostDetail(postId) {
 
     document.querySelectorAll(".star").forEach((btn) => {
       btn.addEventListener("click", async () => {
+        if (!requireUsername()) return;
         const value = Number(btn.dataset.star);
         try {
           const { error } = await supabase.from("ratings").upsert({
@@ -834,6 +994,7 @@ async function renderPostDetail(postId) {
     if (commentFormEl) {
       commentFormEl.addEventListener("submit", async (e) => {
         e.preventDefault();
+        if (!requireUsername()) return;
         const content = $("comment-content").value.trim();
         if (!content) return;
         const { error } = await supabase.from("comments").insert({
@@ -888,12 +1049,27 @@ async function renderProfile(username) {
     }
     const avgReceived = ratingCount ? ratingSum / ratingCount : null;
 
+    const isOwner = session?.user?.id === profile.id;
+    const avatarBlock = profile.avatar_url
+      ? `<img class="avatar-img" src="${esc(profile.avatar_url)}" alt="">`
+      : `<div class="avatar">${esc(profile.username.charAt(0).toUpperCase())}</div>`;
+    const avatarForm = isOwner
+      ? `<details class="avatar-edit">
+           <summary>${esc(t("photo.change_avatar"))}</summary>
+           <form id="avatar-form" class="form">
+             <input id="avatar-input" type="file" accept="image/*">
+             <button type="submit" class="primary">${esc(t("photo.save_avatar"))}</button>
+           </form>
+         </details>`
+      : "";
+
     view.innerHTML = `
       <section class="card profile-head">
-        <div class="avatar">${esc(profile.username.charAt(0).toUpperCase())}</div>
+        ${avatarBlock}
         <div class="profile-info">
           <h1>${esc(profile.username)}</h1>
           <p class="small">${esc(t("profile.member_since"))} ${fmtDate(profile.created_at)}</p>
+          ${avatarForm}
         </div>
       </section>
       <section class="card">
@@ -910,6 +1086,19 @@ async function renderProfile(username) {
         : `<div class="posts-grid">${posts.map((p) => postCardHtml(p, agg)).join("")}</div>`}`;
 
     bindPostCards();
+
+    const avatarFormEl = $("avatar-form");
+    if (avatarFormEl) {
+      avatarFormEl.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const file = $("avatar-input").files[0];
+        const url = await uploadPhoto(file, "avatars");
+        if (!url) return; // échec déjà signalé, ou aucun fichier choisi
+        const { error } = await supabase.from("profiles").update({ avatar_url: url }).eq("id", profile.id);
+        if (error) { alert(t("photo.upload_error")); return; }
+        await renderProfile(username);
+      });
+    }
   } catch (err) {
     view.innerHTML = `<section class="card"><p class="message error">${esc(t("post.err_load"))}</p><a class="back-link" href="#/blog">${esc(t("post.back"))}</a></section>`;
   }
@@ -918,13 +1107,22 @@ async function renderProfile(username) {
 // ---------- Démarrage ----------
 applyStaticTexts();
 
-async function applySession(newSession) {
+async function applySession(newSession, event = "RESTORED") {
   session = newSession ?? null;
   currentUsername = await fetchUsername();
   renderAuthArea();
   render();
+  // Après une connexion sociale (Google/Facebook), le compte n'a pas encore de pseudo :
+  // proposer de le choisir tout de suite (uniquement à la connexion, pas à chaque visite).
+  if (event === "SIGNED_IN" && session?.user && !currentUsername && !usernamePromptShown) {
+    usernamePromptShown = true;
+    openUsernameModal();
+  }
 }
 
-supabase.auth.getSession().then(({ data }) => applySession(data.session));
+supabase.auth.getSession().then(({ data }) => applySession(data.session, "RESTORED"));
 
-supabase.auth.onAuthStateChange((_event, newSession) => applySession(newSession));
+supabase.auth.onAuthStateChange((event, newSession) => {
+  if (event === "SIGNED_IN") applySession(newSession, event);
+  else if (event === "SIGNED_OUT") applySession(null, event);
+});
