@@ -394,6 +394,44 @@ footer { padding: 1.5rem; text-align: center; }
 .stat-list li:last-child { border-bottom: none; }
 .stat-list strong { color: var(--gold); }
 
+/* ---------- Paramètres (langue) ---------- */
+.icon-btn { font-size: 1.05rem; padding: 0.45rem 0.55rem; line-height: 1; }
+.settings-wrap { position: relative; }
+.settings-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  background: var(--card);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 0.6rem;
+  min-width: 190px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  z-index: 100;
+}
+.settings-title {
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.25rem 0.5rem 0.35rem;
+}
+.settings-label { font-size: 0.85rem; color: var(--muted); padding: 0 0.5rem 0.35rem; }
+.settings-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.92rem;
+}
+.settings-item:hover { background: rgba(56, 189, 248, 0.12); }
+.settings-item.active { background: rgba(251, 191, 36, 0.15); color: var(--gold); font-weight: 600; }
+
 /* ---------- Améliorations ordinateur ---------- */
 @media (min-width: 900px) {
   .hero { padding: 4.5rem 2rem; }

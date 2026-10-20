@@ -1,28 +1,37 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meta Muse — Accueil</title>
+  <title>Meta Muse — Home</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Barre de navigation : onglets à gauche, connexion en haut à droite -->
+  <!-- Barre de navigation : onglets à gauche, paramètres + connexion à droite -->
   <nav class="navbar">
     <div class="nav-inner">
       <a class="brand" href="#/">Meta Muse</a>
       <div class="nav-links">
-        <a href="#/" data-nav="accueil">Accueil</a>
-        <a href="#/blog" data-nav="blog">Blog</a>
+        <a href="#/" data-nav="home" data-i18n="nav.home">Home</a>
+        <a href="#/blog" data-nav="blog" data-i18n="nav.blog">Blog</a>
       </div>
       <div id="auth-area" class="auth-area"></div>
+      <div class="settings-wrap">
+        <button id="settings-btn" class="btn icon-btn" type="button" data-i18n-aria="settings.title" aria-label="Settings">⚙️</button>
+        <div id="settings-menu" class="settings-menu hidden">
+          <div class="settings-title" data-i18n="settings.title">Settings</div>
+          <div class="settings-label" data-i18n="settings.language">Language</div>
+          <button class="settings-item" data-lang="en" type="button">🇬🇧 English</button>
+          <button class="settings-item" data-lang="fr" type="button">🇫🇷 Français</button>
+        </div>
+      </div>
     </div>
   </nav>
 
   <main id="view"></main>
 
   <footer>
-    <p class="small">Meta Muse — site hébergé gratuitement sur GitHub Pages, comptes et blog propulsés par Supabase.</p>
+    <p class="small" data-i18n="footer.text">Meta Muse — a site hosted free on GitHub Pages, with accounts and blog powered by Supabase.</p>
   </footer>
 
   <!-- Fenêtre de connexion / inscription -->
@@ -30,30 +39,30 @@
     <div class="modal-card">
       <button id="modal-close" class="modal-close" type="button" aria-label="Fermer">×</button>
       <div class="tabs">
-        <button id="tab-login" class="tab active" type="button">Connexion</button>
-        <button id="tab-signup" class="tab" type="button">Inscription</button>
+        <button id="tab-login" class="tab active" type="button" data-i18n="auth.tab_login">Login</button>
+        <button id="tab-signup" class="tab" type="button" data-i18n="auth.tab_signup">Sign up</button>
       </div>
       <div id="auth-message" class="message hidden" role="alert"></div>
 
       <form id="login-form" class="form">
-        <h2>Se connecter</h2>
-        <label for="login-email">Adresse e-mail</label>
+        <h2 data-i18n="auth.login_title">Log in</h2>
+        <label for="login-email" data-i18n="auth.email">Email address</label>
         <input id="login-email" type="email" autocomplete="email" required>
-        <label for="login-password">Mot de passe</label>
+        <label for="login-password" data-i18n="auth.password">Password</label>
         <input id="login-password" type="password" autocomplete="current-password" required>
-        <button type="submit" class="primary">Se connecter</button>
+        <button type="submit" class="primary" data-i18n="auth.submit_login">Log in</button>
       </form>
 
       <form id="signup-form" class="form hidden">
-        <h2>Créer un compte</h2>
-        <label for="signup-username">Nom d'utilisateur</label>
-        <input id="signup-username" type="text" autocomplete="username" maxlength="20" placeholder="ex. marie_2026" required>
-        <p class="small" style="margin-top:-0.3rem">C'est ce pseudo qui apparaîtra publiquement sur le blog — ton adresse e-mail reste privée.</p>
-        <label for="signup-email">Adresse e-mail</label>
+        <h2 data-i18n="auth.signup_title">Create an account</h2>
+        <label for="signup-username" data-i18n="auth.username">Username</label>
+        <input id="signup-username" type="text" autocomplete="username" maxlength="20" data-i18n-ph="auth.username_ph" placeholder="e.g. marie_2026" required>
+        <p class="small" style="margin-top:-0.3rem" data-i18n="auth.username_hint">This is the name that will appear publicly on the blog — your email stays private.</p>
+        <label for="signup-email" data-i18n="auth.email">Email address</label>
         <input id="signup-email" type="email" autocomplete="email" required>
-        <label for="signup-password">Mot de passe (6 caractères minimum)</label>
+        <label for="signup-password" data-i18n="auth.password_signup">Password (6 characters minimum)</label>
         <input id="signup-password" type="password" autocomplete="new-password" minlength="6" required>
-        <button type="submit" class="primary">S'inscrire</button>
+        <button type="submit" class="primary" data-i18n="auth.submit_signup">Sign up</button>
       </form>
     </div>
   </div>
