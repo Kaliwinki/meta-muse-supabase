@@ -1,5 +1,5 @@
-// Pierre — service worker : réseau d'abord, cache en secours (contenu toujours frais quand le réseau répond)
-const CACHE = "pierre-v1";
+// Pierre — service worker : réseau d'abord avec revalidation forcée (toujours la dernière version), cache en secours hors-ligne
+const CACHE = "pierre-v2";
 const CORE = ["./", "./index.html", "./style.css", "./app.js", "./supabase-config.js", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (event) => {
@@ -17,11 +17,14 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;
+  const sameOrigin = new URL(request.url).origin === location.origin;
+  // Revalidation forcée pour les fichiers du site : pas d'ancienne version gardée 10 minutes
+  const netRequest = sameOrigin ? new Request(request, { cache: "no-cache" }) : request;
   event.respondWith(
-    fetch(request)
+    fetch(netRequest)
       .then((response) => {
         const copy = response.clone();
-        if (response.ok && new URL(request.url).origin === location.origin) {
+        if (response.ok && sameOrigin) {
           caches.open(CACHE).then((cache) => cache.put(request, copy));
         }
         return response;

@@ -1403,8 +1403,8 @@ async function renderBlog() {
 }
 
 // ---------- Vue détail d'une publication ----------
-async function renderPostDetail(postId) {
-  view.innerHTML = skeletonHtml(2);
+async function renderPostDetail(postId, instant = false) {
+  if (!instant) view.innerHTML = skeletonHtml(2);
   try {
     const [{ data: post, error: postErr }, agg, { data: comments, error: comErr }] = await Promise.all([
       supabase.from("posts").select("*").eq("id", postId).single(),
@@ -1526,11 +1526,11 @@ async function renderPostDetail(postId) {
         <div class="card side-card">
           <h3>${esc(t("post.stats"))}</h3>
           <ul class="stat-list">
-            <li><span>${esc(t("post.stat_comments"))}</span><strong>${comments.length}</strong></li>
-            <li><span>${esc(t("post.stat_likes"))}</span><strong>${rc.like ?? 0}</strong></li>
-            <li><span>${esc(t("post.stat_stars"))}</span><strong>${rc.star ?? 0}</strong></li>
-            <li><span>${esc(t("post.stat_hearts"))}</span><strong>${rc.heart ?? 0}</strong></li>
-            <li><span>${esc(t("post.stat_avg"))}</span><strong>${avg ? avg.avg.toFixed(1) + "/5" : "—"}</strong></li>
+            <li><span>${esc(t("post.stat_comments"))}</span><strong data-stat="comments">${comments.length}</strong></li>
+            <li><span>${esc(t("post.stat_likes"))}</span><strong data-stat="like">${rc.like ?? 0}</strong></li>
+            <li><span>${esc(t("post.stat_stars"))}</span><strong data-stat="star">${rc.star ?? 0}</strong></li>
+            <li><span>${esc(t("post.stat_hearts"))}</span><strong data-stat="heart">${rc.heart ?? 0}</strong></li>
+            <li><span>${esc(t("post.stat_avg"))}</span><strong data-stat="avg">${avg ? avg.avg.toFixed(1) + "/5" : "—"}</strong></li>
           </ul>
         </div>
       </aside>
@@ -1544,10 +1544,10 @@ async function renderPostDetail(postId) {
     const detailLogin = $("detail-login");
     if (detailLogin) detailLogin.addEventListener("click", () => openAuthModal("login"));
 
-    // Recharge la vue sans perdre la position de défilement (pas de retour en haut)
+    // Recharge la vue sans flash ni perte de position (pas de retour en haut)
     async function rerenderKeepScroll() {
       const y = window.scrollY;
-      await renderPostDetail(post.id);
+      await renderPostDetail(post.id, true); // instant : pas de squelette
       window.scrollTo(0, y);
     }
 
@@ -1625,9 +1625,12 @@ async function renderPostDetail(postId) {
         const key = `${post.id}:${type}`;
         const countEl = btn.querySelector(".count");
         const wasActive = btn.classList.contains("active");
+        const statEl = document.querySelector(`[data-stat="${type}"]`);
+        const syncStat = () => { if (statEl) statEl.textContent = countEl.textContent; };
         // Mise à jour immédiate de l'affichage (la page ne bouge pas)
         btn.classList.toggle("active", !wasActive);
         countEl.textContent = Math.max(0, (parseInt(countEl.textContent, 10) || 0) + (wasActive ? -1 : 1));
+        syncStat();
         if (wasActive) delete agg.myReactions[key]; else agg.myReactions[key] = true;
         try {
           if (wasActive) {
@@ -1650,6 +1653,7 @@ async function renderPostDetail(postId) {
           // Échec : on remet l'état précédent
           btn.classList.toggle("active", wasActive);
           countEl.textContent = Math.max(0, (parseInt(countEl.textContent, 10) || 0) + (wasActive ? 1 : -1));
+          syncStat();
           if (wasActive) agg.myReactions[key] = true; else delete agg.myReactions[key];
           showToast(t("post.err_react") + (err.message ?? ""), "error");
         }
@@ -1680,6 +1684,8 @@ async function renderPostDetail(postId) {
           myV ? esc(t("post.your_rating").replace("{v}", myV)) : ""
         ].filter(Boolean).join(" · ");
         summary.innerHTML = bits;
+        const avgEl = document.querySelector('[data-stat="avg"]');
+        if (avgEl) avgEl.textContent = data.count ? (data.sum / data.count).toFixed(1) + "/5" : "—";
       }
     }
     document.querySelectorAll(".star").forEach((btn) => {
