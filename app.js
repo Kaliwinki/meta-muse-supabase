@@ -4,7 +4,7 @@ import { supabaseConfig } from "./supabase-config.js";
 // ---------- Langues (anglais par défaut, français via les paramètres) ----------
 const I18N = {
   en: {
-    "meta.title": "Meta Muse — Home",
+    "meta.title": "Pierre — Home",
     "nav.home": "Home",
     "nav.blog": "Blog",
     "nav.login": "Login",
@@ -12,7 +12,7 @@ const I18N = {
     "nav.logout": "Log out",
     "nav.account": "My account",
     "nav.connected_as": "Signed in as",
-    "footer.text": "Meta Muse — a site hosted free on GitHub Pages, with accounts and blog powered by Supabase.",
+    "footer.text": "Pierre — a social network hosted free on GitHub Pages, with accounts and blog powered by Supabase.",
     "auth.tab_login": "Login",
     "auth.tab_signup": "Sign up",
     "auth.login_title": "Log in",
@@ -41,23 +41,23 @@ const I18N = {
     "common.user": "User",
     "common.config_missing": "The site is being configured: check back in a moment.",
     "home.hero_title": "Welcome to",
-    "home.hero_desc": "The first test project: a real site with real user accounts, hosted free on GitHub Pages and powered by Supabase.",
+    "home.hero_desc": "Pierre is a friendly social network: create your account, get your own personal page, post articles, and connect with the community through comments, reactions and ratings.",
     "home.go_blog": "Go to the blog",
     "home.create_account": "Create an account",
     "home.discover_blog": "Discover the blog",
     "home.features_title": "What you can do here",
-    "home.f1_title": "👤 User accounts",
-    "home.f1_text": "Sign up with an email address, log in and log out. Your credentials are securely managed by Supabase Auth.",
-    "home.f2_title": "📝 Community blog",
+    "home.f1_title": "👤 Your own page",
+    "home.f1_text": "Every member gets a personal page: your posts, your stats, your presence in the community — just one click from your username, anywhere on the site.",
+    "home.f2_title": "📝 Posts & blog",
     "home.f2_text": "Publish articles, comment on others', react with a like, a star or a heart, and rate posts from 1 to 5 stars.",
-    "home.f3_title": "🆓 100% free",
-    "home.f3_text": "Hosted on GitHub Pages with a Supabase database: no credit card, no fees.",
+    "home.f3_title": "🤝 A real community",
+    "home.f3_text": "Meet other members, visit their pages, discover their posts and build your circle — like on a real social network.",
     "home.steps_title": "How does it work?",
     "home.s1_title": "Create your account",
     "home.s1_text": "Pick a username, an email address and a password, top right. Only your username is public; your email stays private.",
-    "home.s2_title": "Publish on the blog",
-    "home.s2_text": "Open the Blog tab and share your first article with the community.",
-    "home.s3_title": "Interact",
+    "home.s2_title": "Get your page",
+    "home.s2_text": "Your personal page comes with your account: it's your corner of Pierre, reachable by clicking your username anywhere.",
+    "home.s3_title": "Post & connect",
     "home.s3_text": "Comment on posts, leave reactions and rate your favorites from 1 to 5 stars.",
     "blog.title": "Blog",
     "blog.loading": "Loading the blog…",
@@ -101,10 +101,18 @@ const I18N = {
     "post.err_react": "Action not possible right now: ",
     "post.err_rate": "Could not rate right now: ",
     "post.err_comment": "Could not comment right now: ",
-    "post.err_load": "Could not load this post right now."
+    "post.err_load": "Could not load this post right now.",
+    "profile.not_found": "User not found.",
+    "profile.member_since": "Member since",
+    "profile.posts": "Posts",
+    "profile.no_posts": "No posts yet.",
+    "profile.stat_posts": "📝 Posts",
+    "profile.stat_comments": "💬 Comments written",
+    "profile.stat_reactions": "❤️ Reactions received",
+    "profile.stat_avg": "★ Average rating received"
   },
   fr: {
-    "meta.title": "Meta Muse — Accueil",
+    "meta.title": "Pierre — Accueil",
     "nav.home": "Accueil",
     "nav.blog": "Blog",
     "nav.login": "Connexion",
@@ -112,7 +120,7 @@ const I18N = {
     "nav.logout": "Déconnexion",
     "nav.account": "Mon compte",
     "nav.connected_as": "Connecté en tant que",
-    "footer.text": "Meta Muse — site hébergé gratuitement sur GitHub Pages, comptes et blog propulsés par Supabase.",
+    "footer.text": "Pierre — un réseau social hébergé gratuitement sur GitHub Pages, comptes et blog propulsés par Supabase.",
     "auth.tab_login": "Connexion",
     "auth.tab_signup": "Inscription",
     "auth.login_title": "Se connecter",
@@ -141,23 +149,23 @@ const I18N = {
     "common.user": "Utilisateur",
     "common.config_missing": "Le site est en cours de configuration : reviens dans quelques instants.",
     "home.hero_title": "Bienvenue sur",
-    "home.hero_desc": "Le premier projet test : un vrai site avec de vrais comptes utilisateurs, hébergé gratuitement sur GitHub Pages et propulsé par Supabase.",
+    "home.hero_desc": "Pierre est un réseau social convivial : crée ton compte, obtiens ta page personnelle, publie des articles et échange avec la communauté grâce aux commentaires, réactions et notes.",
     "home.go_blog": "Aller au blog",
     "home.create_account": "Créer un compte",
     "home.discover_blog": "Découvrir le blog",
     "home.features_title": "Ce que tu peux faire ici",
-    "home.f1_title": "👤 Comptes utilisateurs",
-    "home.f1_text": "Inscris-toi avec une adresse e-mail, connecte-toi et déconnecte-toi. Tes identifiants sont gérés en sécurité par Supabase Auth.",
-    "home.f2_title": "📝 Blog communautaire",
+    "home.f1_title": "👤 Ta page personnelle",
+    "home.f1_text": "Chaque membre a sa page personnelle : tes publications, tes statistiques, ta présence dans la communauté — à un clic de ton pseudo, partout sur le site.",
+    "home.f2_title": "📝 Publications & blog",
     "home.f2_text": "Publie des articles, commente ceux des autres, réagis avec un like, une étoile ou un cœur, et note les publications de 1 à 5 étoiles.",
-    "home.f3_title": "🆓 100 % gratuit",
-    "home.f3_text": "Hébergement sur GitHub Pages et base de données Supabase : aucune carte bancaire, aucun frais.",
+    "home.f3_title": "🤝 Une vraie communauté",
+    "home.f3_text": "Rencontre d'autres membres, visite leurs pages, découvre leurs publications et construis ton cercle — comme sur un vrai réseau social.",
     "home.steps_title": "Comment ça marche ?",
     "home.s1_title": "Crée ton compte",
     "home.s1_text": "Choisis un pseudo, une adresse e-mail et un mot de passe, en haut à droite. Seul ton pseudo est public ; ton e-mail reste privé.",
-    "home.s2_title": "Publie sur le blog",
-    "home.s2_text": "Ouvre l'onglet Blog et partage ton premier article avec la communauté.",
-    "home.s3_title": "Échange",
+    "home.s2_title": "Obtiens ta page",
+    "home.s2_text": "Ta page personnelle est créée avec ton compte : c'est ton coin de Pierre, accessible en cliquant sur ton pseudo n'importe où.",
+    "home.s3_title": "Publie & échange",
     "home.s3_text": "Commente les publications, laisse des réactions et note tes coups de cœur de 1 à 5 étoiles.",
     "blog.title": "Blog",
     "blog.loading": "Chargement du blog…",
@@ -201,7 +209,15 @@ const I18N = {
     "post.err_react": "Action impossible pour le moment : ",
     "post.err_rate": "Note impossible pour le moment : ",
     "post.err_comment": "Commentaire impossible pour le moment : ",
-    "post.err_load": "Impossible de charger cette publication pour le moment."
+    "post.err_load": "Impossible de charger cette publication pour le moment.",
+    "profile.not_found": "Utilisateur introuvable.",
+    "profile.member_since": "Membre depuis",
+    "profile.posts": "Publications",
+    "profile.no_posts": "Aucune publication pour le moment.",
+    "profile.stat_posts": "📝 Publications",
+    "profile.stat_comments": "💬 Commentaires écrits",
+    "profile.stat_reactions": "❤️ Réactions reçues",
+    "profile.stat_avg": "★ Note moyenne reçue"
   }
 };
 
@@ -294,6 +310,14 @@ function authorName(row) {
   return row?.author_username || t("common.user");
 }
 
+/** Pseudo cliquable vers la page personnelle (texte seul s'il n'y a pas de pseudo). */
+function authorHtml(row) {
+  const name = authorName(row);
+  return row?.author_username
+    ? `<a class="author-link" href="#/user/${esc(row.author_username)}">${esc(name)}</a>`
+    : esc(name);
+}
+
 const REACTION_TYPES = [
   { type: "like", icon: "👍", labelKey: "post.react_like" },
   { type: "star", icon: "⭐", labelKey: "post.react_star" },
@@ -315,8 +339,11 @@ function renderAuthArea() {
   const area = $("auth-area");
   if (session?.user) {
     const display = currentUsername || t("nav.account");
+    const nameHtml = currentUsername
+      ? `<a class="user-email author-link" href="#/user/${esc(currentUsername)}" title="${esc(t("nav.connected_as"))} : ${esc(session.user.email)}">${esc(display)}</a>`
+      : `<span class="user-email" title="${esc(t("nav.connected_as"))} : ${esc(session.user.email)}">${esc(display)}</span>`;
     area.innerHTML = `
-      <span class="user-email" title="${esc(t("nav.connected_as"))} : ${esc(session.user.email)}">${esc(display)}</span>
+      ${nameHtml}
       <button class="btn" id="logout-btn" type="button">${esc(t("nav.logout"))}</button>`;
     $("logout-btn").addEventListener("click", async () => {
       const { error } = await supabase.auth.signOut();
@@ -442,13 +469,16 @@ function currentRoute() {
   const hash = location.hash || "#/";
   const postMatch = hash.match(/^#\/post\/([0-9a-f-]{36})$/i);
   if (postMatch) return { name: "post", id: postMatch[1] };
+  const userMatch = hash.match(/^#\/user\/([a-z0-9_-]{3,20})$/);
+  if (userMatch) return { name: "user", username: userMatch[1] };
   if (hash === "#/blog") return { name: "blog" };
   return { name: "home" };
 }
 
 function setActiveNav(name) {
+  const target = name === "post" ? "blog" : name === "home" ? "home" : name === "blog" ? "blog" : "";
   document.querySelectorAll(".nav-links a").forEach((a) => {
-    a.classList.toggle("active", a.dataset.nav === (name === "post" ? "blog" : name === "home" ? "home" : name));
+    a.classList.toggle("active", a.dataset.nav === target);
   });
 }
 
@@ -459,6 +489,8 @@ async function render() {
     await renderBlog();
   } else if (route.name === "post") {
     await renderPostDetail(route.id);
+  } else if (route.name === "user") {
+    await renderProfile(route.username);
   } else {
     renderHome();
   }
@@ -470,7 +502,7 @@ window.addEventListener("hashchange", render);
 function renderHome() {
   view.innerHTML = `
     <section class="hero card">
-      <h1>${esc(t("home.hero_title"))} <span class="accent">Meta Muse</span></h1>
+      <h1>${esc(t("home.hero_title"))} <span class="accent">Pierre</span></h1>
       <p>${esc(t("home.hero_desc"))}</p>
       <div class="hero-actions">
         ${session?.user
@@ -564,6 +596,34 @@ function avgRating(ratingsByPost, postId) {
   return { avg: agg.sum / agg.count, count: agg.count };
 }
 
+/** Carte d'un article (utilisée par le blog et les pages personnelles). */
+function postCardHtml(p, agg) {
+  const avg = avgRating(agg.ratingsByPost, p.id);
+  const rc = agg.reactionsByPost[p.id] ?? {};
+  const stats = `
+    <span>💬 ${agg.commentsCountByPost[p.id] ?? 0}</span>
+    <span>👍 ${rc.like ?? 0}</span>
+    <span>⭐ ${rc.star ?? 0}</span>
+    <span>❤️ ${rc.heart ?? 0}</span>
+    ${avg ? `<span class="avg">★ ${avg.avg.toFixed(1)}/5 (${avg.count})</span>` : `<span>★ —</span>`}`;
+  return `
+    <article class="card post-card" data-post-id="${esc(p.id)}">
+      <h2><a href="#/post/${esc(p.id)}">${esc(p.title)}</a></h2>
+      <div class="post-meta">${esc(t("blog.by"))} ${authorHtml(p)} · ${fmtDate(p.created_at)}</div>
+      <p class="post-excerpt">${esc(excerpt(p.content))}</p>
+      <div class="post-stats">${stats}</div>
+    </article>`;
+}
+
+function bindPostCards() {
+  document.querySelectorAll(".post-card").forEach((card) => {
+    card.addEventListener("click", (e) => {
+      if (e.target.closest("a,button")) return;
+      location.hash = `#/post/${card.dataset.postId}`;
+    });
+  });
+}
+
 // ---------- Vue Blog (liste) ----------
 async function renderBlog() {
   view.innerHTML = `<section class="card"><p>${esc(t("blog.loading"))}</p></section>`;
@@ -590,35 +650,14 @@ async function renderBlog() {
 
     const list = posts.length === 0
       ? `<section class="card"><p class="empty">${esc(t("blog.empty"))}</p></section>`
-      : posts.map((p) => {
-          const avg = avgRating(agg.ratingsByPost, p.id);
-          const rc = agg.reactionsByPost[p.id] ?? {};
-          const stats = `
-            <span>💬 ${agg.commentsCountByPost[p.id] ?? 0}</span>
-            <span>👍 ${rc.like ?? 0}</span>
-            <span>⭐ ${rc.star ?? 0}</span>
-            <span>❤️ ${rc.heart ?? 0}</span>
-            ${avg ? `<span class="avg">★ ${avg.avg.toFixed(1)}/5 (${avg.count})</span>` : `<span>★ —</span>`}`;
-          return `
-            <article class="card post-card" data-post-id="${esc(p.id)}">
-              <h2><a href="#/post/${esc(p.id)}">${esc(p.title)}</a></h2>
-              <div class="post-meta">${esc(t("blog.by"))} ${esc(authorName(p))} · ${fmtDate(p.created_at)}</div>
-              <p class="post-excerpt">${esc(excerpt(p.content))}</p>
-              <div class="post-stats">${stats}</div>
-            </article>`;
-        }).join("");
+      : posts.map((p) => postCardHtml(p, agg)).join("");
 
     view.innerHTML = `
       <div class="blog-header"><h1>${esc(t("blog.title"))}</h1></div>
       ${composer}
       <div id="posts-list" class="posts-grid">${list}</div>`;
 
-    document.querySelectorAll(".post-card").forEach((card) => {
-      card.addEventListener("click", (e) => {
-        if (e.target.closest("a,button")) return;
-        location.hash = `#/post/${card.dataset.postId}`;
-      });
-    });
+    bindPostCards();
 
     const blogLogin = $("blog-login");
     if (blogLogin) blogLogin.addEventListener("click", () => openAuthModal("login"));
@@ -683,7 +722,7 @@ async function renderPostDetail(postId) {
       : comments.map((c) => `
         <div class="comment">
           <div class="comment-head">
-            <span class="comment-author">${esc(authorName(c))}</span>
+            <span class="comment-author">${authorHtml(c)}</span>
             <span class="comment-date">${fmtDate(c.created_at)}</span>
           </div>
           <p>${esc(c.content)}</p>
@@ -711,7 +750,7 @@ async function renderPostDetail(postId) {
       <div class="post-layout">
       <article class="card post-full">
         <h1>${esc(post.title)}</h1>
-        <div class="post-meta">${esc(t("post.by"))} ${esc(authorName(post))} · ${fmtDate(post.created_at)}</div>
+        <div class="post-meta">${esc(t("post.by"))} ${authorHtml(post)} · ${fmtDate(post.created_at)}</div>
         <p>${esc(post.content)}</p>
         <div class="reactions">${reactionsHtml}</div>
         <div class="rating-block">
@@ -723,7 +762,7 @@ async function renderPostDetail(postId) {
       <aside class="post-side">
         <div class="card side-card">
           <h3>${esc(t("post.about"))}</h3>
-          <p><strong>${esc(authorName(post))}</strong></p>
+          <p><strong>${authorHtml(post)}</strong></p>
           <p class="small">${esc(t("post.published_on"))} ${fmtDate(post.created_at)}</p>
         </div>
         <div class="card side-card">
@@ -811,6 +850,66 @@ async function renderPostDetail(postId) {
         }
       });
     }
+  } catch (err) {
+    view.innerHTML = `<section class="card"><p class="message error">${esc(t("post.err_load"))}</p><a class="back-link" href="#/blog">${esc(t("post.back"))}</a></section>`;
+  }
+}
+
+// ---------- Page personnelle d'un membre ----------
+async function renderProfile(username) {
+  view.innerHTML = `<section class="card"><p>${esc(t("post.loading"))}</p></section>`;
+  try {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("username", username)
+      .maybeSingle();
+
+    if (!profile) {
+      view.innerHTML = `<section class="card"><p class="message error">${esc(t("profile.not_found"))}</p><a class="back-link" href="#/blog">${esc(t("post.back"))}</a></section>`;
+      return;
+    }
+
+    const [{ data: postsData }, agg, { count: commentsCount }] = await Promise.all([
+      supabase.from("posts").select("*").eq("user_id", profile.id).order("created_at", { ascending: false }),
+      loadAggregates(),
+      supabase.from("comments").select("id", { count: "exact", head: true }).eq("user_id", profile.id)
+    ]);
+    const posts = postsData || [];
+
+    let reactionsReceived = 0;
+    let ratingSum = 0;
+    let ratingCount = 0;
+    for (const p of posts) {
+      const rc = agg.reactionsByPost[p.id] ?? {};
+      reactionsReceived += (rc.like ?? 0) + (rc.star ?? 0) + (rc.heart ?? 0);
+      const a = agg.ratingsByPost[p.id];
+      if (a) { ratingSum += a.sum; ratingCount += a.count; }
+    }
+    const avgReceived = ratingCount ? ratingSum / ratingCount : null;
+
+    view.innerHTML = `
+      <section class="card profile-head">
+        <div class="avatar">${esc(profile.username.charAt(0).toUpperCase())}</div>
+        <div class="profile-info">
+          <h1>${esc(profile.username)}</h1>
+          <p class="small">${esc(t("profile.member_since"))} ${fmtDate(profile.created_at)}</p>
+        </div>
+      </section>
+      <section class="card">
+        <ul class="stat-list">
+          <li><span>${esc(t("profile.stat_posts"))}</span><strong>${posts.length}</strong></li>
+          <li><span>${esc(t("profile.stat_comments"))}</span><strong>${commentsCount ?? 0}</strong></li>
+          <li><span>${esc(t("profile.stat_reactions"))}</span><strong>${reactionsReceived}</strong></li>
+          <li><span>${esc(t("profile.stat_avg"))}</span><strong>${avgReceived ? avgReceived.toFixed(1) + "/5" : "—"}</strong></li>
+        </ul>
+      </section>
+      <h2 class="profile-posts-title">${esc(t("profile.posts"))} (${posts.length})</h2>
+      ${posts.length === 0
+        ? `<section class="card"><p class="empty">${esc(t("profile.no_posts"))}</p></section>`
+        : `<div class="posts-grid">${posts.map((p) => postCardHtml(p, agg)).join("")}</div>`}`;
+
+    bindPostCards();
   } catch (err) {
     view.innerHTML = `<section class="card"><p class="message error">${esc(t("post.err_load"))}</p><a class="back-link" href="#/blog">${esc(t("post.back"))}</a></section>`;
   }
