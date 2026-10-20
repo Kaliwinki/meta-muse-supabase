@@ -42,6 +42,13 @@ const I18N = {
     "toast.blocked": "Member blocked. You will no longer see their content.",
     "toast.unblocked": "Member unblocked.",
     "profile.verified": "Verified account",
+    "profile.admin": "Admin",
+    "profile.change_name": "Change name",
+    "profile.rename_rule": "One name change every 30 days. Admins can change anytime.",
+    "profile.rename_in": "You can change your name in {d} day(s).",
+    "profile.rename_confirm": "Change your name to {name}?",
+    "profile.rename_done": "Name changed!",
+    "profile.rename_same": "That is already your name.",
     "profile.block": "Block",
     "profile.unblock": "Unblock",
     "profile.block_confirm": "Block this member? You will no longer see their posts and comments, and you will stop following them.",
@@ -286,6 +293,13 @@ const I18N = {
     "toast.blocked": "Membre bloqué. Tu ne verras plus ses contenus.",
     "toast.unblocked": "Membre débloqué.",
     "profile.verified": "Compte vérifié",
+    "profile.admin": "Admin",
+    "profile.change_name": "Changer de nom",
+    "profile.rename_rule": "Un changement de nom tous les 30 jours. Les administrateurs n'importe quand.",
+    "profile.rename_in": "Tu pourras changer de nom dans {d} jour(s).",
+    "profile.rename_confirm": "Changer ton nom pour {name} ?",
+    "profile.rename_done": "Nom changé !",
+    "profile.rename_same": "C'est déjà ton nom.",
     "profile.block": "Bloquer",
     "profile.unblock": "Débloquer",
     "profile.block_confirm": "Bloquer ce membre ? Tu ne verras plus ses publications ni ses commentaires, et tu ne le suivras plus.",
@@ -2631,6 +2645,19 @@ async function renderProfile(username) {
              : `<button class="btn danger" type="button" data-block="${esc(profile.id)}">${esc(t("profile.block"))}</button>`}
          </div>`
       : "";
+    const renameState = isOwner ? renameStatus(profile) : null;
+    const renameForm = isOwner
+      ? `<details class="avatar-edit">
+           <summary>${esc(t("profile.change_name"))}</summary>
+           ${renameState.ok
+             ? `<form id="rename-form" class="form">
+                  <input id="rename-input" type="text" maxlength="20" value="${esc(profile.username)}" autocomplete="off">
+                  <p class="small">${esc(t("profile.rename_rule"))}</p>
+                  <button type="submit" class="primary">${esc(t("common.save"))}</button>
+                </form>`
+             : `<p class="small" style="margin-top:0.5rem">${esc(t("profile.rename_in").replace("{d}", renameState.days))}</p>`}
+         </details>`
+      : "";
     const bioBlock = profile.bio ? `<p>${esc(profile.bio)}</p>` : "";
     const bioForm = isOwner
       ? `<details class="avatar-edit">
@@ -2648,7 +2675,7 @@ async function renderProfile(username) {
         <div class="profile-head">
           ${avatarBlock}
           <div class="profile-info">
-            <h1>${esc(profile.username)}${profile.verified ? `<span class="verified" title="${esc(t("profile.verified"))}">✓</span>` : ""}</h1>
+            <h1>${esc(profile.username)}${profile.verified ? `<span class="verified" title="${esc(t("profile.verified"))}">✓</span>` : ""}${profile.is_admin ? `<span class="admin-chip">${esc(t("profile.admin"))}</span>` : ""}</h1>
             <p class="small">${esc(t("profile.member_since"))} ${fmtDate(profile.created_at)}</p>
             ${badgeRow}
             ${bioBlock}
@@ -2656,6 +2683,7 @@ async function renderProfile(username) {
             ${avatarForm}
             ${bannerForm}
             ${bioForm}
+            ${renameForm}
           </div>
         </div>
       </section>
@@ -2710,6 +2738,15 @@ async function renderProfile(username) {
       });
     }
 
+    const renameFormEl = $("rename-form");
+    if (renameFormEl) {
+      renameFormEl.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const newName = $("rename-input").value.trim().toLowerCase();
+        await doRename(profile, newName);
+      });
+    }
+
     const bioFormEl = $("bio-form");
     if (bioFormEl) {
       bioFormEl.addEventListener("submit", async (e) => {
@@ -2724,6 +2761,34 @@ async function renderProfile(username) {
   } catch (err) {
     view.innerHTML = `<section class="card"><p class="message error">${esc(t("post.err_load"))}</p><a class="back-link" href="#/blog">${esc(t("post.back"))}</a></section>`;
   }
+}
+
+// ---------- Changement de nom : 1 fois tous les 30 jours (admins : libre) ----------
+function renameStatus(profile) {
+  if (profile.is_admin) return { ok: true, days: 0 };
+  const created = new Date(profile.created_at).getTime();
+  const changed = profile.username_changed_at ? new Date(profile.username_changed_at).getTime() : 0;
+  const base = Math.max(created, changed);
+  const elapsed = (Date.now() - base) / 86400000;
+  return { ok: elapsed >= 30, days: Math.max(1, Math.ceil(30 - elapsed)) };
+}
+
+async function doRename(profile, newName) {
+  if (!/^[a-z0-9_-]{3,20}$/.test(newName)) { showToast(t("auth.err_username_format"), "error"); return; }
+  if (newName === profile.username) { showToast(t("profile.rename_same"), "error"); return; }
+  const { data: taken } = await supabase.from("profiles").select("id").eq("username", newName).neq("id", profile.id).maybeSingle();
+  if (taken) { showToast(t("auth.err_username_taken"), "error"); return; }
+  const ok = await confirmYesNo(t("profile.rename_confirm").replace("{name}", newName));
+  if (!ok) return;
+  const { error } = await supabase.from("profiles").update({ username: newName }).eq("id", profile.id);
+  if (error) { showToast(error.message, "error"); return; }
+  // Met à jour le pseudo affiché sur les articles et commentaires déjà publiés
+  await supabase.from("posts").update({ author_username: newName }).eq("user_id", profile.id);
+  await supabase.from("comments").update({ author_username: newName }).eq("user_id", profile.id);
+  if (profilesById[profile.id]) profilesById[profile.id].username = newName;
+  showToast(t("profile.rename_done"), "success");
+  location.hash = "#/user/" + newName;
+  await renderProfile(newName);
 }
 
 // ---------- Démarrage ----------
