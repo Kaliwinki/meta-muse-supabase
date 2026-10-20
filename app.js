@@ -49,6 +49,81 @@ const I18N = {
     "profile.rename_confirm": "Change your name to {name}?",
     "profile.rename_done": "Name changed!",
     "profile.rename_same": "That is already your name.",
+    "admin.title": "Admin panel",
+    "admin.only": "This page is for administrators only.",
+    "admin.stats_members": "Members",
+    "admin.stats_posts": "Posts",
+    "admin.stats_comments": "Comments",
+    "admin.stats_reports": "Open reports",
+    "admin.reports": "Reports",
+    "admin.no_reports": "No reports — all clear!",
+    "admin.report_by": "Reported by",
+    "admin.view_content": "View",
+    "admin.delete_content": "Delete content",
+    "admin.dismiss": "Dismiss",
+    "admin.members": "Member management",
+    "admin.verify": "Verify",
+    "admin.unverify": "Unverify",
+    "admin.make_admin": "Make admin",
+    "admin.remove_admin": "Remove admin",
+    "admin.ban": "Ban",
+    "admin.unban": "Unban",
+    "admin.banned_chip": "Banned",
+    "admin.banned_notice": "This account has been banned by an administrator.",
+    "admin.you_banned": "Your account has been banned by an administrator: you can browse, but you cannot post or comment.",
+    "admin.hide": "Hide",
+    "admin.unhide": "Unhide",
+    "admin.hidden_posts": "Hidden posts",
+    "admin.hidden_comments": "Hidden comments",
+    "admin.none": "None",
+    "admin.confirm_delete_post": "Admin: permanently delete this post?",
+    "admin.confirm_delete_comment": "Admin: permanently delete this comment?",
+    "admin.confirm_ban": "Ban {name}? Their content will be hidden and they will not be able to post.",
+    "admin.confirm_unban": "Unban {name}?",
+    "admin.confirm_verify": "Give the verified check to {name}?",
+    "admin.confirm_unverify": "Remove the verified check from {name}?",
+    "admin.confirm_make_admin": "Make {name} an administrator? They will get all admin powers.",
+    "admin.confirm_remove_admin": "Remove admin rights from {name}?",
+    "admin.done": "Done.",
+    "admin.muted_until": "Muted until {d}",
+    "admin.suspended_until": "Suspended until {d}",
+    "admin.you_muted": "You are muted until {d}: you can browse, but you cannot post, comment or send messages.",
+    "admin.suspended_title": "Account suspended",
+    "admin.suspended_msg": "Your account is suspended until {d}. Please come back then.",
+    "admin.sanctions": "Sanctions",
+    "admin.sanction_none": "No active sanction.",
+    "admin.kind_mute": "Mute (no posting)",
+    "admin.kind_suspend": "Suspend (account frozen)",
+    "admin.days_1": "24 hours",
+    "admin.days_7": "7 days",
+    "admin.days_30": "30 days",
+    "admin.apply": "Apply",
+    "admin.clear_sanction": "Lift sanction",
+    "admin.confirm_sanction": "Apply this sanction to {name}?",
+    "admin.confirm_clear": "Lift all sanctions from {name}?",
+    "admin.warn": "Send a warning",
+    "admin.warn_ph": "Warning message for this member…",
+    "admin.warn_send": "Send warning",
+    "admin.warn_sent": "Warning sent.",
+    "admin.broadcast": "Announce to everyone",
+    "admin.broadcast_ph": "Announcement for all members…",
+    "admin.broadcast_send": "Send to everyone",
+    "admin.broadcast_sent": "Announcement sent to all members.",
+    "admin.confirm_broadcast": "Send this announcement to ALL members?",
+    "admin.lock": "Lock comments",
+    "admin.unlock": "Unlock comments",
+    "admin.comments_locked": "Comments are locked on this post.",
+    "admin.feature": "Feature on top",
+    "admin.unfeature": "Remove from top",
+    "admin.featured_chip": "Featured",
+    "admin.clear_avatar": "Remove avatar",
+    "admin.clear_banner": "Remove cover",
+    "admin.clear_image": "Remove photo",
+    "admin.purge": "Purge content",
+    "admin.confirm_purge": "PERMANENTLY delete ALL posts and comments of {name}? This cannot be undone.",
+    "admin.confirm_purge2": "Are you really sure? Everything from {name} will be erased.",
+    "admin.log": "Admin log",
+    "admin.log_empty": "No admin action yet.",
     "profile.block": "Block",
     "profile.unblock": "Unblock",
     "profile.block_confirm": "Block this member? You will no longer see their posts and comments, and you will stop following them.",
@@ -300,6 +375,81 @@ const I18N = {
     "profile.rename_confirm": "Changer ton nom pour {name} ?",
     "profile.rename_done": "Nom changé !",
     "profile.rename_same": "C'est déjà ton nom.",
+    "admin.title": "Panneau administrateur",
+    "admin.only": "Cette page est réservée aux administrateurs.",
+    "admin.stats_members": "Membres",
+    "admin.stats_posts": "Articles",
+    "admin.stats_comments": "Commentaires",
+    "admin.stats_reports": "Signalements ouverts",
+    "admin.reports": "Signalements",
+    "admin.no_reports": "Aucun signalement — tout est calme !",
+    "admin.report_by": "Signalé par",
+    "admin.view_content": "Voir",
+    "admin.delete_content": "Supprimer le contenu",
+    "admin.dismiss": "Ignorer",
+    "admin.members": "Gestion des membres",
+    "admin.verify": "Vérifier",
+    "admin.unverify": "Retirer la coche",
+    "admin.make_admin": "Nommer admin",
+    "admin.remove_admin": "Retirer admin",
+    "admin.ban": "Bannir",
+    "admin.unban": "Débannir",
+    "admin.banned_chip": "Banni",
+    "admin.banned_notice": "Ce compte a été banni par un administrateur.",
+    "admin.you_banned": "Ton compte a été banni par un administrateur : tu peux naviguer, mais pas publier ni commenter.",
+    "admin.hide": "Masquer",
+    "admin.unhide": "Afficher",
+    "admin.hidden_posts": "Articles masqués",
+    "admin.hidden_comments": "Commentaires masqués",
+    "admin.none": "Aucun",
+    "admin.confirm_delete_post": "Admin : supprimer définitivement cet article ?",
+    "admin.confirm_delete_comment": "Admin : supprimer définitivement ce commentaire ?",
+    "admin.confirm_ban": "Bannir {name} ? Son contenu sera masqué et il ne pourra plus publier.",
+    "admin.confirm_unban": "Débannir {name} ?",
+    "admin.confirm_verify": "Donner la coche vérifiée à {name} ?",
+    "admin.confirm_unverify": "Retirer la coche vérifiée de {name} ?",
+    "admin.confirm_make_admin": "Nommer {name} administrateur ? Il aura tous les pouvoirs admin.",
+    "admin.confirm_remove_admin": "Retirer les droits admin de {name} ?",
+    "admin.done": "C'est fait.",
+    "admin.muted_until": "Muet jusqu'au {d}",
+    "admin.suspended_until": "Suspendu jusqu'au {d}",
+    "admin.you_muted": "Tu es muet jusqu'au {d} : tu peux naviguer, mais pas publier, commenter ni envoyer de messages.",
+    "admin.suspended_title": "Compte suspendu",
+    "admin.suspended_msg": "Ton compte est suspendu jusqu'au {d}. Reviens à ce moment-là.",
+    "admin.sanctions": "Sanctions",
+    "admin.sanction_none": "Aucune sanction active.",
+    "admin.kind_mute": "Muet (ne peut plus publier)",
+    "admin.kind_suspend": "Suspension (compte gelé)",
+    "admin.days_1": "24 heures",
+    "admin.days_7": "7 jours",
+    "admin.days_30": "30 jours",
+    "admin.apply": "Appliquer",
+    "admin.clear_sanction": "Lever la sanction",
+    "admin.confirm_sanction": "Appliquer cette sanction à {name} ?",
+    "admin.confirm_clear": "Lever toutes les sanctions de {name} ?",
+    "admin.warn": "Envoyer un avertissement",
+    "admin.warn_ph": "Message d'avertissement pour ce membre…",
+    "admin.warn_send": "Envoyer l'avertissement",
+    "admin.warn_sent": "Avertissement envoyé.",
+    "admin.broadcast": "Annonce à tout le monde",
+    "admin.broadcast_ph": "Annonce pour tous les membres…",
+    "admin.broadcast_send": "Envoyer à tous",
+    "admin.broadcast_sent": "Annonce envoyée à tous les membres.",
+    "admin.confirm_broadcast": "Envoyer cette annonce à TOUS les membres ?",
+    "admin.lock": "Verrouiller les commentaires",
+    "admin.unlock": "Déverrouiller les commentaires",
+    "admin.comments_locked": "Les commentaires sont verrouillés sur cet article.",
+    "admin.feature": "Mettre à la une",
+    "admin.unfeature": "Retirer de la une",
+    "admin.featured_chip": "À la une",
+    "admin.clear_avatar": "Retirer l'avatar",
+    "admin.clear_banner": "Retirer la bannière",
+    "admin.clear_image": "Retirer la photo",
+    "admin.purge": "Purger le contenu",
+    "admin.confirm_purge": "Supprimer DÉFINITIVEMENT tous les articles et commentaires de {name} ? Irréversible.",
+    "admin.confirm_purge2": "Vraiment sûr ? Tout le contenu de {name} sera effacé.",
+    "admin.log": "Journal des actions admin",
+    "admin.log_empty": "Aucune action admin pour le moment.",
     "profile.block": "Bloquer",
     "profile.unblock": "Débloquer",
     "profile.block_confirm": "Bloquer ce membre ? Tu ne verras plus ses publications ni ses commentaires, et tu ne le suivras plus.",
@@ -664,6 +814,7 @@ function authorName(row) {
 
 /** Avatar public du compte (ou rien). */
 let profilesById = {};
+let bannedIds = new Set();
 let profileByUsername = {};
 /** Badges des membres : userId -> [badgeId, …] (ordre de prestige du catalogue). */
 let badgesById = {};
@@ -1089,6 +1240,14 @@ async function refreshBadges() {
 }
 
 function notifItemHtml(n) {
+  if (n.type === "warning" || n.type === "announce") {
+    const icon = n.type === "warning" ? "⚠️" : "📣";
+    return `
+    <div class="notif-item" data-notif="${esc(n.id)}">
+      <span class="dot${n.read_at ? " read" : ""}"></span>
+      <span>${icon} ${esc(n.message || "")}<br><span class="when">${fmtDate(n.created_at)}</span></span>
+    </div>`;
+  }
   const key = n.type === "comment" ? "notif.comment" : n.type === "reaction" ? "notif.reaction" : n.type === "mention" ? "notif.mention" : "notif.follow";
   const who = n.actor_username || "?";
   return `
@@ -1562,6 +1721,7 @@ function currentRoute() {
   if (hash === "#/blog") return { name: "blog" };
   if (hash === "#/members") return { name: "members" };
   if (hash === "#/badges") return { name: "badges" };
+  if (hash === "#/admin") return { name: "admin" };
   if (hash === "#/messages") return { name: "conversations" };
   return { name: "home" };
 }
@@ -1575,6 +1735,15 @@ function setActiveNav(name) {
 
 async function render() {
   if (msgPoll) { clearInterval(msgPoll); msgPoll = null; }
+  if (session?.user) {
+    try { await loadAggregates(); } catch { /* le rendu normal gérera */ }
+    const me = profilesById[session.user.id];
+    if (me && !me.is_admin && sanctionState(me).suspended && currentRoute().name !== "admin") {
+      view.innerHTML = `<section class="card"><h1>⏸️ ${esc(t("admin.suspended_title"))}</h1><p>${esc(t("admin.suspended_msg").replace("{d}", fmtDate(me.suspended_until)))}</p><p><button class="btn" id="susp-logout" type="button">${esc(t("nav.logout"))}</button></p></section>`;
+      $("susp-logout")?.addEventListener("click", async () => { await supabase.auth.signOut(); location.hash = "#/"; location.reload(); });
+      return;
+    }
+  }
   const route = currentRoute();
   setActiveNav(route.name);
   if (route.name === "blog") {
@@ -1587,6 +1756,8 @@ async function render() {
     await renderMembers();
   } else if (route.name === "badges") {
     await renderBadgesPage();
+  } else if (route.name === "admin") {
+    await renderAdmin();
   } else if (route.name === "conversations") {
     await renderConversations();
   } else if (route.name === "thread") {
@@ -1660,7 +1831,7 @@ async function loadAggregates() {
     supabase.from("reactions").select("post_id,type,user_id"),
     supabase.from("ratings").select("post_id,value,user_id"),
     supabase.from("comments").select("post_id,user_id"),
-    supabase.from("profiles").select("id,username,avatar_url,created_at,bio,verified,accent_color,pinned_post_id"),
+    supabase.from("profiles").select("id,username,avatar_url,created_at,bio,verified,accent_color,pinned_post_id,is_admin,banned,muted_until,suspended_until"),
     supabase.from("posts").select("id,user_id,image_url,created_at"),
     supabase.from("follows").select("follower_id,following_id"),
     supabase.from("poll_options").select("post_id"),
@@ -1676,10 +1847,14 @@ async function loadAggregates() {
   if (!profilesRes.error) {
     profilesById = {};
     profileByUsername = {};
+    bannedIds = new Set();
     for (const pr of profilesRes.data) {
       profilesById[pr.id] = pr;
       profileByUsername[pr.username] = pr;
+      if (pr.banned) bannedIds.add(pr.id);
     }
+    const navAdminEl = document.getElementById("nav-admin");
+    if (navAdminEl) navAdminEl.hidden = !isAdminMe();
   }
 
   const reactionsByPost = {};
@@ -1803,9 +1978,11 @@ function postCardHtml(p, agg) {
       </div>
       <h2><a href="#/post/${esc(p.id)}">${esc(p.title)}</a></h2>
       ${p.hidden ? `<div class="hidden-chip">${esc(t("post.hidden_chip"))}</div>` : ""}
+      ${p.featured ? `<div class="featured-chip">⭐ ${esc(t("admin.featured_chip"))}</div>` : ""}
       ${p.image_url ? `<img class="post-image" src="${esc(p.image_url)}" alt="">` : ""}
       <p class="post-excerpt">${richText(excerpt(p.content))}</p>
       ${pollHtml(p.id)}
+      ${isAdminMe() ? `<div class="comment-actions admin-actions"><button type="button" data-admin-action="${p.hidden ? "unhide-post" : "hide-post"}" data-id="${esc(p.id)}">${esc(t(p.hidden ? "admin.unhide" : "admin.hide"))}</button><button type="button" class="link-danger" data-admin-action="del-post" data-id="${esc(p.id)}">${esc(t("common.delete").replace("🗑️ ", ""))}</button></div>` : ""}
       <div class="post-stats">${stats}<button class="bm-btn" data-share="${esc(p.id)}" title="${esc(t("post.share"))}">🔗</button><button class="bm-btn${myBookmarks.has(p.id) ? " active" : ""}" data-bookmark="${esc(p.id)}" title="${esc(t("post.save"))}">🔖</button></div>
     </article>`;
 }
@@ -1831,7 +2008,11 @@ function postsZoneHtml() {
   let list = posts;
   if (session?.user) {
     if (myBlocks.size) list = list.filter((p) => !myBlocks.has(p.user_id));
-    list = list.filter((p) => !p.hidden || p.user_id === session.user.id);
+    list = list.filter((p) => !p.hidden || p.user_id === session.user.id || isAdminMe());
+  }
+  if (!isAdminMe()) list = list.filter((p) => !bannedIds.has(p.user_id) || p.user_id === session?.user?.id);
+  if (feedMode === "all" && !blogTag) {
+    list = [...list.filter((p) => p.featured), ...list.filter((p) => !p.featured)];
   }
   if (feedMode === "following" && session?.user) {
     list = list.filter((p) => followingSet.has(p.user_id) || p.user_id === session.user.id);
@@ -2067,6 +2248,9 @@ async function renderBlog() {
     blogCache = { posts, agg };
     pollsCache = await loadPolls(posts.map((p) => p.id));
 
+    const composerFinal = session?.user && isMutedMe()
+      ? `<section class="card"><p class="message error">${esc(myBlockMessage())}</p></section>`
+      : composer;
     const tabs = `
       <div class="seg-tabs">
         <button class="seg-tab${feedMode === "all" ? " active" : ""}" data-feed="all" type="button">${esc(t("feed.all"))}</button>
@@ -2077,7 +2261,7 @@ async function renderBlog() {
 
     view.innerHTML = `
       <div class="blog-header"><h1>${esc(t("blog.title"))}</h1></div>
-      ${composer}
+      ${composerFinal}
       ${tabs}
       <input id="post-search" class="search-input" type="search" placeholder="${esc(t("search.posts"))}">
       ${blogTag ? `<div class="tag-chip">🏷️ #${esc(blogTag)} <button type="button" id="clear-tag" title="✖">✖</button></div>` : ""}
@@ -2184,12 +2368,17 @@ async function renderPostDetail(postId, instant = false) {
     if (comErr) throw comErr;
     pollsCache = await loadPolls([postId]);
 
-    if (post.hidden && session?.user?.id !== post.user_id) {
+    if (post.hidden && session?.user?.id !== post.user_id && !isAdminMe()) {
       view.innerHTML = `<section class="card"><p class="message error">${esc(t("post.hidden_msg"))}</p><a class="back-link" href="#/blog">${esc(t("post.back"))}</a></section>`;
       return;
     }
+    if (bannedIds.has(post.user_id) && session?.user?.id !== post.user_id && !isAdminMe()) {
+      view.innerHTML = `<section class="card"><p class="message error">${esc(t("admin.banned_notice"))}</p><a class="back-link" href="#/blog">${esc(t("post.back"))}</a></section>`;
+      return;
+    }
     const visibleComments = comments.filter((c) =>
-      !c.hidden || c.user_id === session?.user?.id || session?.user?.id === post.user_id);
+      (!c.hidden || c.user_id === session?.user?.id || session?.user?.id === post.user_id || isAdminMe())
+      && (!bannedIds.has(c.user_id) || c.user_id === session?.user?.id || isAdminMe()));
 
     const avg = avgRating(agg.ratingsByPost, post.id);
     const rc = agg.reactionsByPost[post.id] ?? {};
@@ -2217,7 +2406,9 @@ async function renderPostDetail(postId, instant = false) {
                ? `<button type="button" data-edit-btn="${esc(c.id)}">${esc(t("comment.edit"))}</button>
                   <button type="button" class="link-danger" data-del-btn="${esc(c.id)}">${esc(t("common.delete").replace("🗑️ ", ""))}</button>`
                : `${!isReply ? `<button type="button" data-reply-btn="${esc(c.id)}">${esc(t("comment.reply"))}</button>` : ""}
-                  <button type="button" data-report-comment="${esc(c.id)}">${esc(t("report.button"))}</button>`}
+                  <button type="button" data-report-comment="${esc(c.id)}">${esc(t("report.button"))}</button>
+                  ${isAdminMe() ? `<button type="button" data-admin-action="${c.hidden ? "unhide-comment" : "hide-comment"}" data-id="${esc(c.id)}">${esc(t(c.hidden ? "admin.unhide" : "admin.hide"))}</button>
+                  <button type="button" class="link-danger" data-admin-action="del-comment" data-id="${esc(c.id)}">${esc(t("common.delete").replace("🗑️ ", ""))}</button>` : ""}`
            </div>`
         : "";
       const children = (childrenOf[c.id] || []).map((ch) => commentHtml(ch, true)).join("");
@@ -2252,7 +2443,11 @@ async function renderPostDetail(postId, instant = false) {
       ? `<p class="empty">${esc(t("post.no_comments"))}</p>`
       : topComments.map((c) => commentHtml(c, false)).join("");
 
-    const commentForm = loggedIn
+    const commentForm = loggedIn && isMutedMe()
+      ? `<p class="message error" style="margin-top:1rem">${esc(myBlockMessage())}</p>`
+      : loggedIn && post.comments_locked && !isAdminMe()
+      ? `<p class="message error" style="margin-top:1rem">🔒 ${esc(t("admin.comments_locked"))}</p>`
+      : loggedIn
       ? `
         <form id="comment-form" class="form" style="margin-top:1rem">
           <label for="comment-content">${esc(t("post.add_comment"))}</label>
@@ -2293,6 +2488,16 @@ async function renderPostDetail(postId, instant = false) {
         ? `<div class="owner-actions"><button class="btn small" data-report-post="${esc(post.id)}" type="button">${esc(t("report.button"))}</button></div>`
         : "";
 
+    const adminPostBlock = isAdminMe()
+      ? `<div class="owner-actions admin-actions">
+           ${!isPostOwner ? `<button class="btn small danger" type="button" data-admin-action="del-post" data-id="${esc(post.id)}">${esc(t("common.delete"))}</button>` : ""}
+           <button class="btn small" type="button" data-admin-action="${post.hidden ? "unhide-post" : "hide-post"}" data-id="${esc(post.id)}">${esc(t(post.hidden ? "admin.unhide" : "admin.hide"))}</button>
+           <button class="btn small" type="button" data-admin-action="${post.comments_locked ? "unlock-post" : "lock-post"}" data-id="${esc(post.id)}">${esc(t(post.comments_locked ? "admin.unlock" : "admin.lock"))}</button>
+           <button class="btn small" type="button" data-admin-action="${post.featured ? "unfeature-post" : "feature-post"}" data-id="${esc(post.id)}">${esc(t(post.featured ? "admin.unfeature" : "admin.feature"))}</button>
+           ${post.image_url ? `<button class="btn small" type="button" data-admin-action="clear-post-image" data-id="${esc(post.id)}">${esc(t("admin.clear_image"))}</button>` : ""}
+         </div>`
+      : "";
+
     view.innerHTML = `
       <a class="back-link" href="#/blog">${esc(t("post.back"))}</a>
       <div class="post-layout">
@@ -2300,6 +2505,7 @@ async function renderPostDetail(postId, instant = false) {
         <h1>${esc(post.title)}</h1>
         <div class="post-meta">${esc(t("post.by"))} ${authorHtml(post)} · ${fmtDate(post.created_at)}</div>
         ${ownerBlock}
+        ${adminPostBlock}
         <p>${richText(post.content)}</p>
         ${post.image_url ? `<img class="post-image-full" src="${esc(post.image_url)}" alt="">` : ""}
         ${pollHtml(post.id)}
@@ -2593,9 +2799,10 @@ async function renderProfile(username) {
       supabase.from("comments").select("id", { count: "exact", head: true }).eq("user_id", profile.id)
     ]);
     const posts = postsData || [];
-    pollsCache = await loadPolls(posts.map((p) => p.id));
-    const pinned = profile.pinned_post_id ? posts.find((p) => p.id === profile.pinned_post_id) || null : null;
-    const rest = pinned ? posts.filter((p) => p.id !== pinned.id) : posts;
+    const postsVisible = profile.banned && session?.user?.id !== profile.id && !isAdminMe() ? [] : posts;
+    pollsCache = await loadPolls(postsVisible.map((p) => p.id));
+    const pinned = profile.pinned_post_id ? postsVisible.find((p) => p.id === profile.pinned_post_id) || null : null;
+    const rest = pinned ? postsVisible.filter((p) => p.id !== pinned.id) : postsVisible;
 
     let reactionsReceived = 0;
     let ratingSum = 0;
@@ -2645,6 +2852,51 @@ async function renderProfile(username) {
              : `<button class="btn danger" type="button" data-block="${esc(profile.id)}">${esc(t("profile.block"))}</button>`}
          </div>`
       : "";
+    const adminProfileBlock = isAdminMe() && !isOwner
+      ? `<div class="owner-actions admin-actions">
+           <button class="btn small" type="button" data-admin-action="${profile.verified ? "unverify" : "verify"}" data-id="${esc(profile.id)}" data-name="${esc(profile.username)}">${esc(t(profile.verified ? "admin.unverify" : "admin.verify"))}</button>
+           <button class="btn small" type="button" data-admin-action="${profile.is_admin ? "remove-admin" : "make-admin"}" data-id="${esc(profile.id)}" data-name="${esc(profile.username)}">${esc(t(profile.is_admin ? "admin.remove_admin" : "admin.make_admin"))}</button>
+           <button class="btn small danger" type="button" data-admin-action="${profile.banned ? "unban" : "ban"}" data-id="${esc(profile.id)}" data-name="${esc(profile.username)}">${esc(t(profile.banned ? "admin.unban" : "admin.ban"))}</button>
+         </div>`
+      : "";
+    const profSanction = sanctionState(profile);
+    const sanctionBlock = isAdminMe() && !isOwner
+      ? `<details class="avatar-edit">
+           <summary>⚖️ ${esc(t("admin.sanctions"))}</summary>
+           <p class="small" style="margin-top:0.5rem">${profSanction.banned
+             ? esc(t("admin.banned_chip"))
+             : profSanction.suspended
+               ? esc(t("admin.suspended_until").replace("{d}", fmtDate(profile.suspended_until)))
+               : profSanction.muted
+                 ? esc(t("admin.muted_until").replace("{d}", fmtDate(profile.muted_until)))
+                 : esc(t("admin.sanction_none"))}</p>
+           <form id="sanction-form" class="form">
+             <select id="sanction-kind">
+               <option value="mute">${esc(t("admin.kind_mute"))}</option>
+               <option value="suspend">${esc(t("admin.kind_suspend"))}</option>
+             </select>
+             <select id="sanction-days">
+               <option value="1">${esc(t("admin.days_1"))}</option>
+               <option value="7" selected>${esc(t("admin.days_7"))}</option>
+               <option value="30">${esc(t("admin.days_30"))}</option>
+             </select>
+             <button type="submit" class="primary">${esc(t("admin.apply"))}</button>
+           </form>
+           ${(profSanction.banned || profSanction.suspended || profSanction.muted)
+             ? `<p style="margin-top:0.5rem"><button class="btn small" type="button" data-admin-action="sanction-clear" data-id="${esc(profile.id)}" data-name="${esc(profile.username)}">${esc(t("admin.clear_sanction"))}</button></p>`
+             : ""}
+           <form id="warn-form" class="form" style="margin-top:0.75rem">
+             <label>${esc(t("admin.warn"))}</label>
+             <textarea id="warn-text" rows="2" maxlength="300" placeholder="${esc(t("admin.warn_ph"))}"></textarea>
+             <button type="submit" class="btn small">${esc(t("admin.warn_send"))}</button>
+           </form>
+           <div class="admin-btns">
+             ${profile.avatar_url ? `<button class="btn small" type="button" data-admin-action="clear-avatar" data-id="${esc(profile.id)}">${esc(t("admin.clear_avatar"))}</button>` : ""}
+             ${profile.banner_url ? `<button class="btn small" type="button" data-admin-action="clear-banner" data-id="${esc(profile.id)}">${esc(t("admin.clear_banner"))}</button>` : ""}
+             <button class="btn small danger" type="button" data-admin-action="purge" data-id="${esc(profile.id)}" data-name="${esc(profile.username)}">${esc(t("admin.purge"))}</button>
+           </div>
+         </details>`
+      : "";
     const renameState = isOwner ? renameStatus(profile) : null;
     const renameForm = isOwner
       ? `<details class="avatar-edit">
@@ -2675,7 +2927,7 @@ async function renderProfile(username) {
         <div class="profile-head">
           ${avatarBlock}
           <div class="profile-info">
-            <h1>${esc(profile.username)}${profile.verified ? `<span class="verified" title="${esc(t("profile.verified"))}">✓</span>` : ""}${profile.is_admin ? `<span class="admin-chip">${esc(t("profile.admin"))}</span>` : ""}</h1>
+            <h1>${esc(profile.username)}${profile.verified ? `<span class="verified" title="${esc(t("profile.verified"))}">✓</span>` : ""}${profile.is_admin ? `<span class="admin-chip">${esc(t("profile.admin"))}</span>` : ""}${profile.banned ? `<span class="banned-chip">${esc(t("admin.banned_chip"))}</span>` : ""}</h1>
             <p class="small">${esc(t("profile.member_since"))} ${fmtDate(profile.created_at)}</p>
             ${badgeRow}
             ${bioBlock}
@@ -2684,6 +2936,8 @@ async function renderProfile(username) {
             ${bannerForm}
             ${bioForm}
             ${renameForm}
+            ${adminProfileBlock}
+            ${sanctionBlock}
           </div>
         </div>
       </section>
@@ -2738,6 +2992,32 @@ async function renderProfile(username) {
       });
     }
 
+    const sanctionFormEl = $("sanction-form");
+    if (sanctionFormEl) {
+      sanctionFormEl.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const kind = $("sanction-kind").value;
+        const days = parseInt($("sanction-days").value, 10) || 7;
+        if (!(await confirmYesNo(t("admin.confirm_sanction").replace("{name}", profile.username)))) return;
+        if (await adminRpc("admin_sanction", { target: profile.id, kind, days })) {
+          showToast(t("admin.done"), "success");
+          await renderProfile(profile.username);
+        }
+      });
+    }
+    const warnFormEl = $("warn-form");
+    if (warnFormEl) {
+      warnFormEl.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const msg = $("warn-text").value.trim();
+        if (!msg) return;
+        if (await adminRpc("admin_warn", { target: profile.id, msg })) {
+          showToast(t("admin.warn_sent"), "success");
+          $("warn-text").value = "";
+        }
+      });
+    }
+
     const renameFormEl = $("rename-form");
     if (renameFormEl) {
       renameFormEl.addEventListener("submit", async (e) => {
@@ -2789,6 +3069,190 @@ async function doRename(profile, newName) {
   showToast(t("profile.rename_done"), "success");
   location.hash = "#/user/" + newName;
   await renderProfile(newName);
+}
+
+// ---------- Super pouvoirs administrateur ----------
+function isAdminMe() { return !!profilesById[session?.user?.id]?.is_admin; }
+
+function sanctionState(p) {
+  if (!p) return { muted: false, suspended: false, banned: false };
+  const now = Date.now();
+  return {
+    muted: !!p.muted_until && new Date(p.muted_until).getTime() > now,
+    suspended: !!p.suspended_until && new Date(p.suspended_until).getTime() > now,
+    banned: !!p.banned
+  };
+}
+function isMutedMe() {
+  const me = profilesById[session?.user?.id];
+  if (!me) return false;
+  const s = sanctionState(me);
+  return s.muted || s.banned;
+}
+function myBlockMessage() {
+  const me = profilesById[session?.user?.id];
+  if (!me) return "";
+  const s = sanctionState(me);
+  if (s.banned) return t("admin.you_banned");
+  if (s.muted) return t("admin.you_muted").replace("{d}", fmtDate(me.muted_until));
+  return "";
+}
+
+async function adminRpc(fn, args) {
+  const { error } = await supabase.rpc(fn, args);
+  if (error) { showToast(error.message, "error"); return false; }
+  return true;
+}
+
+// Toutes les actions admin passent par ce seul écouteur (boutons présents
+// uniquement dans le HTML généré pour les administrateurs).
+document.addEventListener("click", async (e) => {
+  const el = e.target.closest("[data-admin-action]");
+  if (!el || !isAdminMe()) return;
+  const action = el.dataset.adminAction, id = el.dataset.id, name = el.dataset.name || "";
+  let ok = false;
+  if (action === "del-post") { if (!(await confirmYesNo(t("admin.confirm_delete_post")))) return; ok = await adminRpc("admin_delete_post", { pid: id }); }
+  else if (action === "hide-post") { ok = await adminRpc("admin_set_post_hidden", { pid: id, val: true }); }
+  else if (action === "unhide-post") { ok = await adminRpc("admin_set_post_hidden", { pid: id, val: false }); }
+  else if (action === "del-comment") { if (!(await confirmYesNo(t("admin.confirm_delete_comment")))) return; ok = await adminRpc("admin_delete_comment", { cid: id }); }
+  else if (action === "hide-comment") { ok = await adminRpc("admin_set_comment_hidden", { cid: id, val: true }); }
+  else if (action === "unhide-comment") { ok = await adminRpc("admin_set_comment_hidden", { cid: id, val: false }); }
+  else if (action === "verify") { if (!(await confirmYesNo(t("admin.confirm_verify").replace("{name}", name)))) return; ok = await adminRpc("admin_set_verified", { target: id, val: true }); }
+  else if (action === "unverify") { if (!(await confirmYesNo(t("admin.confirm_unverify").replace("{name}", name)))) return; ok = await adminRpc("admin_set_verified", { target: id, val: false }); }
+  else if (action === "make-admin") { if (!(await confirmYesNo(t("admin.confirm_make_admin").replace("{name}", name)))) return; ok = await adminRpc("admin_set_admin", { target: id, val: true }); }
+  else if (action === "remove-admin") { if (!(await confirmYesNo(t("admin.confirm_remove_admin").replace("{name}", name)))) return; ok = await adminRpc("admin_set_admin", { target: id, val: false }); }
+  else if (action === "ban") { if (!(await confirmYesNo(t("admin.confirm_ban").replace("{name}", name)))) return; ok = await adminRpc("admin_set_banned", { target: id, val: true }); }
+  else if (action === "unban") { if (!(await confirmYesNo(t("admin.confirm_unban").replace("{name}", name)))) return; ok = await adminRpc("admin_set_banned", { target: id, val: false }); }
+  else if (action === "lock-post") { ok = await adminRpc("admin_set_comments_locked", { pid: id, val: true }); }
+  else if (action === "unlock-post") { ok = await adminRpc("admin_set_comments_locked", { pid: id, val: false }); }
+  else if (action === "feature-post") { ok = await adminRpc("admin_set_featured", { pid: id, val: true }); }
+  else if (action === "unfeature-post") { ok = await adminRpc("admin_set_featured", { pid: id, val: false }); }
+  else if (action === "clear-post-image") { if (!(await confirmYesNo(t("admin.clear_image") + " ?"))) return; ok = await adminRpc("admin_clear_post_image", { pid: id }); }
+  else if (action === "clear-avatar") { if (!(await confirmYesNo(t("admin.clear_avatar") + " ?"))) return; ok = await adminRpc("admin_clear_avatar", { target: id }); }
+  else if (action === "clear-banner") { if (!(await confirmYesNo(t("admin.clear_banner") + " ?"))) return; ok = await adminRpc("admin_clear_banner", { target: id }); }
+  else if (action === "sanction-clear") { if (!(await confirmYesNo(t("admin.confirm_clear").replace("{name}", name)))) return; ok = await adminRpc("admin_sanction", { target: id, kind: "clear", days: 0 }); }
+  else if (action === "purge") {
+    if (!(await confirmYesNo(t("admin.confirm_purge").replace("{name}", name)))) return;
+    if (!(await confirmYesNo(t("admin.confirm_purge2").replace("{name}", name)))) return;
+    ok = await adminRpc("admin_purge_content", { target: id });
+  }
+  else if (action === "dismiss-report") { const { error } = await supabase.from("reports").delete().eq("id", id); if (error) { showToast(error.message, "error"); return; } ok = true; }
+  else return;
+  if (ok) {
+    showToast(t("admin.done"), "success");
+    blogCache = null;
+    if (action === "del-post" && currentRoute().name === "post") location.hash = "#/blog";
+    else await render();
+  }
+});
+
+// ---------- Page Admin ----------
+async function renderAdmin() {
+  if (!session?.user) { view.innerHTML = `<section class="card"><p class="empty">${esc(t("admin.only"))}</p></section>`; return; }
+  view.innerHTML = skeletonHtml(2);
+  await loadAggregates();
+  if (!isAdminMe()) { view.innerHTML = `<section class="card"><p class="message error">${esc(t("admin.only"))}</p></section>`; return; }
+  const [{ data: members }, { data: reports }, { data: hiddenPosts }, { data: hiddenComments }, { count: postsCount }, { count: commentsCount }, { data: logRows }] = await Promise.all([
+    supabase.from("profiles").select("*").order("created_at", { ascending: true }),
+    supabase.from("reports").select("*").order("created_at", { ascending: false }),
+    supabase.from("posts").select("id,title,user_id,created_at").eq("hidden", true).order("created_at", { ascending: false }),
+    supabase.from("comments").select("id,content,post_id,user_id,created_at").eq("hidden", true).order("created_at", { ascending: false }),
+    supabase.from("posts").select("id", { count: "exact", head: true }),
+    supabase.from("comments").select("id", { count: "exact", head: true }),
+    supabase.from("admin_log").select("*").order("created_at", { ascending: false }).limit(30 })
+  ]);
+  const uname = (id) => profilesById[id]?.username || "—";
+  const commentPost = {};
+  const repComments = (reports || []).filter((r) => r.comment_id).map((r) => r.comment_id);
+  if (repComments.length) {
+    const { data: cs } = await supabase.from("comments").select("id,post_id").in("id", repComments);
+    for (const c of cs || []) commentPost[c.id] = c.post_id;
+  }
+  const reportsHtml = (reports || []).length ? (reports || []).map((r) => {
+    const targetPostId = r.post_id || commentPost[r.comment_id];
+    return `<div class="report-row">
+      <p class="small">${fmtDate(r.created_at)} · ${esc(t("admin.report_by"))} <a class="author-link" href="#/user/${esc(uname(r.reporter_id))}">${esc(uname(r.reporter_id))}</a></p>
+      <p>${esc(r.reason)}</p>
+      <div class="admin-btns">
+        ${targetPostId ? `<a class="btn small" href="#/post/${esc(targetPostId)}">${esc(t("admin.view_content"))}</a>` : ""}
+        ${r.post_id ? `<button class="btn small danger" type="button" data-admin-action="del-post" data-id="${esc(r.post_id)}">${esc(t("admin.delete_content"))}</button>` : ""}
+        ${r.comment_id ? `<button class="btn small danger" type="button" data-admin-action="del-comment" data-id="${esc(r.comment_id)}">${esc(t("admin.delete_content"))}</button>` : ""}
+        <button class="btn small" type="button" data-admin-action="dismiss-report" data-id="${esc(r.id)}">${esc(t("admin.dismiss"))}</button>
+      </div>
+    </div>`;
+  }).join("") : `<p class="empty">${esc(t("admin.no_reports"))}</p>`;
+
+  const membersHtml = (members || []).map((m) => `
+    <div class="report-row">
+      <p><a class="author-link" href="#/user/${esc(m.username)}">${esc(m.username)}</a>${m.verified ? ` <span class="verified" title="${esc(t("profile.verified"))}">✓</span>` : ""}${m.is_admin ? ` <span class="admin-chip">${esc(t("profile.admin"))}</span>` : ""}${m.banned ? ` <span class="banned-chip">${esc(t("admin.banned_chip"))}</span>` : ""}</p>
+      <p class="small">${esc(t("profile.member_since"))} ${fmtDate(m.created_at)}</p>
+      ${(() => { const s = sanctionState(m); return s.suspended ? `<p class="small">⏸️ ${esc(t("admin.suspended_until").replace("{d}", fmtDate(m.suspended_until)))}</p>` : s.muted ? `<p class="small">🔇 ${esc(t("admin.muted_until").replace("{d}", fmtDate(m.muted_until)))}</p>` : ""; })()}
+      <div class="admin-btns">
+        <button class="btn small" type="button" data-admin-action="${m.verified ? "unverify" : "verify"}" data-id="${esc(m.id)}" data-name="${esc(m.username)}">${esc(t(m.verified ? "admin.unverify" : "admin.verify"))}</button>
+        ${m.id !== session.user.id ? `<button class="btn small" type="button" data-admin-action="${m.is_admin ? "remove-admin" : "make-admin"}" data-id="${esc(m.id)}" data-name="${esc(m.username)}">${esc(t(m.is_admin ? "admin.remove_admin" : "admin.make_admin"))}</button>` : ""}
+        ${m.id !== session.user.id ? `<button class="btn small danger" type="button" data-admin-action="${m.banned ? "unban" : "ban"}" data-id="${esc(m.id)}" data-name="${esc(m.username)}">${esc(t(m.banned ? "admin.unban" : "admin.ban"))}</button>` : ""}
+        ${m.id !== session.user.id ? `<button class="btn small danger" type="button" data-admin-action="purge" data-id="${esc(m.id)}" data-name="${esc(m.username)}">${esc(t("admin.purge"))}</button>` : ""}
+      </div>
+    </div>`).join("");
+
+  const hiddenPostsHtml = (hiddenPosts || []).length ? (hiddenPosts || []).map((p) => `
+    <div class="report-row">
+      <p><a class="author-link" href="#/post/${esc(p.id)}">${esc(p.title)}</a></p>
+      <p class="small">${esc(uname(p.user_id))} · ${fmtDate(p.created_at)}</p>
+      <div class="admin-btns"><button class="btn small" type="button" data-admin-action="unhide-post" data-id="${esc(p.id)}">${esc(t("admin.unhide"))}</button>
+      <button class="btn small danger" type="button" data-admin-action="del-post" data-id="${esc(p.id)}">${esc(t("common.delete"))}</button></div>
+    </div>`).join("") : `<p class="empty">${esc(t("admin.none"))}</p>`;
+
+  const hiddenCommentsHtml = (hiddenComments || []).length ? (hiddenComments || []).map((c) => `
+    <div class="report-row">
+      <p>${esc(c.content.slice(0, 140))}</p>
+      <p class="small">${esc(uname(c.user_id))} · ${fmtDate(c.created_at)}</p>
+      <div class="admin-btns"><a class="btn small" href="#/post/${esc(c.post_id)}">${esc(t("admin.view_content"))}</a>
+      <button class="btn small" type="button" data-admin-action="unhide-comment" data-id="${esc(c.id)}">${esc(t("admin.unhide"))}</button>
+      <button class="btn small danger" type="button" data-admin-action="del-comment" data-id="${esc(c.id)}">${esc(t("common.delete"))}</button></div>
+    </div>`).join("") : `<p class="empty">${esc(t("admin.none"))}</p>`;
+
+  const logHtml = (logRows || []).length ? (logRows || []).map((l) => `
+    <div class="report-row">
+      <p class="small">${fmtDate(l.created_at)} · <strong>${esc(uname(l.admin_id))}</strong> — ${esc(l.action)}${l.target_id ? ` → ${esc(uname(l.target_id))}` : ""}${l.detail ? ` (${esc(l.detail)})` : ""}</p>
+    </div>`).join("") : `<p class="empty">${esc(t("admin.log_empty"))}</p>`;
+
+  view.innerHTML = `
+    <div class="blog-header"><h1>🛡️ ${esc(t("admin.title"))}</h1></div>
+    <section class="card">
+      <ul class="stat-list">
+        <li><span>${esc(t("admin.stats_members"))}</span><strong>${(members || []).length}</strong></li>
+        <li><span>${esc(t("admin.stats_posts"))}</span><strong>${postsCount ?? 0}</strong></li>
+        <li><span>${esc(t("admin.stats_comments"))}</span><strong>${commentsCount ?? 0}</strong></li>
+        <li><span>${esc(t("admin.stats_reports"))}</span><strong>${(reports || []).length}</strong></li>
+      </ul>
+    </section>
+    <section class="card"><h2>📣 ${esc(t("admin.broadcast"))}</h2>
+      <form id="broadcast-form" class="form">
+        <textarea id="broadcast-text" rows="2" maxlength="300" placeholder="${esc(t("admin.broadcast_ph"))}"></textarea>
+        <button type="submit" class="primary">${esc(t("admin.broadcast_send"))}</button>
+      </form>
+    </section>
+    <section class="card"><h2>${esc(t("admin.reports"))}</h2>${reportsHtml}</section>
+    <section class="card"><h2>${esc(t("admin.members"))}</h2>${membersHtml}</section>
+    <section class="card"><h2>${esc(t("admin.hidden_posts"))}</h2>${hiddenPostsHtml}</section>
+    <section class="card"><h2>${esc(t("admin.hidden_comments"))}</h2>${hiddenCommentsHtml}</section>
+    <section class="card"><h2>${esc(t("admin.log"))}</h2>${logHtml}</section>`;
+
+  const broadcastForm = $("broadcast-form");
+  if (broadcastForm) {
+    broadcastForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const msg = $("broadcast-text").value.trim();
+      if (!msg) return;
+      if (!(await confirmYesNo(t("admin.confirm_broadcast")))) return;
+      if (await adminRpc("admin_broadcast", { msg })) {
+        showToast(t("admin.broadcast_sent"), "success");
+        $("broadcast-text").value = "";
+        await renderAdmin();
+      }
+    });
+  }
 }
 
 // ---------- Démarrage ----------
@@ -2967,6 +3431,7 @@ async function renderThread(username) {
     }, 12000);
     $("msg-form").addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (isMutedMe()) { showToast(myBlockMessage(), "error"); return; }
       const content = $("msg-input").value.trim();
       if (!content) return;
       $("msg-input").value = "";

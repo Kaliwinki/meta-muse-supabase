@@ -984,6 +984,14 @@ footer {
 [data-theme="light"] ::-webkit-scrollbar-thumb { background: #cbd5e1; }
 ::selection { background: rgba(56, 189, 248, 0.35); }
 
+/* ---------- Administration ---------- */
+.featured-chip { display: inline-block; margin: 0.35rem 0; padding: 0.12rem 0.6rem; border-radius: 999px; background: linear-gradient(135deg, #ffe9a8, #f5b921); color: #6b4e00; font-size: 0.75rem; font-weight: 800; }
+
+.banned-chip { display: inline-block; margin-left: 0.45rem; padding: 0.1rem 0.55rem; border-radius: 999px; background: #d43a2f; color: #fff; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; vertical-align: middle; }
+.report-row { border-top: 1px solid var(--border); padding: 0.65rem 0; }
+.admin-btns { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.4rem; align-items: center; }
+.admin-actions { margin-top: 0.5rem; }
+
 /* ---------- Pastille administrateur ---------- */
 .admin-chip { display: inline-block; margin-left: 0.45rem; padding: 0.1rem 0.55rem; border-radius: 999px; background: var(--accent); color: #fff; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; vertical-align: middle; }
 
