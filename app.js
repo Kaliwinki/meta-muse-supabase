@@ -2408,7 +2408,7 @@ async function renderPostDetail(postId, instant = false) {
                : `${!isReply ? `<button type="button" data-reply-btn="${esc(c.id)}">${esc(t("comment.reply"))}</button>` : ""}
                   <button type="button" data-report-comment="${esc(c.id)}">${esc(t("report.button"))}</button>
                   ${isAdminMe() ? `<button type="button" data-admin-action="${c.hidden ? "unhide-comment" : "hide-comment"}" data-id="${esc(c.id)}">${esc(t(c.hidden ? "admin.unhide" : "admin.hide"))}</button>
-                  <button type="button" class="link-danger" data-admin-action="del-comment" data-id="${esc(c.id)}">${esc(t("common.delete").replace("🗑️ ", ""))}</button>` : ""}`
+                  <button type="button" class="link-danger" data-admin-action="del-comment" data-id="${esc(c.id)}">${esc(t("common.delete").replace("🗑️ ", ""))}</button>` : ""}`}
            </div>`
         : "";
       const children = (childrenOf[c.id] || []).map((ch) => commentHtml(ch, true)).join("");
@@ -3159,7 +3159,7 @@ async function renderAdmin() {
     supabase.from("comments").select("id,content,post_id,user_id,created_at").eq("hidden", true).order("created_at", { ascending: false }),
     supabase.from("posts").select("id", { count: "exact", head: true }),
     supabase.from("comments").select("id", { count: "exact", head: true }),
-    supabase.from("admin_log").select("*").order("created_at", { ascending: false }).limit(30 })
+    supabase.from("admin_log").select("*").order("created_at", { ascending: false }).limit(30)
   ]);
   const uname = (id) => profilesById[id]?.username || "—";
   const commentPost = {};
