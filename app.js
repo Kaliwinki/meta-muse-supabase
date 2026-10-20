@@ -43,6 +43,28 @@ if (!supabaseConfig.url || supabaseConfig.url === "A_REMPLIR") {
 
 const supabase = createClient(supabaseConfig.url, supabaseConfig.anonKey);
 let session = null;
+let currentUsername = null;
+
+/** Récupère le pseudo du compte connecté (et crée le profil s'il manque). */
+async function fetchUsername() {
+  if (!session?.user) return null;
+  const { data } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("id", session.user.id)
+    .maybeSingle();
+  if (data?.username) return data.username;
+  const fromMeta = session.user.user_metadata?.username;
+  if (fromMeta) {
+    await supabase.from("profiles").insert({ id: session.user.id, username: fromMeta });
+    return fromMeta;
+  }
+  return null;
+}
+
+function authorName(row) {
+  return row?.author_username || "Utilisateur";
+}
 
 const REACTION_TYPES = [
   { type: "like", icon: "👍", label: "J'aime" },
@@ -64,8 +86,9 @@ function authErrorMessage(message) {
 function renderAuthArea() {
   const area = $("auth-area");
   if (session?.user) {
+    const display = currentUsername || "Mon compte";
     area.innerHTML = `
-      <span class="user-email" title="${esc(session.user.email)}">${esc(session.user.email)}</span>
+      <span class="user-email" title="Connecté : ${esc(session.user.email)}">${esc(display)}</span>
       <button class="btn" id="logout-btn" type="button">Déconnexion</button>`;
     $("logout-btn").addEventListener("click", async () => {
       const { error } = await supabase.auth.signOut();
@@ -120,13 +143,47 @@ $("login-form").addEventListener("submit", async (e) => {
 
 $("signup-form").addEventListener("submit", async (e) => {
   e.preventDefault();
+  const rawUsername = $("signup-username").value.trim().toLowerCase();
   const email = $("signup-email").value.trim();
   const password = $("signup-password").value;
-  const { data, error } = await supabase.auth.signUp({ email, password });
+
+  if (!/^[a-z0-9_-]{3,20}$/.test(rawUsername)) {
+    showModalMessage("Choisis un nom d'utilisateur de 3 à 20 caractères : lettres, chiffres, « _ » ou « - » uniquement.", "error");
+    return;
+  }
+
+  // Vérifie que le pseudo n'est pas déjà pris
+  try {
+    const { data: taken } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("username", rawUsername)
+      .maybeSingle();
+    if (taken) {
+      showModalMessage("Ce nom d'utilisateur est déjà pris. Essaie-en un autre !", "error");
+      return;
+    }
+  } catch {
+    // si la vérification échoue, la base (contrainte unique) protège quand même
+  }
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { username: rawUsername } }
+  });
   if (error) {
     showModalMessage(authErrorMessage(error.message), "error");
-  } else if (data.session) {
-    showModalMessage("Compte créé avec succès. Bienvenue !", "success");
+  } else if (data.session && data.user) {
+    // Crée le profil public (pseudo), lié au compte — l'e-mail n'est jamais exposé
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .insert({ id: data.user.id, username: rawUsername });
+    if (profileError && !String(profileError.message).toLowerCase().includes("duplicate")) {
+      showModalMessage("Compte créé, mais le profil n'a pas pu être enregistré. Déconnecte-toi puis reconnecte-toi pour réessayer.", "error");
+      return;
+    }
+    showModalMessage(`Compte créé avec succès. Bienvenue, ${rawUsername} !`, "success");
     setTimeout(closeAuthModal, 1200);
   } else {
     showModalMessage("Compte créé ! Vérifie ta boîte e-mail pour confirmer ton adresse, puis connecte-toi.", "success");
@@ -198,7 +255,7 @@ function renderHome() {
     <section class="card">
       <h2>Comment ça marche ?</h2>
       <ol class="steps">
-        <li><strong>Crée ton compte</strong><p>Une adresse e-mail et un mot de passe suffisent, en haut à droite.</p></li>
+        <li><strong>Crée ton compte</strong><p>Choisis un pseudo, une adresse e-mail et un mot de passe, en haut à droite. Seul ton pseudo est public ; ton e-mail reste privé.</p></li>
         <li><strong>Publie sur le blog</strong><p>Ouvre l'onglet Blog et partage ton premier article avec la communauté.</p></li>
         <li><strong>Échange</strong><p>Commente les publications, laisse des réactions et note tes coups de cœur de 1 à 5 étoiles.</p></li>
       </ol>
@@ -298,7 +355,7 @@ async function renderBlog() {
           return `
             <article class="card post-card" data-post-id="${esc(p.id)}">
               <h2><a href="#/post/${esc(p.id)}">${esc(p.title)}</a></h2>
-              <div class="post-meta">Par ${esc(p.author_email)} · ${fmtDate(p.created_at)}</div>
+              <div class="post-meta">Par ${esc(authorName(p))} · ${fmtDate(p.created_at)}</div>
               <p class="post-excerpt">${esc(excerpt(p.content))}</p>
               <div class="post-stats">${stats}</div>
             </article>`;
@@ -330,7 +387,8 @@ async function renderBlog() {
           title,
           content,
           user_id: session.user.id,
-          author_email: session.user.email
+          author_email: session.user.email,
+          author_username: currentUsername
         });
         if (error) {
           alert("Impossible de publier : " + error.message);
@@ -378,7 +436,7 @@ async function renderPostDetail(postId) {
       : comments.map((c) => `
         <div class="comment">
           <div class="comment-head">
-            <span class="comment-author">${esc(c.author_email)}</span>
+            <span class="comment-author">${esc(authorName(c))}</span>
             <span class="comment-date">${fmtDate(c.created_at)}</span>
           </div>
           <p>${esc(c.content)}</p>
@@ -398,7 +456,7 @@ async function renderPostDetail(postId) {
       <div class="post-layout">
       <article class="card post-full">
         <h1>${esc(post.title)}</h1>
-        <div class="post-meta">Par ${esc(post.author_email)} · ${fmtDate(post.created_at)}</div>
+        <div class="post-meta">Par ${esc(authorName(post))} · ${fmtDate(post.created_at)}</div>
         <p>${esc(post.content)}</p>
         <div class="reactions">${reactionsHtml}</div>
         <div class="rating-block">
@@ -414,7 +472,7 @@ async function renderPostDetail(postId) {
       <aside class="post-side">
         <div class="card side-card">
           <h3>À propos</h3>
-          <p><strong>${esc(post.author_email)}</strong></p>
+          <p><strong>${esc(authorName(post))}</strong></p>
           <p class="small">Publié le ${fmtDate(post.created_at)}</p>
         </div>
         <div class="card side-card">
@@ -492,6 +550,7 @@ async function renderPostDetail(postId) {
           post_id: post.id,
           user_id: session.user.id,
           author_email: session.user.email,
+          author_username: currentUsername,
           content
         });
         if (error) {
@@ -507,14 +566,13 @@ async function renderPostDetail(postId) {
 }
 
 // ---------- Démarrage ----------
-supabase.auth.getSession().then(({ data }) => {
-  session = data.session ?? null;
-  renderAuthArea();
-  render();
-});
-
-supabase.auth.onAuthStateChange((_event, newSession) => {
+async function applySession(newSession) {
   session = newSession ?? null;
+  currentUsername = await fetchUsername();
   renderAuthArea();
   render();
-});
+}
+
+supabase.auth.getSession().then(({ data }) => applySession(data.session));
+
+supabase.auth.onAuthStateChange((_event, newSession) => applySession(newSession));
