@@ -40,6 +40,7 @@ const I18N = {
     "toast.banner_saved": "Cover photo updated.",
     "toast.username_saved": "Username saved. Welcome!",
     "nav.members": "Members",
+    "nav.badges": "Badges",
     "common.save": "Save",
     "common.cancel": "Cancel",
     "common.delete": "🗑️ Delete",
@@ -179,6 +180,11 @@ const I18N = {
     "profile.not_found": "User not found.",
     "profile.member_since": "Member since",
     "profile.posts": "Posts",
+    "profile.see_all_badges": "See all badges →",
+    "badges.title": "Badges",
+    "badges.intro": "Badges reward your activity on Pierre. Unlock them all!",
+    "badges.progress": "{a} / {b} badges unlocked",
+    "badges.login_cta": "Log in to start unlocking badges!",
     "profile.no_posts": "No posts yet.",
     "profile.stat_posts": "📝 Posts",
     "profile.stat_comments": "💬 Comments written",
@@ -234,6 +240,7 @@ const I18N = {
     "toast.banner_saved": "Bannière mise à jour.",
     "toast.username_saved": "Pseudo enregistré. Bienvenue !",
     "nav.members": "Membres",
+    "nav.badges": "Badges",
     "common.save": "Enregistrer",
     "common.cancel": "Annuler",
     "common.delete": "🗑️ Supprimer",
@@ -373,6 +380,11 @@ const I18N = {
     "profile.not_found": "Utilisateur introuvable.",
     "profile.member_since": "Membre depuis",
     "profile.posts": "Publications",
+    "profile.see_all_badges": "Voir tous les badges →",
+    "badges.title": "Badges",
+    "badges.intro": "Les badges récompensent ton activité sur Pierre. Débloque-les tous !",
+    "badges.progress": "{a} / {b} badges débloqués",
+    "badges.login_cta": "Connecte-toi pour commencer à débloquer des badges !",
     "profile.no_posts": "Aucune publication pour le moment.",
     "profile.stat_posts": "📝 Publications",
     "profile.stat_comments": "💬 Commentaires écrits",
@@ -495,60 +507,105 @@ function avatarFor(userId) {
   return userId ? profilesById[userId]?.avatar_url : null;
 }
 
-/** Catalogue des badges, du plus prestigieux au plus simple. */
-const BADGE_ORDER = [
-  { id: "superstar", emoji: "👑", key: "badge.superstar" },
-  { id: "star", emoji: "🏆", key: "badge.star" },
-  { id: "pioneer", emoji: "🥇", key: "badge.pioneer" },
-  { id: "popular", emoji: "🌟", key: "badge.popular" },
-  { id: "collector", emoji: "💯", key: "badge.collector" },
-  { id: "prolific", emoji: "📚", key: "badge.prolific" },
-  { id: "photographer", emoji: "📸", key: "badge.photographer" },
-  { id: "chatty", emoji: "💬", key: "badge.chatty" },
-  { id: "generous", emoji: "❤️", key: "badge.generous" },
-  { id: "critic", emoji: "⭐", key: "badge.critic" },
-  { id: "active", emoji: "🔥", key: "badge.active" },
-  { id: "author", emoji: "✍️", key: "badge.author" },
-  { id: "veteran", emoji: "🎂", key: "badge.veteran" },
-  { id: "new", emoji: "🌱", key: "badge.new" }
+/** Catalogue des badges (33), du plus prestigieux au plus simple. Nom et condition en anglais et en français. */
+const BADGES = [
+  { id: "phenomene", emoji: "🚀", en: { name: "Phenomenon", desc: "Received 150 reactions" }, fr: { name: "Phénomène", desc: "150 réactions reçues" } },
+  { id: "exceptionnel", emoji: "💎", en: { name: "Exceptional", desc: "Average rating of 4.75+ with at least 5 ratings" }, fr: { name: "Exceptionnel", desc: "Note moyenne ≥ 4,75 avec au moins 5 notes" } },
+  { id: "superstar", emoji: "👑", en: { name: "Superstar", desc: "Received 50 reactions" }, fr: { name: "Superstar", desc: "50 réactions reçues" } },
+  { id: "star", emoji: "🏆", en: { name: "Blog star", desc: "Received 20 reactions or an average rating of 4.5+" }, fr: { name: "Star du blog", desc: "20 réactions reçues ou note moyenne ≥ 4,5" } },
+  { id: "celebrite", emoji: "🎬", en: { name: "Celebrity", desc: "30 followers" }, fr: { name: "Célébrité", desc: "30 abonnés" } },
+  { id: "legende", emoji: "🏛️", en: { name: "Legend", desc: "Published 25 posts" }, fr: { name: "Légende", desc: "25 articles publiés" } },
+  { id: "bien_note", emoji: "🌟", en: { name: "Well rated", desc: "Average rating of 4.0+ with at least 5 ratings" }, fr: { name: "Bien noté", desc: "Note moyenne ≥ 4,0 avec au moins 5 notes" } },
+  { id: "influent", emoji: "🎤", en: { name: "Influential", desc: "15 followers" }, fr: { name: "Influent", desc: "15 abonnés" } },
+  { id: "populaire", emoji: "📣", en: { name: "Popular", desc: "5 followers" }, fr: { name: "Populaire", desc: "5 abonnés" } },
+  { id: "expert", emoji: "🎓", en: { name: "Expert", desc: "Gave 25 ratings" }, fr: { name: "Expert", desc: "25 notes données" } },
+  { id: "artiste", emoji: "🎨", en: { name: "Visual artist", desc: "Published 20 posts with photos" }, fr: { name: "Artiste visuel", desc: "20 articles avec photo" } },
+  { id: "reporter", emoji: "📷", en: { name: "Reporter", desc: "Published 10 posts with photos" }, fr: { name: "Reporter", desc: "10 articles avec photo" } },
+  { id: "tribun", emoji: "📢", en: { name: "Town crier", desc: "Wrote 150 comments" }, fr: { name: "Tribun", desc: "150 commentaires écrits" } },
+  { id: "orateur", emoji: "🎙️", en: { name: "Orator", desc: "Wrote 75 comments" }, fr: { name: "Orateur", desc: "75 commentaires écrits" } },
+  { id: "collector", emoji: "💯", en: { name: "Collector", desc: "Unlocked 8 other badges" }, fr: { name: "Collectionneur", desc: "8 autres badges débloqués" } },
+  { id: "prolific", emoji: "📚", en: { name: "Prolific author", desc: "Published 10 posts" }, fr: { name: "Auteur prolifique", desc: "10 articles publiés" } },
+  { id: "coeur_or", emoji: "💛", en: { name: "Heart of gold", desc: "Gave 75 reactions" }, fr: { name: "Cœur d'or", desc: "75 réactions données" } },
+  { id: "bavard", emoji: "💬", en: { name: "Chatterbox", desc: "Wrote 25 comments" }, fr: { name: "Bavard", desc: "25 commentaires écrits" } },
+  { id: "critic", emoji: "⭐", en: { name: "Critic", desc: "Gave 10 ratings" }, fr: { name: "Critique", desc: "10 notes données" } },
+  { id: "photographe", emoji: "📸", en: { name: "Photographer", desc: "Published 3 posts with photos" }, fr: { name: "Photographe", desc: "3 articles avec photo" } },
+  { id: "generous", emoji: "❤️", en: { name: "Generous", desc: "Gave 25 reactions" }, fr: { name: "Généreux", desc: "25 réactions données" } },
+  { id: "causeur", emoji: "💭", en: { name: "Chatty", desc: "Wrote 5 comments" }, fr: { name: "Causeur", desc: "5 commentaires écrits" } },
+  { id: "decouvreur", emoji: "🤝", en: { name: "Networker", desc: "Follow 10 members" }, fr: { name: "Réseauteur", desc: "Suit 10 membres" } },
+  { id: "sympathique", emoji: "👋", en: { name: "Friendly", desc: "Gave 10 reactions" }, fr: { name: "Amical", desc: "10 réactions données" } },
+  { id: "curieux", emoji: "🔍", en: { name: "Curious", desc: "Gave 5 ratings" }, fr: { name: "Curieux", desc: "5 notes données" } },
+  { id: "active", emoji: "🔥", en: { name: "Active member", desc: "Published 5 posts or wrote 10 comments" }, fr: { name: "Membre actif", desc: "5 articles publiés ou 10 commentaires" } },
+  { id: "apprecie", emoji: "👍", en: { name: "Appreciated", desc: "Received 10 reactions" }, fr: { name: "Apprécié", desc: "10 réactions reçues" } },
+  { id: "author", emoji: "✍️", en: { name: "Author", desc: "Published your first post" }, fr: { name: "Auteur", desc: "Premier article publié" } },
+  { id: "veteran", emoji: "🎂", en: { name: "Veteran", desc: "Member for 30 days" }, fr: { name: "Ancien", desc: "Membre depuis 30 jours" } },
+  { id: "dinosaure", emoji: "🦕", en: { name: "Dinosaur", desc: "Member for 180 days" }, fr: { name: "Dinosaure", desc: "Membre depuis 180 jours" } },
+  { id: "pioneer", emoji: "🥇", en: { name: "Pioneer", desc: "Among the first 10 members" }, fr: { name: "Pionnier", desc: "Parmi les 10 premiers membres" } },
+  { id: "eclair", emoji: "⚡", en: { name: "Lightning", desc: "Published on the day you joined" }, fr: { name: "Éclair", desc: "A publié le jour de son inscription" } },
+  { id: "new", emoji: "🌱", en: { name: "Newcomer", desc: "Joined less than 7 days ago" }, fr: { name: "Nouveau", desc: "Inscrit depuis moins de 7 jours" } }
 ];
+
+const getBadge = (id) => BADGES.find((b) => b.id === id);
+function badgeName(b) { return lang === "fr" ? b.fr.name : b.en.name; }
+function badgeDesc(b) { return lang === "fr" ? b.fr.desc : b.en.desc; }
 
 /** Statistiques d'activité par utilisateur, utilisées pour les badges. */
 function computeBadges(statsByUser, rankById) {
   badgesById = {};
   for (const [uid, pr] of Object.entries(profilesById)) {
-    const st = statsByUser[uid] || { posts: 0, comments: 0, reactionsReceived: 0, ratingCount: 0, ratingSum: 0, reactionsGiven: 0, ratingsGiven: 0, photoPosts: 0 };
+    const st = statsByUser[uid] || { posts: 0, comments: 0, reactionsReceived: 0, ratingCount: 0, ratingSum: 0, reactionsGiven: 0, ratingsGiven: 0, photoPosts: 0, minPostAt: null };
     const ageMs = pr.created_at ? Date.now() - new Date(pr.created_at).getTime() : 0;
+    const avg = st.ratingCount ? st.ratingSum / st.ratingCount : 0;
+    const followers = followerCountById[uid] ?? 0;
+    const following = followingCountById[uid] ?? 0;
     const earned = new Set();
-    if (ageMs < 7 * 864e5) earned.add("new");
-    if (st.posts >= 1) earned.add("author");
-    if (st.posts >= 10) earned.add("prolific");
-    if (st.posts >= 5 || st.comments >= 10) earned.add("active");
-    if (st.comments >= 25) earned.add("chatty");
-    if (st.reactionsGiven >= 25) earned.add("generous");
-    if (st.ratingsGiven >= 10) earned.add("critic");
-    if ((st.ratingCount >= 3 && st.ratingSum / st.ratingCount >= 4.5) || st.reactionsReceived >= 20) earned.add("star");
+    if (st.reactionsReceived >= 150) earned.add("phenomene");
+    if (st.ratingCount >= 5 && avg >= 4.75) earned.add("exceptionnel");
     if (st.reactionsReceived >= 50) earned.add("superstar");
+    if ((st.ratingCount >= 3 && avg >= 4.5) || st.reactionsReceived >= 20) earned.add("star");
+    if (followers >= 30) earned.add("celebrite");
+    if (st.posts >= 25) earned.add("legende");
+    if (st.ratingCount >= 5 && avg >= 4.0) earned.add("bien_note");
+    if (followers >= 15) earned.add("influent");
+    if (followers >= 5) earned.add("populaire");
+    if (st.ratingsGiven >= 25) earned.add("expert");
+    if (st.photoPosts >= 20) earned.add("artiste");
+    if (st.photoPosts >= 10) earned.add("reporter");
+    if (st.comments >= 150) earned.add("tribun");
+    if (st.comments >= 75) earned.add("orateur");
+    if (st.posts >= 10) earned.add("prolific");
+    if (st.reactionsGiven >= 75) earned.add("coeur_or");
+    if (st.comments >= 25) earned.add("bavard");
+    if (st.ratingsGiven >= 10) earned.add("critic");
+    if (st.photoPosts >= 3) earned.add("photographe");
+    if (st.reactionsGiven >= 25) earned.add("generous");
+    if (st.comments >= 5) earned.add("causeur");
+    if (following >= 10) earned.add("decouvreur");
+    if (st.reactionsGiven >= 10) earned.add("sympathique");
+    if (st.ratingsGiven >= 5) earned.add("curieux");
+    if (st.posts >= 5 || st.comments >= 10) earned.add("active");
+    if (st.reactionsReceived >= 10) earned.add("apprecie");
+    if (st.posts >= 1) earned.add("author");
     if (ageMs >= 30 * 864e5) earned.add("veteran");
-    if ((followerCountById[uid] ?? 0) >= 5) earned.add("popular");
+    if (ageMs >= 180 * 864e5) earned.add("dinosaure");
     if ((rankById[uid] ?? 999) <= 10) earned.add("pioneer");
-    if (st.photoPosts >= 3) earned.add("photographer");
-    if (earned.size >= 5) earned.add("collector");
-    const ordered = BADGE_ORDER.filter((b) => earned.has(b.id)).map((b) => ({ emoji: b.emoji, key: b.key }));
+    if (st.minPostAt && pr.created_at && (new Date(st.minPostAt).getTime() - new Date(pr.created_at).getTime()) < 864e5) earned.add("eclair");
+    if (ageMs < 7 * 864e5) earned.add("new");
+    if (earned.size >= 8) earned.add("collector");
+    const ordered = BADGES.filter((b) => earned.has(b.id)).map((b) => b.id);
     if (ordered.length) badgesById[uid] = ordered;
   }
 }
 
 /** Emojis de badges (3 max + compteur) pour l'affichage compact près des pseudos. */
 function badgeEmojis(uid, max = 3) {
-  const badges = badgesById[uid] || [];
-  const shown = badges.slice(0, max)
-    .map((b) => `<span class="badge" title="${esc(t(b.key))}">${b.emoji}</span>`).join("");
-  const more = badges.length > max
-    ? `<span class="badge" title="${badges.length}">+${badges.length - max}</span>` : "";
+  const ids = badgesById[uid] || [];
+  const shown = ids.slice(0, max).map((id) => {
+    const b = getBadge(id);
+    return `<span class="badge" title="${esc(badgeName(b))}">${b.emoji}</span>`;
+  }).join("");
+  const more = ids.length > max ? `<span class="badge">+${ids.length - max}</span>` : "";
   return shown + more;
 }
-
 /** Pseudo cliquable vers la page personnelle, avec mini avatar et badges s'ils existent. */
 function authorHtml(row) {
   const name = authorName(row);
@@ -1069,6 +1126,7 @@ function currentRoute() {
   if (threadMatch) return { name: "thread", username: threadMatch[1] };
   if (hash === "#/blog") return { name: "blog" };
   if (hash === "#/members") return { name: "members" };
+  if (hash === "#/badges") return { name: "badges" };
   if (hash === "#/messages") return { name: "conversations" };
   return { name: "home" };
 }
@@ -1092,6 +1150,8 @@ async function render() {
     await renderProfile(route.username);
   } else if (route.name === "members") {
     await renderMembers();
+  } else if (route.name === "badges") {
+    await renderBadgesPage();
   } else if (route.name === "conversations") {
     await renderConversations();
   } else if (route.name === "thread") {
@@ -1166,7 +1226,7 @@ async function loadAggregates() {
     supabase.from("ratings").select("post_id,value,user_id"),
     supabase.from("comments").select("post_id,user_id"),
     supabase.from("profiles").select("id,username,avatar_url,created_at,bio"),
-    supabase.from("posts").select("id,user_id,image_url"),
+    supabase.from("posts").select("id,user_id,image_url,created_at"),
     supabase.from("follows").select("follower_id,following_id")
   ]);
   if (reactionsRes.error) throw reactionsRes.error;
@@ -1201,12 +1261,14 @@ async function loadAggregates() {
 
   // --- Statistiques par membre (badges) ---
   const statsByUser = {};
-  const stOf = (uid) => (statsByUser[uid] ??= { posts: 0, comments: 0, reactionsReceived: 0, ratingCount: 0, ratingSum: 0, reactionsGiven: 0, ratingsGiven: 0, photoPosts: 0 });
+  const stOf = (uid) => (statsByUser[uid] ??= { posts: 0, comments: 0, reactionsReceived: 0, ratingCount: 0, ratingSum: 0, reactionsGiven: 0, ratingsGiven: 0, photoPosts: 0, minPostAt: null });
   const postOwner = {};
   for (const p of postsAllRes.data || []) {
     postOwner[p.id] = p.user_id;
-    stOf(p.user_id).posts += 1;
-    if (p.image_url) stOf(p.user_id).photoPosts += 1;
+    const st = stOf(p.user_id);
+    st.posts += 1;
+    if (p.image_url) st.photoPosts += 1;
+    if (!st.minPostAt || new Date(p.created_at) < new Date(st.minPostAt)) st.minPostAt = p.created_at;
   }
   for (const c of commentsRes.data) stOf(c.user_id).comments += 1;
   for (const r of reactionsRes.data) stOf(r.user_id).reactionsGiven += 1;
@@ -1797,8 +1859,9 @@ async function renderProfile(username) {
       : "";
     const myBadges = badgesById[profile.id] || [];
     const badgeRow = myBadges.length
-      ? `<div class="badge-row">${myBadges.map((b) => `<span class="badge">${b.emoji} ${esc(t(b.key))}</span>`).join("")}</div>`
-      : "";
+      ? `<div class="badge-row">${myBadges.map((id) => { const b = getBadge(id); return `<span class="badge">${b.emoji} ${esc(badgeName(b))}</span>`; }).join("")}</div>
+         <p class="small" style="margin-top:0.5rem"><a class="author-link" href="#/badges">${esc(t("profile.see_all_badges"))}</a></p>`
+      : `<p class="small" style="margin-top:0.5rem"><a class="author-link" href="#/badges">${esc(t("profile.see_all_badges"))}</a></p>`;
     const profileActions = !isOwner && session?.user
       ? `<div class="owner-actions">
            ${followButtonHtml(profile.id)}
@@ -1937,6 +2000,37 @@ async function renderMembers() {
     $("member-search").addEventListener("input", () => {
       $("members-zone").innerHTML = membersZoneHtml(members);
     });
+  } catch (err) {
+    view.innerHTML = `<section class="card"><p class="message error">${esc(t("post.err_load"))}</p></section>`;
+  }
+}
+
+// ---------- Page Récompenses (badges) ----------
+async function renderBadgesPage() {
+  view.innerHTML = skeletonHtml(3);
+  try {
+    await loadAggregates();
+    const myIds = session?.user ? (badgesById[session.user.id] || []) : [];
+    const earned = new Set(myIds);
+    const grid = BADGES.map((b) => {
+      const has = earned.has(b.id);
+      return `
+        <div class="badge-card${has ? " earned" : " locked"}">
+          <div class="badge-card-emoji">${b.emoji}</div>
+          <div class="badge-card-name">${esc(badgeName(b))}</div>
+          <div class="small">${esc(badgeDesc(b))}</div>
+          ${has ? "" : `<div class="badge-card-lock">🔒</div>`}
+        </div>`;
+    }).join("");
+    const intro = session?.user
+      ? `<p>${esc(t("badges.intro"))}</p>
+         <div class="progress-wrap"><div class="progress-bar" style="width:${Math.round((myIds.length / BADGES.length) * 100)}%"></div></div>
+         <p><strong>${esc(t("badges.progress").replace("{a}", myIds.length).replace("{b}", BADGES.length))}</strong></p>`
+      : `<p>${esc(t("badges.intro"))}</p><p class="empty">${esc(t("badges.login_cta"))}</p>`;
+    view.innerHTML = `
+      <div class="blog-header"><h1>🏆 ${esc(t("badges.title"))}</h1></div>
+      <section class="card">${intro}</section>
+      <div class="badges-grid">${grid}</div>`;
   } catch (err) {
     view.innerHTML = `<section class="card"><p class="message error">${esc(t("post.err_load"))}</p></section>`;
   }
