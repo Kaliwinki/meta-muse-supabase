@@ -28,6 +28,51 @@ const I18N = {
     "toast.avatar_saved": "Profile picture updated.",
     "toast.banner_saved": "Cover photo updated.",
     "toast.username_saved": "Username saved. Welcome!",
+    "nav.members": "Members",
+    "common.save": "Save",
+    "common.cancel": "Cancel",
+    "common.delete": "🗑️ Delete",
+    "post.edit": "✏️ Edit",
+    "post.delete_confirm": "Delete this post permanently?",
+    "post.deleted": "Post deleted.",
+    "post.updated": "Post updated.",
+    "comment.edit": "Edit",
+    "comment.delete_confirm": "Delete this comment?",
+    "comment.deleted": "Comment deleted.",
+    "comment.updated": "Comment updated.",
+    "follow.follow": "Follow",
+    "follow.following_btn": "Following ✓",
+    "profile.followers": "Followers",
+    "profile.following": "Following",
+    "feed.all": "All",
+    "feed.following": "Following",
+    "feed.following_empty": "Follow some members to see their posts here.",
+    "search.posts": "Search posts…",
+    "search.members": "Search members…",
+    "search.no_results": "No results.",
+    "notif.title": "Notifications",
+    "notif.empty": "No notifications yet.",
+    "notif.comment": "{u} commented on your post",
+    "notif.reaction": "{u} reacted to your post",
+    "notif.follow": "{u} started following you",
+    "notif.mark_all": "Mark all as read",
+    "msg.title": "Messages",
+    "msg.empty": "No conversations yet. Send a message from a member's page!",
+    "msg.placeholder": "Write a message…",
+    "msg.send": "Send",
+    "msg.button": "✉️ Message",
+    "msg.thread_empty": "No messages yet. Say hi!",
+    "msg.signin": "Log in to see your messages.",
+    "members.title": "Members",
+    "profile.bio_edit": "Edit bio",
+    "profile.bio_placeholder": "Tell everyone about yourself…",
+    "toast.bio_saved": "Bio updated.",
+    "report.button": "🚩 Report",
+    "report.title": "Report this content",
+    "report.reason": "Reason (required)",
+    "report.send": "Send report",
+    "report.thanks": "Thanks, your report has been sent.",
+    "report.err": "Could not send the report.",
     "auth.tab_login": "Login",
     "auth.tab_signup": "Sign up",
     "auth.login_title": "Log in",
@@ -166,6 +211,51 @@ const I18N = {
     "toast.avatar_saved": "Photo de profil mise à jour.",
     "toast.banner_saved": "Bannière mise à jour.",
     "toast.username_saved": "Pseudo enregistré. Bienvenue !",
+    "nav.members": "Membres",
+    "common.save": "Enregistrer",
+    "common.cancel": "Annuler",
+    "common.delete": "🗑️ Supprimer",
+    "post.edit": "✏️ Modifier",
+    "post.delete_confirm": "Supprimer définitivement cet article ?",
+    "post.deleted": "Article supprimé.",
+    "post.updated": "Article mis à jour.",
+    "comment.edit": "Modifier",
+    "comment.delete_confirm": "Supprimer ce commentaire ?",
+    "comment.deleted": "Commentaire supprimé.",
+    "comment.updated": "Commentaire mis à jour.",
+    "follow.follow": "Suivre",
+    "follow.following_btn": "Suivi ✓",
+    "profile.followers": "Abonnés",
+    "profile.following": "Abonnements",
+    "feed.all": "Tous",
+    "feed.following": "Mes abonnements",
+    "feed.following_empty": "Suis des membres pour voir leurs publications ici.",
+    "search.posts": "Rechercher un article…",
+    "search.members": "Rechercher un membre…",
+    "search.no_results": "Aucun résultat.",
+    "notif.title": "Notifications",
+    "notif.empty": "Aucune notification pour le moment.",
+    "notif.comment": "{u} a commenté ton article",
+    "notif.reaction": "{u} a réagi à ton article",
+    "notif.follow": "{u} s'est abonné à toi",
+    "notif.mark_all": "Tout marquer comme lu",
+    "msg.title": "Messages",
+    "msg.empty": "Aucune conversation pour le moment. Envoie un message depuis la page d'un membre !",
+    "msg.placeholder": "Écris un message…",
+    "msg.send": "Envoyer",
+    "msg.button": "✉️ Message",
+    "msg.thread_empty": "Aucun message pour le moment. Dis bonjour !",
+    "msg.signin": "Connecte-toi pour voir tes messages.",
+    "members.title": "Membres",
+    "profile.bio_edit": "Modifier ma bio",
+    "profile.bio_placeholder": "Présente-toi en quelques mots…",
+    "toast.bio_saved": "Bio mise à jour.",
+    "report.button": "🚩 Signaler",
+    "report.title": "Signaler ce contenu",
+    "report.reason": "Motif (obligatoire)",
+    "report.send": "Envoyer le signalement",
+    "report.thanks": "Merci, ton signalement a été envoyé.",
+    "report.err": "Impossible d'envoyer le signalement.",
     "auth.tab_login": "Connexion",
     "auth.tab_signup": "Inscription",
     "auth.login_title": "Se connecter",
@@ -375,6 +465,10 @@ function authorName(row) {
 let profilesById = {};
 /** Badges des membres : userId -> [{emoji, key}]. */
 let badgesById = {};
+/** Abonnements : qui je suis, et compteurs par membre. */
+let followingSet = new Set();
+let followerCountById = {};
+let followingCountById = {};
 function avatarFor(userId) {
   return userId ? profilesById[userId]?.avatar_url : null;
 }
@@ -418,6 +512,137 @@ function myFeedAvatarHtml() {
   if (av) return `<img class="feed-avatar" src="${esc(av)}" alt="">`;
   return `<div class="feed-avatar feed-avatar-letter">${esc((currentUsername || "?").charAt(0).toUpperCase())}</div>`;
 }
+
+/** Crée une notification pour un autre membre (silencieux en cas d'échec). */
+async function notify(userId, type, postId = null) {
+  if (!session?.user || !userId || userId === session.user.id) return;
+  try {
+    await supabase.from("notifications").insert({
+      user_id: userId,
+      actor_id: session.user.id,
+      actor_username: currentUsername,
+      type,
+      post_id: postId
+    });
+  } catch { /* une notification ne doit jamais bloquer l'action principale */ }
+}
+
+/** Bouton Suivre / Suivi pour un profil (rien pour soi ou déconnecté). */
+function followButtonHtml(profileId) {
+  if (!session?.user || profileId === session.user.id) return "";
+  const on = followingSet.has(profileId);
+  return `<button class="btn follow-btn${on ? " following" : ""}" data-follow-btn="${esc(profileId)}" type="button">${esc(on ? t("follow.following_btn") : t("follow.follow"))}</button>`;
+}
+
+function refreshFollowButtons() {
+  document.querySelectorAll("[data-follow-btn]").forEach((btn) => {
+    const on = followingSet.has(btn.dataset.followBtn);
+    btn.textContent = on ? t("follow.following_btn") : t("follow.follow");
+    btn.classList.toggle("following", on);
+  });
+}
+
+async function toggleFollow(userId) {
+  if (!session?.user) { openAuthModal("login"); return; }
+  if (!currentUsername) { openUsernameModal(); return; }
+  if (userId === session.user.id) return;
+  if (followingSet.has(userId)) {
+    const { error } = await supabase.from("follows").delete()
+      .eq("follower_id", session.user.id).eq("following_id", userId);
+    if (!error) {
+      followingSet.delete(userId);
+      followerCountById[userId] = Math.max(0, (followerCountById[userId] ?? 1) - 1);
+    }
+  } else {
+    const { error } = await supabase.from("follows").insert({ follower_id: session.user.id, following_id: userId });
+    if (!error) {
+      followingSet.add(userId);
+      followerCountById[userId] = (followerCountById[userId] ?? 0) + 1;
+      notify(userId, "follow", null);
+    }
+  }
+  refreshFollowButtons();
+}
+
+/** Compteurs du badge cloche et messages dans la barre de navigation. */
+async function refreshBadges() {
+  if (!session?.user) return;
+  const nb = $("notif-badge");
+  const mb = $("msg-badge");
+  if (!nb && !mb) return;
+  try {
+    const [{ count: nCount }, { count: mCount }] = await Promise.all([
+      supabase.from("notifications").select("id", { count: "exact", head: true }).is("read_at", null),
+      supabase.from("messages").select("id", { count: "exact", head: true }).eq("recipient_id", session.user.id).is("read_at", null)
+    ]);
+    if (nb) { nb.textContent = nCount ?? ""; nb.classList.toggle("hidden", !nCount); }
+    if (mb) { mb.textContent = mCount ?? ""; mb.classList.toggle("hidden", !mCount); }
+  } catch { /* silencieux */ }
+}
+
+function notifItemHtml(n) {
+  const key = n.type === "comment" ? "notif.comment" : n.type === "reaction" ? "notif.reaction" : "notif.follow";
+  const who = n.actor_username || "?";
+  return `
+    <div class="notif-item" data-notif="${esc(n.id)}">
+      <span class="dot${n.read_at ? " read" : ""}"></span>
+      <span>${esc(t(key).replace("{u}", who))}<br><span class="when">${fmtDate(n.created_at)}</span></span>
+    </div>`;
+}
+
+async function toggleNotifPanel() {
+  const panel = $("notif-panel");
+  if (!panel) return;
+  if (!panel.classList.contains("hidden")) { panel.classList.add("hidden"); return; }
+  panel.innerHTML = `<p class="small">${esc(t("post.loading"))}</p>`;
+  panel.classList.remove("hidden");
+  const { data, error } = await supabase.from("notifications")
+    .select("*").order("created_at", { ascending: false }).limit(20);
+  if (error || !data?.length) {
+    panel.innerHTML = `<p class="small">${esc(t("notif.empty"))}</p>`;
+    return;
+  }
+  panel.innerHTML = `
+    <div class="notif-actions"><button id="notif-mark-all" type="button">${esc(t("notif.mark_all"))}</button></div>
+    ${data.map(notifItemHtml).join("")}`;
+  panel.querySelectorAll("[data-notif]").forEach((el) => {
+    el.addEventListener("click", () => openNotification(el.dataset.notif, data));
+  });
+  $("notif-mark-all").addEventListener("click", async () => {
+    await supabase.from("notifications").update({ read_at: new Date().toISOString() }).is("read_at", null);
+    panel.classList.add("hidden");
+    refreshBadges();
+  });
+}
+
+async function openNotification(id, list) {
+  const n = list.find((x) => x.id === id);
+  if (!n) return;
+  if (!n.read_at) {
+    await supabase.from("notifications").update({ read_at: new Date().toISOString() }).eq("id", id);
+    refreshBadges();
+  }
+  $("notif-panel")?.classList.add("hidden");
+  if (n.type === "follow" && n.actor_username) location.hash = `#/user/${n.actor_username}`;
+  else if (n.post_id) location.hash = `#/post/${n.post_id}`;
+}
+
+/** Signalement : modale partagée par les articles et les commentaires. */
+let reportTarget = null;
+function openReportModal(target) {
+  if (!session?.user) { openAuthModal("login"); return; }
+  reportTarget = target;
+  $("report-message").innerHTML = "";
+  $("report-reason").value = "";
+  $("report-modal").classList.remove("hidden");
+}
+function closeReportModal() {
+  $("report-modal").classList.add("hidden");
+  reportTarget = null;
+}
+
+/** Rafraîchissement périodique des conversations ouvertes. */
+let msgPoll = null;
 
 /** True si l'utilisateur peut écrire (sinon, lui proposer de choisir son pseudo). */
 function requireUsername() {
@@ -470,12 +695,25 @@ function renderAuthArea() {
       ? `<a class="user-email author-link" href="#/user/${esc(currentUsername)}" title="${esc(t("nav.connected_as"))} : ${esc(session.user.email)}">${esc(display)}</a>`
       : `<span class="user-email" title="${esc(t("nav.connected_as"))} : ${esc(session.user.email)}">${esc(display)}</span>`;
     area.innerHTML = `
+      <span class="icon-wrap">
+        <button class="btn icon-btn" id="msg-btn" type="button" title="${esc(t("msg.title"))}">💬</button>
+        <span class="badge-count hidden" id="msg-badge"></span>
+      </span>
+      <span class="notif-wrap">
+        <span class="icon-wrap">
+          <button class="btn icon-btn" id="notif-btn" type="button" title="${esc(t("notif.title"))}">🔔</button>
+          <span class="badge-count hidden" id="notif-badge"></span>
+        </span>
+        <div id="notif-panel" class="notif-panel hidden"></div>
+      </span>
       ${nameHtml}
       <button class="btn" id="logout-btn" type="button">${esc(t("nav.logout"))}</button>`;
     $("logout-btn").addEventListener("click", async () => {
       const { error } = await supabase.auth.signOut();
       if (error) showToast(authErrorMessage(error.message), "error");
     });
+    $("msg-btn").addEventListener("click", () => { location.hash = "#/messages"; });
+    refreshBadges();
   } else {
     area.innerHTML = `
       <button class="btn" id="open-login" type="button">${esc(t("nav.login"))}</button>
@@ -687,6 +925,48 @@ document.querySelectorAll(".settings-item[data-theme]").forEach((btn) => {
   btn.addEventListener("click", () => { setTheme(btn.dataset.theme); });
 });
 
+// ---------- Délégation globale : suivre, signaler, notifications ----------
+document.addEventListener("click", (e) => {
+  const fb = e.target.closest("[data-follow-btn]");
+  if (fb) { toggleFollow(fb.dataset.followBtn); return; }
+  const rp = e.target.closest("[data-report-post]");
+  if (rp) { openReportModal({ postId: rp.dataset.reportPost }); return; }
+  const rc = e.target.closest("[data-report-comment]");
+  if (rc) { openReportModal({ commentId: rc.dataset.reportComment }); return; }
+  if (e.target.closest("#notif-btn")) { toggleNotifPanel(); return; }
+  const panel = $("notif-panel");
+  if (panel && !panel.classList.contains("hidden") && !e.target.closest(".notif-wrap")) {
+    panel.classList.add("hidden");
+  }
+});
+
+// ---------- Modale de signalement ----------
+$("report-close").addEventListener("click", closeReportModal);
+$("report-modal").addEventListener("click", (e) => {
+  if (e.target === $("report-modal")) closeReportModal();
+});
+$("report-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const reason = $("report-reason").value.trim();
+  if (!reason || !reportTarget || !session?.user) return;
+  const { error } = await supabase.from("reports").insert({
+    reporter_id: session.user.id,
+    reason,
+    post_id: reportTarget.postId || null,
+    comment_id: reportTarget.commentId || null
+  });
+  closeReportModal();
+  if (error) showToast(t("report.err"), "error");
+  else showToast(t("report.thanks"), "success");
+});
+
+// ---------- Application installable (PWA) ----------
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}
+
 // ---------- Notifications toast ----------
 function showToast(text, kind = "info") {
   let box = $("toasts");
@@ -725,18 +1005,23 @@ function currentRoute() {
   if (postMatch) return { name: "post", id: postMatch[1] };
   const userMatch = hash.match(/^#\/user\/([a-z0-9_-]{3,20})$/);
   if (userMatch) return { name: "user", username: userMatch[1] };
+  const threadMatch = hash.match(/^#\/messages\/([a-z0-9_-]{3,20})$/);
+  if (threadMatch) return { name: "thread", username: threadMatch[1] };
   if (hash === "#/blog") return { name: "blog" };
+  if (hash === "#/members") return { name: "members" };
+  if (hash === "#/messages") return { name: "conversations" };
   return { name: "home" };
 }
 
 function setActiveNav(name) {
-  const target = name === "post" ? "blog" : name === "home" ? "home" : name === "blog" ? "blog" : "";
+  const target = name === "post" ? "blog" : name === "home" ? "home" : name === "blog" ? "blog" : name === "members" ? "members" : "";
   document.querySelectorAll(".nav-links a").forEach((a) => {
     a.classList.toggle("active", a.dataset.nav === target);
   });
 }
 
 async function render() {
+  if (msgPoll) { clearInterval(msgPoll); msgPoll = null; }
   const route = currentRoute();
   setActiveNav(route.name);
   if (route.name === "blog") {
@@ -745,6 +1030,12 @@ async function render() {
     await renderPostDetail(route.id);
   } else if (route.name === "user") {
     await renderProfile(route.username);
+  } else if (route.name === "members") {
+    await renderMembers();
+  } else if (route.name === "conversations") {
+    await renderConversations();
+  } else if (route.name === "thread") {
+    await renderThread(route.username);
   } else {
     renderHome();
   }
@@ -810,12 +1101,13 @@ async function loadPosts() {
 }
 
 async function loadAggregates() {
-  const [reactionsRes, ratingsRes, commentsRes, profilesRes, postsAllRes] = await Promise.all([
+  const [reactionsRes, ratingsRes, commentsRes, profilesRes, postsAllRes, followsRes] = await Promise.all([
     supabase.from("reactions").select("post_id,type,user_id"),
     supabase.from("ratings").select("post_id,value,user_id"),
     supabase.from("comments").select("post_id,user_id"),
-    supabase.from("profiles").select("id,username,avatar_url,created_at"),
-    supabase.from("posts").select("id,user_id")
+    supabase.from("profiles").select("id,username,avatar_url,created_at,bio"),
+    supabase.from("posts").select("id,user_id"),
+    supabase.from("follows").select("follower_id,following_id")
   ]);
   if (reactionsRes.error) throw reactionsRes.error;
   if (ratingsRes.error) throw ratingsRes.error;
@@ -866,6 +1158,16 @@ async function loadAggregates() {
   }
   computeBadges(statsByUser);
 
+  // --- Abonnements ---
+  followingSet = new Set();
+  followerCountById = {};
+  followingCountById = {};
+  for (const f of followsRes.data || []) {
+    if (session?.user && f.follower_id === session.user.id) followingSet.add(f.following_id);
+    followerCountById[f.following_id] = (followerCountById[f.following_id] ?? 0) + 1;
+    followingCountById[f.follower_id] = (followingCountById[f.follower_id] ?? 0) + 1;
+  }
+
   return { reactionsByPost, myReactions, ratingsByPost, myRatings, commentsCountByPost };
 }
 
@@ -911,6 +1213,29 @@ function bindPostCards() {
 }
 
 // ---------- Vue Blog (liste) ----------
+let feedMode = "all";
+let blogCache = null;
+
+function postsZoneHtml() {
+  if (!blogCache) return "";
+  const { posts, agg } = blogCache;
+  if (!posts.length) return `<section class="card"><p class="empty">${esc(t("blog.empty"))}</p></section>`;
+  let list = posts;
+  if (feedMode === "following" && session?.user) {
+    list = list.filter((p) => followingSet.has(p.user_id) || p.user_id === session.user.id);
+    if (!list.length) return `<section class="card"><p class="empty">${esc(t("feed.following_empty"))}</p></section>`;
+  }
+  const q = ($("post-search")?.value || "").trim().toLowerCase();
+  if (q) {
+    list = list.filter((p) =>
+      p.title.toLowerCase().includes(q) ||
+      p.content.toLowerCase().includes(q) ||
+      authorName(p).toLowerCase().includes(q));
+    if (!list.length) return `<section class="card"><p class="empty">${esc(t("search.no_results"))}</p></section>`;
+  }
+  return `<div class="posts-grid">${list.map((p) => postCardHtml(p, agg)).join("")}</div>`;
+}
+
 async function renderBlog() {
   view.innerHTML = skeletonHtml(3);
   try {
@@ -939,16 +1264,36 @@ async function renderBlog() {
           <button class="btn primary" id="blog-login" type="button">${esc(t("blog.login_signup"))}</button></p>
         </section>`;
 
-    const list = posts.length === 0
-      ? `<section class="card"><p class="empty">${esc(t("blog.empty"))}</p></section>`
-      : posts.map((p) => postCardHtml(p, agg)).join("");
+    blogCache = { posts, agg };
+
+    const tabs = session?.user
+      ? `<div class="seg-tabs">
+           <button class="seg-tab${feedMode === "all" ? " active" : ""}" data-feed="all" type="button">${esc(t("feed.all"))}</button>
+           <button class="seg-tab${feedMode === "following" ? " active" : ""}" data-feed="following" type="button">${esc(t("feed.following"))}</button>
+         </div>`
+      : "";
 
     view.innerHTML = `
       <div class="blog-header"><h1>${esc(t("blog.title"))}</h1></div>
       ${composer}
-      <div id="posts-list" class="posts-grid">${list}</div>`;
+      ${tabs}
+      <input id="post-search" class="search-input" type="search" placeholder="${esc(t("search.posts"))}">
+      <div id="posts-zone">${postsZoneHtml()}</div>`;
 
     bindPostCards();
+
+    document.querySelectorAll("[data-feed]").forEach((b) => {
+      b.addEventListener("click", () => {
+        feedMode = b.dataset.feed;
+        document.querySelectorAll("[data-feed]").forEach((x) => x.classList.toggle("active", x === b));
+        $("posts-zone").innerHTML = postsZoneHtml();
+        bindPostCards();
+      });
+    });
+    $("post-search").addEventListener("input", () => {
+      $("posts-zone").innerHTML = postsZoneHtml();
+      bindPostCards();
+    });
 
     const blogLogin = $("blog-login");
     if (blogLogin) blogLogin.addEventListener("click", () => openAuthModal("login"));
@@ -1019,14 +1364,33 @@ async function renderPostDetail(postId) {
 
     const commentsHtml = comments.length === 0
       ? `<p class="empty">${esc(t("post.no_comments"))}</p>`
-      : comments.map((c) => `
+      : comments.map((c) => {
+          const isCommentOwner = session?.user?.id === c.user_id;
+          const actions = loggedIn
+            ? `<div class="comment-actions">
+                 ${isCommentOwner
+                   ? `<button type="button" data-edit-btn="${esc(c.id)}">${esc(t("comment.edit"))}</button>
+                      <button type="button" class="link-danger" data-del-btn="${esc(c.id)}">${esc(t("common.delete").replace("🗑️ ", ""))}</button>`
+                   : `<button type="button" data-report-comment="${esc(c.id)}">${esc(t("report.button"))}</button>`}
+               </div>`
+            : "";
+          return `
         <div class="comment">
           <div class="comment-head">
             <span class="comment-author">${authorHtml(c)}</span>
             <span class="comment-date">${fmtDate(c.created_at)}</span>
           </div>
-          <p>${esc(c.content)}</p>
-        </div>`).join("");
+          <p class="comment-body">${esc(c.content)}</p>
+          <form class="form comment-edit-form hidden" data-edit-form="${esc(c.id)}">
+            <textarea rows="3" maxlength="2000" required>${esc(c.content)}</textarea>
+            <div class="comment-actions">
+              <button type="submit">${esc(t("common.save"))}</button>
+              <button type="button" data-edit-cancel="${esc(c.id)}">${esc(t("common.cancel"))}</button>
+            </div>
+          </form>
+          ${actions}
+        </div>`;
+        }).join("");
 
     const commentForm = loggedIn
       ? `
@@ -1045,12 +1409,36 @@ async function renderPostDetail(postId) {
       !loggedIn ? esc(t("post.login_to_react")) : ""
     ].filter(Boolean).join(" · ");
 
+    const isPostOwner = session?.user?.id === post.user_id;
+    const ownerBlock = isPostOwner
+      ? `
+        <div class="owner-actions">
+          <button class="btn small" id="edit-post-btn" type="button">${esc(t("post.edit"))}</button>
+          <button class="btn small danger" id="delete-post-btn" type="button">${esc(t("common.delete"))}</button>
+        </div>
+        <form id="edit-post-form" class="form hidden">
+          <label for="edit-title">${esc(t("blog.post_title"))}</label>
+          <input id="edit-title" maxlength="120" required value="${esc(post.title)}">
+          <label for="edit-content">${esc(t("blog.post_content"))}</label>
+          <textarea id="edit-content" rows="6" maxlength="5000" required>${esc(post.content)}</textarea>
+          <label for="edit-image">${esc(t("photo.add"))}</label>
+          <input id="edit-image" type="file" accept="image/*">
+          <div class="owner-actions">
+            <button type="submit" class="btn primary">${esc(t("common.save"))}</button>
+            <button type="button" class="btn" id="edit-cancel">${esc(t("common.cancel"))}</button>
+          </div>
+        </form>`
+      : loggedIn
+        ? `<div class="owner-actions"><button class="btn small" data-report-post="${esc(post.id)}" type="button">${esc(t("report.button"))}</button></div>`
+        : "";
+
     view.innerHTML = `
       <a class="back-link" href="#/blog">${esc(t("post.back"))}</a>
       <div class="post-layout">
       <article class="card post-full">
         <h1>${esc(post.title)}</h1>
         <div class="post-meta">${esc(t("post.by"))} ${authorHtml(post)} · ${fmtDate(post.created_at)}</div>
+        ${ownerBlock}
         <p>${esc(post.content)}</p>
         ${post.image_url ? `<img class="post-image-full" src="${esc(post.image_url)}" alt="">` : ""}
         <div class="reactions">${reactionsHtml}</div>
@@ -1087,6 +1475,72 @@ async function renderPostDetail(postId) {
     const detailLogin = $("detail-login");
     if (detailLogin) detailLogin.addEventListener("click", () => openAuthModal("login"));
 
+    // --- Modifier / supprimer l'article (propriétaire) ---
+    const editPostBtn = $("edit-post-btn");
+    if (editPostBtn) {
+      editPostBtn.addEventListener("click", () => $("edit-post-form").classList.toggle("hidden"));
+      $("edit-cancel").addEventListener("click", () => $("edit-post-form").classList.add("hidden"));
+      $("delete-post-btn").addEventListener("click", async () => {
+        if (!confirm(t("post.delete_confirm"))) return;
+        const { error } = await supabase.from("posts").delete().eq("id", post.id);
+        if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
+        showToast(t("post.deleted"), "success");
+        location.hash = "#/blog";
+      });
+      $("edit-post-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const title = $("edit-title").value.trim();
+        const content = $("edit-content").value.trim();
+        if (!title || !content) return;
+        const updates = { title, content };
+        const imageFile = $("edit-image").files[0];
+        if (imageFile) {
+          const url = await uploadPhoto(imageFile, "posts");
+          if (url === undefined) return;
+          updates.image_url = url;
+        }
+        const { error } = await supabase.from("posts").update(updates).eq("id", post.id);
+        if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
+        showToast(t("post.updated"), "success");
+        await renderPostDetail(post.id);
+      });
+    }
+
+    // --- Modifier / supprimer un commentaire (propriétaire) ---
+    document.querySelectorAll("[data-edit-btn]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const form = document.querySelector(`[data-edit-form="${btn.dataset.editBtn}"]`);
+        form?.classList.toggle("hidden");
+      });
+    });
+    document.querySelectorAll("[data-edit-cancel]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const form = document.querySelector(`[data-edit-form="${btn.dataset.editCancel}"]`);
+        form?.classList.add("hidden");
+      });
+    });
+    document.querySelectorAll("[data-edit-form]").forEach((form) => {
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const content = form.querySelector("textarea").value.trim();
+        if (!content) return;
+        const { error } = await supabase.from("comments")
+          .update({ content }).eq("id", form.dataset.editForm);
+        if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
+        showToast(t("comment.updated"), "success");
+        await renderPostDetail(post.id);
+      });
+    });
+    document.querySelectorAll("[data-del-btn]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        if (!confirm(t("comment.delete_confirm"))) return;
+        const { error } = await supabase.from("comments").delete().eq("id", btn.dataset.delBtn);
+        if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
+        showToast(t("comment.deleted"), "success");
+        await renderPostDetail(post.id);
+      });
+    });
+
     document.querySelectorAll(".reaction").forEach((btn) => {
       btn.addEventListener("click", async () => {
         if (!requireUsername()) return;
@@ -1107,6 +1561,7 @@ async function renderPostDetail(postId) {
               type
             });
             if (error) throw error;
+            notify(post.user_id, "reaction", post.id);
           }
           await renderPostDetail(post.id);
         } catch (err) {
@@ -1151,6 +1606,7 @@ async function renderPostDetail(postId) {
           showToast(t("post.err_comment") + error.message, "error");
         } else {
           showToast(t("toast.commented"), "success");
+          notify(post.user_id, "comment", post.id);
           await renderPostDetail(post.id);
         }
       });
@@ -1220,6 +1676,22 @@ async function renderProfile(username) {
     const badgeRow = myBadges.length
       ? `<div class="badge-row">${myBadges.map((b) => `<span class="badge">${b.emoji} ${esc(t(b.key))}</span>`).join("")}</div>`
       : "";
+    const profileActions = !isOwner && session?.user
+      ? `<div class="owner-actions">
+           ${followButtonHtml(profile.id)}
+           <a class="btn" href="#/messages/${esc(profile.username)}">${esc(t("msg.button"))}</a>
+         </div>`
+      : "";
+    const bioBlock = profile.bio ? `<p>${esc(profile.bio)}</p>` : "";
+    const bioForm = isOwner
+      ? `<details class="avatar-edit">
+           <summary>${esc(t("profile.bio_edit"))}</summary>
+           <form id="bio-form" class="form">
+             <textarea id="bio-input" rows="3" maxlength="300" placeholder="${esc(t("profile.bio_placeholder"))}">${esc(profile.bio || "")}</textarea>
+             <button type="submit" class="primary">${esc(t("common.save"))}</button>
+           </form>
+         </details>`
+      : "";
 
     view.innerHTML = `
       <section class="card profile-top">
@@ -1230,8 +1702,11 @@ async function renderProfile(username) {
             <h1>${esc(profile.username)}</h1>
             <p class="small">${esc(t("profile.member_since"))} ${fmtDate(profile.created_at)}</p>
             ${badgeRow}
+            ${bioBlock}
+            ${profileActions}
             ${avatarForm}
             ${bannerForm}
+            ${bioForm}
           </div>
         </div>
       </section>
@@ -1241,6 +1716,8 @@ async function renderProfile(username) {
           <li><span>${esc(t("profile.stat_comments"))}</span><strong>${commentsCount ?? 0}</strong></li>
           <li><span>${esc(t("profile.stat_reactions"))}</span><strong>${reactionsReceived}</strong></li>
           <li><span>${esc(t("profile.stat_avg"))}</span><strong>${avgReceived ? avgReceived.toFixed(1) + "/5" : "—"}</strong></li>
+          <li><span>${esc(t("profile.followers"))}</span><strong>${followerCountById[profile.id] ?? 0}</strong></li>
+          <li><span>${esc(t("profile.following"))}</span><strong>${followingCountById[profile.id] ?? 0}</strong></li>
         </ul>
       </section>
       <h2 class="profile-posts-title">${esc(t("profile.posts"))} (${posts.length})</h2>
@@ -1277,6 +1754,18 @@ async function renderProfile(username) {
         await renderProfile(username);
       });
     }
+
+    const bioFormEl = $("bio-form");
+    if (bioFormEl) {
+      bioFormEl.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const bio = $("bio-input").value.trim();
+        const { error } = await supabase.from("profiles").update({ bio: bio || null }).eq("id", profile.id);
+        if (error) { showToast(t("photo.upload_error"), "error"); return; }
+        showToast(t("toast.bio_saved"), "success");
+        await renderProfile(username);
+      });
+    }
   } catch (err) {
     view.innerHTML = `<section class="card"><p class="message error">${esc(t("post.err_load"))}</p><a class="back-link" href="#/blog">${esc(t("post.back"))}</a></section>`;
   }
@@ -1284,6 +1773,190 @@ async function renderProfile(username) {
 
 // ---------- Démarrage ----------
 applyStaticTexts();
+
+// ---------- Annuaire des membres ----------
+function memberCardHtml(m) {
+  const badges = (badgesById[m.id] || []).map((b) => `<span class="badge" title="${esc(t(b.key))}">${b.emoji}</span>`).join("");
+  const av = m.avatar_url
+    ? `<img class="feed-avatar" src="${esc(m.avatar_url)}" alt="">`
+    : `<div class="feed-avatar feed-avatar-letter">${esc(m.username.charAt(0).toUpperCase())}</div>`;
+  return `
+    <section class="card member-card">
+      <div class="member-top">
+        ${av}
+        <div>
+          <a class="author-link" href="#/user/${esc(m.username)}">${esc(m.username)}</a>${badges}
+          <p class="small">${esc(t("profile.followers"))} : ${followerCountById[m.id] ?? 0}</p>
+        </div>
+      </div>
+      ${m.bio ? `<p class="small">${esc(m.bio)}</p>` : ""}
+      <div>${followButtonHtml(m.id)}</div>
+    </section>`;
+}
+
+function membersZoneHtml(members) {
+  const q = ($("member-search")?.value || "").trim().toLowerCase();
+  const list = q ? members.filter((m) => m.username.toLowerCase().includes(q)) : members;
+  if (!list.length) return `<section class="card"><p class="empty">${esc(t("search.no_results"))}</p></section>`;
+  return `<div class="member-grid">${list.map(memberCardHtml).join("")}</div>`;
+}
+
+async function renderMembers() {
+  view.innerHTML = skeletonHtml(3);
+  try {
+    await loadAggregates();
+    const members = Object.values(profilesById)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    view.innerHTML = `
+      <div class="blog-header"><h1>${esc(t("members.title"))}</h1></div>
+      <input id="member-search" class="search-input" type="search" placeholder="${esc(t("search.members"))}">
+      <div id="members-zone">${membersZoneHtml(members)}</div>`;
+    $("member-search").addEventListener("input", () => {
+      $("members-zone").innerHTML = membersZoneHtml(members);
+    });
+  } catch (err) {
+    view.innerHTML = `<section class="card"><p class="message error">${esc(t("post.err_load"))}</p></section>`;
+  }
+}
+
+// ---------- Messagerie privée ----------
+async function renderConversations() {
+  view.innerHTML = skeletonHtml(2);
+  if (!session?.user) {
+    view.innerHTML = `<section class="card"><p>${esc(t("msg.signin"))} <button class="btn primary" id="msg-login" type="button">${esc(t("blog.login_signup"))}</button></p></section>`;
+    $("msg-login")?.addEventListener("click", () => openAuthModal("login"));
+    return;
+  }
+  if (!currentUsername) { openUsernameModal(); return; }
+  try {
+    await loadAggregates();
+    const { data, error } = await supabase.from("messages")
+      .select("*").order("created_at", { ascending: false });
+    if (error) throw error;
+    const me = session.user.id;
+    const convos = new Map(); // otherId -> { last, unread }
+    for (const m of data || []) {
+      const other = m.sender_id === me ? m.recipient_id : m.sender_id;
+      if (!convos.has(other)) convos.set(other, { last: m, unread: 0 });
+      if (m.recipient_id === me && !m.read_at) convos.get(other).unread += 1;
+    }
+    const items = [];
+    for (const [otherId, c] of convos) {
+      const pr = profilesById[otherId];
+      const username = pr?.username;
+      if (!username) continue;
+      const av = pr?.avatar_url
+        ? `<img class="feed-avatar" src="${esc(pr.avatar_url)}" alt="">`
+        : `<div class="feed-avatar feed-avatar-letter">${esc(username.charAt(0).toUpperCase())}</div>`;
+      items.push(`
+        <div class="convo-item" data-convo="${esc(username)}">
+          ${av}
+          <div class="convo-main">
+            <div><a class="author-link" href="#/user/${esc(username)}">${esc(username)}</a></div>
+            <div class="convo-last">${esc(c.last.content)}</div>
+          </div>
+          ${c.unread ? `<span class="convo-unread">${c.unread}</span>` : ""}
+        </div>`);
+    }
+    view.innerHTML = `
+      <div class="blog-header"><h1>${esc(t("msg.title"))}</h1></div>
+      <section class="card">
+        ${items.length ? items.join("") : `<p class="empty">${esc(t("msg.empty"))}</p>`}
+      </section>`;
+    document.querySelectorAll("[data-convo]").forEach((el) => {
+      el.addEventListener("click", (e) => {
+        if (e.target.closest("a")) return; // laisser le lien profil fonctionner
+        location.hash = `#/messages/${el.dataset.convo}`;
+      });
+    });
+  } catch (err) {
+    view.innerHTML = `<section class="card"><p class="message error">${esc(t("post.err_load"))}</p></section>`;
+  }
+}
+
+async function renderThread(username) {
+  view.innerHTML = skeletonHtml(2);
+  if (!session?.user) {
+    view.innerHTML = `<section class="card"><p>${esc(t("msg.signin"))} <button class="btn primary" id="msg-login" type="button">${esc(t("blog.login_signup"))}</button></p></section>`;
+    $("msg-login")?.addEventListener("click", () => openAuthModal("login"));
+    return;
+  }
+  if (!currentUsername) { openUsernameModal(); return; }
+  if (username === currentUsername) { location.hash = "#/messages"; return; }
+  try {
+    const [aggRes, { data: profile }] = await Promise.all([
+      loadAggregates(),
+      supabase.from("profiles").select("*").eq("username", username).maybeSingle()
+    ]);
+    if (!profile) {
+      view.innerHTML = `<section class="card"><p class="message error">${esc(t("profile.not_found"))}</p><a class="back-link" href="#/messages">${esc(t("post.back"))}</a></section>`;
+      return;
+    }
+    const av = profile.avatar_url
+      ? `<img class="feed-avatar" src="${esc(profile.avatar_url)}" alt="">`
+      : `<div class="feed-avatar feed-avatar-letter">${esc(profile.username.charAt(0).toUpperCase())}</div>`;
+    view.innerHTML = `
+      <a class="back-link" href="#/messages">${esc(t("msg.title"))}</a>
+      <section class="card">
+        <div class="composer-head">
+          ${av}
+          <h2><a class="author-link" href="#/user/${esc(profile.username)}">${esc(profile.username)}</a></h2>
+        </div>
+        <div id="thread-list" class="thread-list"></div>
+        <form id="msg-form" class="msg-form">
+          <textarea id="msg-input" rows="2" maxlength="2000" required placeholder="${esc(t("msg.placeholder"))}"></textarea>
+          <button type="submit" class="primary">${esc(t("msg.send"))}</button>
+        </form>
+      </section>`;
+    await loadThreadMessages(profile.id);
+    if (msgPoll) clearInterval(msgPoll);
+    msgPoll = setInterval(() => {
+      if (location.hash === `#/messages/${username}`) loadThreadMessages(profile.id, true);
+    }, 12000);
+    $("msg-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const content = $("msg-input").value.trim();
+      if (!content) return;
+      $("msg-input").value = "";
+      const { error } = await supabase.from("messages").insert({
+        sender_id: session.user.id,
+        recipient_id: profile.id,
+        content
+      });
+      if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
+      await loadThreadMessages(profile.id);
+    });
+  } catch (err) {
+    view.innerHTML = `<section class="card"><p class="message error">${esc(t("post.err_load"))}</p><a class="back-link" href="#/messages">${esc(t("post.back"))}</a></section>`;
+  }
+}
+
+async function loadThreadMessages(otherId, quiet = false) {
+  const me = session.user.id;
+  const list = $("thread-list");
+  try {
+    const { data, error } = await supabase.from("messages").select("*")
+      .or(`and(sender_id.eq.${me},recipient_id.eq.${otherId}),and(sender_id.eq.${otherId},recipient_id.eq.${me})`)
+      .order("created_at", { ascending: true }).limit(200);
+    if (error) throw error;
+    if (!list) return;
+    list.innerHTML = (data || []).map((m) => `
+      <div class="msg-row${m.sender_id === me ? " mine" : ""}">
+        <div>
+          <div class="msg-bubble">${esc(m.content)}</div>
+          <div class="msg-when">${fmtDate(m.created_at)}</div>
+        </div>
+      </div>`).join("") || `<p class="empty">${esc(t("msg.thread_empty"))}</p>`;
+    if (!quiet) list.scrollIntoView({ block: "end" });
+    const unreadIds = (data || []).filter((m) => m.recipient_id === me && !m.read_at).map((m) => m.id);
+    if (unreadIds.length) {
+      await supabase.from("messages").update({ read_at: new Date().toISOString() }).in("id", unreadIds);
+      refreshBadges();
+    }
+  } catch {
+    if (!quiet && list) list.innerHTML = `<p class="message error">${esc(t("post.err_load"))}</p>`;
+  }
+}
 
 async function applySession(newSession, event = "RESTORED") {
   session = newSession ?? null;
