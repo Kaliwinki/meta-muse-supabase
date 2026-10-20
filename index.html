@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pierre — Home</title>
   <link rel="stylesheet" href="style.css">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('mm_theme')||'dark'}catch(e){}</script>
 </head>
 <body>
   <!-- Barre de navigation : onglets à gauche, paramètres + connexion à droite -->
@@ -23,6 +24,9 @@
           <div class="settings-label" data-i18n="settings.language">Language</div>
           <button class="settings-item" data-lang="en" type="button">🇬🇧 English</button>
           <button class="settings-item" data-lang="fr" type="button">🇫🇷 Français</button>
+          <div class="settings-title" data-i18n="settings.theme">Theme</div>
+          <button class="settings-item" data-theme="dark" type="button" data-i18n="theme.dark">🌙 Dark</button>
+          <button class="settings-item" data-theme="light" type="button" data-i18n="theme.light">☀️ Light</button>
         </div>
       </div>
     </div>
@@ -32,6 +36,7 @@
 
   <footer>
     <p class="small" data-i18n="footer.text">Pierre — a social network hosted free on GitHub Pages, with accounts and blog powered by Supabase.</p>
+    <p class="small"><a href="privacy.html" data-i18n="footer.privacy">Privacy Policy</a></p>
   </footer>
 
   <!-- Fenêtre de connexion / inscription -->
