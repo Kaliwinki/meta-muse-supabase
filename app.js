@@ -229,7 +229,7 @@ const I18N = {
     "auth.err_password": "Password must be at least 6 characters.",
     "auth.err_email_invalid": "This email address is not valid.",
     "auth.err_generic": "Something went wrong. Please try again.",
-    "auth.err_username_format": "Choose a username of 3 to 20 characters: letters, numbers, “_” or “-” only.",
+    "auth.err_username_format": "Choose a username of 3 to 20 characters: letters (upper or lower case), numbers, “_”, “-” or “.” only.",
     "auth.err_username_taken": "This username is already taken. Try another one!",
     "auth.err_profile": "Account created, but the profile could not be saved. Log out and log back in to try again.",
     "auth.ok_welcome": "Account created successfully. Welcome, {u}!",
@@ -555,7 +555,7 @@ const I18N = {
     "auth.err_password": "Le mot de passe doit contenir au moins 6 caractères.",
     "auth.err_email_invalid": "L'adresse e-mail n'est pas valide.",
     "auth.err_generic": "Une erreur est survenue. Réessaie.",
-    "auth.err_username_format": "Choisis un nom d'utilisateur de 3 à 20 caractères : lettres, chiffres, « _ » ou « - » uniquement.",
+    "auth.err_username_format": "Choisis un nom d'utilisateur de 3 à 20 caractères : lettres (majuscules ou minuscules), chiffres, « _ », « - » ou « . » uniquement.",
     "auth.err_username_taken": "Ce nom d'utilisateur est déjà pris. Essaie-en un autre !",
     "auth.err_profile": "Compte créé, mais le profil n'a pas pu être enregistré. Déconnecte-toi puis reconnecte-toi pour réessayer.",
     "auth.ok_welcome": "Compte créé avec succès. Bienvenue, {u} !",
@@ -720,18 +720,20 @@ function richText(text) {
   // des apostrophes devient un faux tag « #39 ») et au moins une lettre ou _ .
   html = html.replace(/(^|[^\p{L}\p{N}_&])#((?=[\p{L}\p{N}_]{0,29}[\p{L}_])[\p{L}\p{N}_]{1,30})/gu, (m, pre, tag) =>
     `${pre}<a href="#/blog" class="tag-link" data-tag="${esc(tag.toLowerCase())}">#${esc(tag)}</a>`);
-  html = html.replace(/(^|\s)@([a-z0-9_-]{3,20})/g, (m, sp, name) =>
-    profileByUsername[name]
-      ? `${sp}<a href="#/user/${esc(name)}" class="tag-link">@${esc(name)}</a>`
-      : m);
+  html = html.replace(/(^|\s)@([A-Za-z0-9_.-]{3,20})/g, (m, sp, name) => {
+    const pr = profileByUsernameCI[name.toLowerCase()];
+    return pr
+      ? `${sp}<a href="#/user/${esc(pr.username)}" class="tag-link">@${esc(name)}</a>`
+      : m;
+  });
   return html;
 }
 
 /** Extrait les profils @mentionnés dans un texte (pseudos existants, uniques). */
 function mentionedProfiles(text) {
   const found = new Map();
-  for (const m of String(text ?? "").matchAll(/@([a-z0-9_-]{3,20})/g)) {
-    const pr = profileByUsername[m[1]];
+  for (const m of String(text ?? "").matchAll(/@([A-Za-z0-9_.-]{3,20})/g)) {
+    const pr = profileByUsernameCI[m[1].toLowerCase()];
     if (pr && !found.has(pr.id)) found.set(pr.id, pr);
   }
   return [...found.values()];
@@ -816,6 +818,7 @@ function authorName(row) {
 let profilesById = {};
 let bannedIds = new Set();
 let profileByUsername = {};
+let profileByUsernameCI = {};
 /** Badges des membres : userId -> [badgeId, …] (ordre de prestige du catalogue). */
 let badgesById = {};
 /** Abonnements : qui je suis, et compteurs par membre. */
@@ -1436,11 +1439,11 @@ $("login-form").addEventListener("submit", async (e) => {
 
 $("signup-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const rawUsername = $("signup-username").value.trim().toLowerCase();
+  const rawUsername = $("signup-username").value.trim();
   const email = $("signup-email").value.trim();
   const password = $("signup-password").value;
 
-  if (!/^[a-z0-9_-]{3,20}$/.test(rawUsername)) {
+  if (!/^[A-Za-z0-9_.-]{3,20}$/.test(rawUsername)) {
     showModalMessage(t("auth.err_username_format"), "error");
     return;
   }
@@ -1450,7 +1453,7 @@ $("signup-form").addEventListener("submit", async (e) => {
     const { data: taken } = await supabase
       .from("profiles")
       .select("id")
-      .eq("username", rawUsername)
+      .ilike("username", rawUsername)
       .maybeSingle();
     if (taken) {
       showModalMessage(t("auth.err_username_taken"), "error");
@@ -1509,7 +1512,7 @@ function suggestUsername() {
   const candidates = [md.user_name, md.preferred_username, md.full_name, md.name, (session?.user?.email || "").split("@")[0]];
   for (const c of candidates) {
     const s = String(c || "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 20);
-    if (/^[a-z0-9_-]{3,20}$/.test(s)) return s;
+    if (/^[A-Za-z0-9_.-]{3,20}$/.test(s)) return s;
   }
   return "";
 }
@@ -1528,8 +1531,8 @@ $("username-later").addEventListener("click", closeUsernameModal);
 
 $("username-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const rawUsername = $("username-input").value.trim().toLowerCase();
-  if (!/^[a-z0-9_-]{3,20}$/.test(rawUsername)) {
+  const rawUsername = $("username-input").value.trim();
+  if (!/^[A-Za-z0-9_.-]{3,20}$/.test(rawUsername)) {
     showUsernameMessage(t("auth.err_username_format"), "error");
     return;
   }
@@ -1537,7 +1540,7 @@ $("username-form").addEventListener("submit", async (e) => {
     const { data: taken } = await supabase
       .from("profiles")
       .select("id")
-      .eq("username", rawUsername)
+      .ilike("username", rawUsername)
       .maybeSingle();
     if (taken && taken.id !== session.user.id) {
       showUsernameMessage(t("auth.err_username_taken"), "error");
@@ -1716,9 +1719,9 @@ function currentRoute() {
   const hash = location.hash || "#/";
   const postMatch = hash.match(/^#\/post\/([0-9a-f-]{36})$/i);
   if (postMatch) return { name: "post", id: postMatch[1] };
-  const userMatch = hash.match(/^#\/user\/([a-z0-9_-]{3,20})$/);
+  const userMatch = hash.match(/^#\/user\/([A-Za-z0-9_.-]{3,20})$/);
   if (userMatch) return { name: "user", username: userMatch[1] };
-  const threadMatch = hash.match(/^#\/messages\/([a-z0-9_-]{3,20})$/);
+  const threadMatch = hash.match(/^#\/messages\/([A-Za-z0-9_.-]{3,20})$/);
   if (threadMatch) return { name: "thread", username: threadMatch[1] };
   if (hash === "#/blog") return { name: "blog" };
   if (hash === "#/members") return { name: "members" };
@@ -1852,10 +1855,12 @@ async function loadAggregates() {
   if (!profilesRes.error) {
     profilesById = {};
     profileByUsername = {};
+    profileByUsernameCI = {};
     bannedIds = new Set();
     for (const pr of profilesRes.data) {
       profilesById[pr.id] = pr;
       profileByUsername[pr.username] = pr;
+      profileByUsernameCI[pr.username.toLowerCase()] = pr;
       if (pr.banned) bannedIds.add(pr.id);
     }
     const navAdminEl = document.getElementById("nav-admin");
@@ -3058,9 +3063,9 @@ function renameStatus(profile) {
 }
 
 async function doRename(profile, newName) {
-  if (!/^[a-z0-9_-]{3,20}$/.test(newName)) { showToast(t("auth.err_username_format"), "error"); return; }
+  if (!/^[A-Za-z0-9_.-]{3,20}$/.test(newName)) { showToast(t("auth.err_username_format"), "error"); return; }
   if (newName === profile.username) { showToast(t("profile.rename_same"), "error"); return; }
-  const { data: taken } = await supabase.from("profiles").select("id").eq("username", newName).neq("id", profile.id).maybeSingle();
+  const { data: taken } = await supabase.from("profiles").select("id").ilike("username", newName).neq("id", profile.id).maybeSingle();
   if (taken) { showToast(t("auth.err_username_taken"), "error"); return; }
   const ok = await confirmYesNo(t("profile.rename_confirm").replace("{name}", newName));
   if (!ok) return;
