@@ -1220,3 +1220,48 @@ footer {
   font-size: 0.8rem;
   margin: 0.4rem 0;
 }
+
+/* ---------- Fenêtre de confirmation (refonte lot n° 7) ---------- */
+#confirm-modal { align-items: center; padding: 1rem; }
+.confirm-card {
+  max-width: 340px;
+  text-align: center;
+  padding: 1.7rem 1.4rem 1.3rem;
+  border-radius: 20px;
+}
+.confirm-icon {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 0.95rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(56, 189, 248, 0.13);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+.confirm-icon.danger {
+  color: var(--error);
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.3);
+}
+#confirm-text { font-size: 1.08rem; font-weight: 600; line-height: 1.45; margin: 0; }
+.confirm-actions { display: flex; gap: 0.6rem; justify-content: stretch; margin-top: 1.35rem; }
+.confirm-actions .confirm-btn {
+  flex: 1;
+  padding: 0.72rem 0;
+  border-radius: 12px;
+  font-size: 0.95rem;
+}
+#confirm-no { background: rgba(148, 163, 184, 0.12); }
+#confirm-no:hover { border-color: var(--muted); }
+#confirm-yes.danger {
+  background: linear-gradient(135deg, #f87171, #dc2626);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(248, 113, 113, 0.35);
+}
+#confirm-yes.danger:hover { background: linear-gradient(135deg, #dc2626, #f87171); }

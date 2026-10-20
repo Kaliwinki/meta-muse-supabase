@@ -761,11 +761,15 @@ function showModalMessage(text, kind = "info") {
  * à la demande de l'utilisateur : déconnexion, suppressions…). Résout true = Oui.
  * Cliquer sur le voile = Non.
  */
-function confirmYesNo(message) {
+function confirmYesNo(message, opts = {}) {
   return new Promise((resolve) => {
     const modal = $("confirm-modal");
     const yesBtn = $("confirm-yes");
     const noBtn = $("confirm-no");
+    const iconEl = $("confirm-icon");
+    iconEl.textContent = opts.icon || "?";
+    iconEl.classList.toggle("danger", !!opts.danger);
+    yesBtn.classList.toggle("danger", !!opts.danger);
     $("confirm-text").textContent = message;
     yesBtn.textContent = t("common.yes");
     noBtn.textContent = t("common.no");
@@ -1384,7 +1388,7 @@ function renderAuthArea() {
       ${nameHtml}
       <button class="btn" id="logout-btn" type="button">${esc(t("nav.logout"))}</button>`;
     $("logout-btn").addEventListener("click", async () => {
-      if (!(await confirmYesNo(t("nav.logout_confirm")))) return;
+      if (!(await confirmYesNo(t("nav.logout_confirm"), { icon: "🚪" }))) return;
       const { error } = await supabase.auth.signOut();
       if (error) showToast(authErrorMessage(error.message), "error");
     });
@@ -2188,7 +2192,7 @@ document.addEventListener("click", async (e) => {
   const unblockBtn = e.target.closest("[data-unblock]");
   if (blockBtn) {
     if (!session?.user) return;
-    if (!(await confirmYesNo(t("profile.block_confirm")))) return;
+    if (!(await confirmYesNo(t("profile.block_confirm"), { icon: "🚫", danger: true }))) return;
     const uid = blockBtn.dataset.block;
     const { error } = await supabase.from("blocks").insert({ blocker_id: session.user.id, blocked_id: uid });
     if (error) { showToast(t("profile.err_block") + error.message, "error"); return; }
@@ -2569,7 +2573,7 @@ async function renderPostDetail(postId, instant = false) {
       editPostBtn.addEventListener("click", () => $("edit-post-form").classList.toggle("hidden"));
       $("edit-cancel").addEventListener("click", () => $("edit-post-form").classList.add("hidden"));
       $("delete-post-btn").addEventListener("click", async () => {
-        if (!(await confirmYesNo(t("post.delete_confirm")))) return;
+        if (!(await confirmYesNo(t("post.delete_confirm"), { icon: "🗑️", danger: true }))) return;
         const { error } = await supabase.from("posts").delete().eq("id", post.id);
         if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
         showToast(t("post.deleted"), "success");
@@ -2621,7 +2625,7 @@ async function renderPostDetail(postId, instant = false) {
     });
     document.querySelectorAll("[data-del-btn]").forEach((btn) => {
       btn.addEventListener("click", async () => {
-        if (!(await confirmYesNo(t("comment.delete_confirm")))) return;
+        if (!(await confirmYesNo(t("comment.delete_confirm"), { icon: "🗑️", danger: true }))) return;
         const { error } = await supabase.from("comments").delete().eq("id", btn.dataset.delBtn);
         if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
         showToast(t("comment.deleted"), "success");
@@ -3007,7 +3011,7 @@ async function renderProfile(username) {
         e.preventDefault();
         const kind = $("sanction-kind").value;
         const days = parseInt($("sanction-days").value, 10) || 7;
-        if (!(await confirmYesNo(t("admin.confirm_sanction").replace("{name}", profile.username)))) return;
+        if (!(await confirmYesNo(t("admin.confirm_sanction").replace("{name}", profile.username), { icon: "⚠️", danger: true }))) return;
         if (await adminRpc("admin_sanction", { target: profile.id, kind, days })) {
           showToast(t("admin.done"), "success");
           await renderProfile(profile.username);
@@ -3067,7 +3071,7 @@ async function doRename(profile, newName) {
   if (newName === profile.username) { showToast(t("profile.rename_same"), "error"); return; }
   const { data: taken } = await supabase.from("profiles").select("id").ilike("username", newName).neq("id", profile.id).maybeSingle();
   if (taken) { showToast(t("auth.err_username_taken"), "error"); return; }
-  const ok = await confirmYesNo(t("profile.rename_confirm").replace("{name}", newName));
+  const ok = await confirmYesNo(t("profile.rename_confirm").replace("{name}", newName), { icon: "✏️" });
   if (!ok) return;
   const { error } = await supabase.from("profiles").update({ username: newName }).eq("id", profile.id);
   if (error) { showToast(error.message, "error"); return; }
@@ -3120,17 +3124,17 @@ document.addEventListener("click", async (e) => {
   if (!el || !isAdminMe()) return;
   const action = el.dataset.adminAction, id = el.dataset.id, name = el.dataset.name || "";
   let ok = false;
-  if (action === "del-post") { if (!(await confirmYesNo(t("admin.confirm_delete_post")))) return; ok = await adminRpc("admin_delete_post", { pid: id }); }
+  if (action === "del-post") { if (!(await confirmYesNo(t("admin.confirm_delete_post"), { icon: "🗑️", danger: true }))) return; ok = await adminRpc("admin_delete_post", { pid: id }); }
   else if (action === "hide-post") { ok = await adminRpc("admin_set_post_hidden", { pid: id, val: true }); }
   else if (action === "unhide-post") { ok = await adminRpc("admin_set_post_hidden", { pid: id, val: false }); }
-  else if (action === "del-comment") { if (!(await confirmYesNo(t("admin.confirm_delete_comment")))) return; ok = await adminRpc("admin_delete_comment", { cid: id }); }
+  else if (action === "del-comment") { if (!(await confirmYesNo(t("admin.confirm_delete_comment"), { icon: "🗑️", danger: true }))) return; ok = await adminRpc("admin_delete_comment", { cid: id }); }
   else if (action === "hide-comment") { ok = await adminRpc("admin_set_comment_hidden", { cid: id, val: true }); }
   else if (action === "unhide-comment") { ok = await adminRpc("admin_set_comment_hidden", { cid: id, val: false }); }
   else if (action === "verify") { if (!(await confirmYesNo(t("admin.confirm_verify").replace("{name}", name)))) return; ok = await adminRpc("admin_set_verified", { target: id, val: true }); }
   else if (action === "unverify") { if (!(await confirmYesNo(t("admin.confirm_unverify").replace("{name}", name)))) return; ok = await adminRpc("admin_set_verified", { target: id, val: false }); }
   else if (action === "make-admin") { if (!(await confirmYesNo(t("admin.confirm_make_admin").replace("{name}", name)))) return; ok = await adminRpc("admin_set_admin", { target: id, val: true }); }
   else if (action === "remove-admin") { if (!(await confirmYesNo(t("admin.confirm_remove_admin").replace("{name}", name)))) return; ok = await adminRpc("admin_set_admin", { target: id, val: false }); }
-  else if (action === "ban") { if (!(await confirmYesNo(t("admin.confirm_ban").replace("{name}", name)))) return; ok = await adminRpc("admin_set_banned", { target: id, val: true }); }
+  else if (action === "ban") { if (!(await confirmYesNo(t("admin.confirm_ban").replace("{name}", name), { icon: "🚫", danger: true }))) return; ok = await adminRpc("admin_set_banned", { target: id, val: true }); }
   else if (action === "unban") { if (!(await confirmYesNo(t("admin.confirm_unban").replace("{name}", name)))) return; ok = await adminRpc("admin_set_banned", { target: id, val: false }); }
   else if (action === "lock-post") { ok = await adminRpc("admin_set_comments_locked", { pid: id, val: true }); }
   else if (action === "unlock-post") { ok = await adminRpc("admin_set_comments_locked", { pid: id, val: false }); }
@@ -3141,8 +3145,8 @@ document.addEventListener("click", async (e) => {
   else if (action === "clear-banner") { if (!(await confirmYesNo(t("admin.clear_banner") + " ?"))) return; ok = await adminRpc("admin_clear_banner", { target: id }); }
   else if (action === "sanction-clear") { if (!(await confirmYesNo(t("admin.confirm_clear").replace("{name}", name)))) return; ok = await adminRpc("admin_sanction", { target: id, kind: "clear", days: 0 }); }
   else if (action === "purge") {
-    if (!(await confirmYesNo(t("admin.confirm_purge").replace("{name}", name)))) return;
-    if (!(await confirmYesNo(t("admin.confirm_purge2").replace("{name}", name)))) return;
+    if (!(await confirmYesNo(t("admin.confirm_purge").replace("{name}", name), { icon: "⚠️", danger: true }))) return;
+    if (!(await confirmYesNo(t("admin.confirm_purge2").replace("{name}", name), { icon: "⚠️", danger: true }))) return;
     ok = await adminRpc("admin_purge_content", { target: id });
   }
   else if (action === "dismiss-report") { const { error } = await supabase.from("reports").delete().eq("id", id); if (error) { showToast(error.message, "error"); return; } ok = true; }
@@ -3254,7 +3258,7 @@ async function renderAdmin() {
       e.preventDefault();
       const msg = $("broadcast-text").value.trim();
       if (!msg) return;
-      if (!(await confirmYesNo(t("admin.confirm_broadcast")))) return;
+      if (!(await confirmYesNo(t("admin.confirm_broadcast"), { icon: "📣" }))) return;
       if (await adminRpc("admin_broadcast", { msg })) {
         showToast(t("admin.broadcast_sent"), "success");
         $("broadcast-text").value = "";

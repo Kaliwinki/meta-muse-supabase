@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pierre — Home</title>
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0f172a">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -107,11 +107,12 @@
 
   <!-- Fenêtre de confirmation Oui/Non (déconnexion, suppressions…) -->
   <div id="confirm-modal" class="modal-overlay hidden">
-    <div class="modal-card">
+    <div class="modal-card confirm-card">
+      <div id="confirm-icon" class="confirm-icon" aria-hidden="true">?</div>
       <p id="confirm-text"></p>
       <div class="confirm-actions">
-        <button id="confirm-no" class="btn" type="button">No</button>
-        <button id="confirm-yes" class="btn primary" type="button">Yes</button>
+        <button id="confirm-no" class="btn confirm-btn" type="button">No</button>
+        <button id="confirm-yes" class="btn primary confirm-btn" type="button">Yes</button>
       </div>
     </div>
   </div>
@@ -130,6 +131,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=12"></script>
+  <script type="module" src="app.js?v=13"></script>
 </body>
 </html>
