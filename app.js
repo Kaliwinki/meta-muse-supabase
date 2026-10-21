@@ -1781,6 +1781,8 @@ function setActiveNav(name) {
 let lastRouteKey = "";
 async function render() {
   if (msgPoll) { clearInterval(msgPoll); msgPoll = null; }
+  view.classList.remove("thread-mode");
+  document.body.classList.remove("chat-mode");
   if (session?.user) {
     try { await loadAggregates(); } catch { /* le rendu normal gérera */ }
     const me = profilesById[session.user.id];
@@ -3461,10 +3463,12 @@ async function renderThread(username) {
     const av = profile.avatar_url
       ? `<img class="feed-avatar" src="${esc(profile.avatar_url)}" alt="">`
       : `<div class="feed-avatar feed-avatar-letter">${esc(profile.username.charAt(0).toUpperCase())}</div>`;
+    view.classList.add("thread-mode");
+    document.body.classList.add("chat-mode");
     view.innerHTML = `
-      <a class="back-link" href="#/messages">${esc(t("msg.title"))}</a>
-      <section class="card thread-card">
+      <section class="thread-screen">
         <div class="thread-head">
+          <a class="thread-back" href="#/messages" aria-label="${esc(t("msg.title"))}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
           ${av}
           <h2><a class="author-link" href="#/user/${esc(profile.username)}">${esc(profile.username)}</a></h2>
         </div>
