@@ -78,6 +78,34 @@ const I18N = {
     "settings.style_zen": "Zen",
     "settings.style_galaxy": "Galaxy",
     "settings.fullstyles_hint": "A style applies its palette AND its shape — afterwards, recolor freely with any palette: the shape stays.",
+    "profile.moderator": "Moderator",
+    "admin.dms": "Private conversations",
+    "admin.dms_title": "Private conversations of {name}",
+    "admin.dms_empty": "No private conversations.",
+    "admin.dms_between": "Conversation between {a} and {b}",
+    "admin.dms_readonly": "Read-only admin view: members are not notified, messages are not marked as read, and this consultation is recorded in the admin log.",
+    "admin.dms_back": "← Back to the profile",
+    "admin.dms_count": "messages",
+    "admin.mod_level": "Moderator grade",
+    "admin.mod_none": "None",
+    "admin.mod_1": "Grade 1 — Junior",
+    "admin.mod_2": "Grade 2 — Confirmed",
+    "admin.mod_3": "Grade 3 — Senior",
+    "admin.mod_tools": "Moderator tools",
+    "admin.mod_title": "Moderation",
+    "settings.reset_all": "Reset everything",
+    "settings.reset_all_hint": "Theme, colors, accent, font, corners, animations and density back to the defaults.",
+    "settings.reset_all_confirm": "Reset ALL appearance settings to the defaults?",
+    "settings.reset_done": "Appearance reset to the defaults.",
+    "msg.protect": "Protect this conversation",
+    "msg.protect_banner": "Protected conversation — screenshots are discouraged and the reader's name is watermarked.",
+    "msg.protect_by": "Enabled by {name}.",
+    "msg.protect_confirm_on": "Turn on protection for this conversation? Both sides get: blur when the app is in the background, no copy/paste, and a watermark naming the reader. It discourages and traces screenshots — a website cannot block them completely.",
+    "msg.protect_confirm_off": "Turn off the protection for this conversation?",
+    "msg.protect_on_toast": "Protection on",
+    "msg.protect_off_toast": "Protection off",
+    "msg.capture_warned": "Screenshots are discouraged in this protected conversation.",
+    "msg.protect_shield": "Protected conversation",
     "settings.palette_default": "Default",
     "settings.palette_ocean": "Ocean",
     "settings.palette_forest": "Forest",
@@ -481,6 +509,34 @@ const I18N = {
     "settings.style_zen": "Zen",
     "settings.style_galaxy": "Galaxie",
     "settings.fullstyles_hint": "Un style applique sa palette ET sa forme — ensuite, change les couleurs librement avec n'importe quelle palette : la forme reste.",
+    "profile.moderator": "Modérateur",
+    "admin.dms": "Conversations privées",
+    "admin.dms_title": "Conversations privées de {name}",
+    "admin.dms_empty": "Aucune conversation privée.",
+    "admin.dms_between": "Conversation entre {a} et {b}",
+    "admin.dms_readonly": "Lecture seule (admin) : les membres ne sont pas avertis, les messages ne sont pas marqués comme lus, et cette consultation est inscrite au journal d'administration.",
+    "admin.dms_back": "← Retour au profil",
+    "admin.dms_count": "messages",
+    "admin.mod_level": "Grade de modérateur",
+    "admin.mod_none": "Aucun",
+    "admin.mod_1": "Niveau 1 — Junior",
+    "admin.mod_2": "Niveau 2 — Confirmé",
+    "admin.mod_3": "Niveau 3 — Senior",
+    "admin.mod_tools": "Outils modérateur",
+    "admin.mod_title": "Modération",
+    "settings.reset_all": "Tout réinitialiser",
+    "settings.reset_all_hint": "Thème, couleurs, accent, police, coins, animations et densité remis aux paramètres de base.",
+    "settings.reset_all_confirm": "Remettre TOUS les réglages d'apparence aux paramètres de base ?",
+    "settings.reset_done": "Apparence remise aux paramètres de base.",
+    "msg.protect": "Protéger cette conversation",
+    "msg.protect_banner": "Conversation protégée — les captures sont découragées et le nom de la personne qui lit est en filigrane.",
+    "msg.protect_by": "Activée par {name}.",
+    "msg.protect_confirm_on": "Activer la protection pour cette conversation ? Les deux côtés auront : flou dès que l'app passe en arrière-plan, aucune copie, et un filigrane au nom de la personne qui lit. Ça décourage et trace les captures — un site web ne peut pas les bloquer complètement.",
+    "msg.protect_confirm_off": "Retirer la protection de cette conversation ?",
+    "msg.protect_on_toast": "Protection activée",
+    "msg.protect_off_toast": "Protection retirée",
+    "msg.capture_warned": "Les captures sont découragées dans cette conversation protégée.",
+    "msg.protect_shield": "Conversation protégée",
     "settings.palette_default": "Défaut",
     "settings.palette_ocean": "Océan",
     "settings.palette_forest": "Forêt",
@@ -1503,6 +1559,9 @@ function closeReportModal() {
 
 /** Rafraîchissement périodique des conversations ouvertes. */
 let msgPoll = null;
+let protectOn = false;
+let protectByName = "";
+let protectPair = null;
 
 /** True si l'utilisateur peut écrire (sinon, lui proposer de choisir son pseudo). */
 function requireUsername() {
@@ -1961,6 +2020,19 @@ document.querySelectorAll("[data-fullstyle]").forEach((btn) => {
   btn.addEventListener("click", () => applyFullStyle(btn.dataset.fullstyle));
 });
 
+const styleResetAllBtn = $("style-reset-all");
+if (styleResetAllBtn) {
+  styleResetAllBtn.addEventListener("click", async () => {
+    if (!(await confirmYesNo(t("settings.reset_all_confirm"), { icon: "warn", danger: true }))) return;
+    setTheme("dark");
+    $("colors-reset")?.click();
+    $("accent-reset")?.click();
+    try { localStorage.removeItem("mm_style"); } catch { /* stockage indisponible */ }
+    applyStylePrefs();
+    showToast(t("settings.reset_done"), "success");
+  });
+}
+
 // ---------- Préférences de style (police, taille, coins, animations, densité) ----------
 const STYLE_DEFAULTS = { font: "modern", textsize: "normal", corners: "rounded", anim: "on", density: "comfortable" };
 function loadStylePrefs() {
@@ -2103,6 +2175,10 @@ function currentRoute() {
   if (userMatch) return { name: "user", username: userMatch[1] };
   const threadMatch = hash.match(/^#\/messages\/([A-Za-z0-9_.-]{3,20})$/);
   if (threadMatch) return { name: "thread", username: threadMatch[1] };
+  const dmsThreadMatch = hash.match(/^#\/admin-dms\/([A-Za-z0-9_.-]{3,20})\/([A-Za-z0-9_.-]{3,20})$/);
+  if (dmsThreadMatch) return { name: "admin-thread", username: dmsThreadMatch[1], partner: dmsThreadMatch[2] };
+  const dmsMatch = hash.match(/^#\/admin-dms\/([A-Za-z0-9_.-]{3,20})$/);
+  if (dmsMatch) return { name: "admin-dms", username: dmsMatch[1] };
   if (hash === "#/blog") return { name: "blog" };
   if (hash === "#/members") return { name: "members" };
   if (hash === "#/badges") return { name: "badges" };
@@ -2123,6 +2199,7 @@ async function render() {
   if (msgPoll) { clearInterval(msgPoll); msgPoll = null; }
   view.classList.remove("thread-mode");
   document.body.classList.remove("chat-mode");
+  if (currentRoute().name !== "thread") { protectOn = false; protectPair = null; document.body.classList.remove("protect-shield"); }
   if (session?.user) {
     try { await loadAggregates(); } catch { /* le rendu normal gérera */ }
     const me = profilesById[session.user.id];
@@ -2133,7 +2210,7 @@ async function render() {
     }
   }
   const route = currentRoute();
-  const routeKey = route.name + ":" + (route.id || route.username || "");
+  const routeKey = route.name + ":" + (route.id || route.username || "") + (route.partner ? "/" + route.partner : "");
   if (routeKey !== lastRouteKey) { lastRouteKey = routeKey; window.scrollTo(0, 0); }
   setActiveNav(route.name);
   if (route.name === "blog") {
@@ -2152,6 +2229,10 @@ async function render() {
     await renderConversations();
   } else if (route.name === "thread") {
     await renderThread(route.username);
+  } else if (route.name === "admin-dms") {
+    await renderAdminDms(route.username);
+  } else if (route.name === "admin-thread") {
+    await renderAdminThread(route.username, route.partner);
   } else {
     renderHome();
   }
@@ -2221,7 +2302,7 @@ async function loadAggregates() {
     supabase.from("reactions").select("post_id,type,user_id"),
     supabase.from("ratings").select("post_id,value,user_id"),
     supabase.from("comments").select("post_id,user_id"),
-    supabase.from("profiles").select("id,username,avatar_url,created_at,bio,verified,accent_color,pinned_post_id,is_admin,banned,muted_until,suspended_until"),
+    supabase.from("profiles").select("id,username,avatar_url,created_at,bio,verified,accent_color,pinned_post_id,is_admin,banned,muted_until,suspended_until,mod_level"),
     supabase.from("posts").select("id,user_id,image_url,created_at"),
     supabase.from("follows").select("follower_id,following_id"),
     supabase.from("poll_options").select("post_id"),
@@ -2246,7 +2327,7 @@ async function loadAggregates() {
       if (pr.banned) bannedIds.add(pr.id);
     }
     const navAdminEl = document.getElementById("nav-admin");
-    if (navAdminEl) navAdminEl.hidden = !isAdminMe();
+    if (navAdminEl) navAdminEl.hidden = !isAdminMe() && myModLevel() === 0;
   }
 
   const reactionsByPost = {};
@@ -2373,7 +2454,7 @@ function postCardHtml(p, agg) {
       ${p.image_url ? `<img class="post-image" src="${esc(p.image_url)}" alt="">` : ""}
       <p class="post-excerpt">${richText(excerpt(p.content))}</p>
       ${pollHtml(p.id)}
-      ${isAdminMe() ? `<div class="comment-actions admin-actions"><button type="button" data-admin-action="${p.hidden ? "unhide-post" : "hide-post"}" data-id="${esc(p.id)}">${esc(t(p.hidden ? "admin.unhide" : "admin.hide"))}</button><button type="button" class="link-danger" data-admin-action="del-post" data-id="${esc(p.id)}">${esc(t("common.delete").replace("🗑️ ", ""))}</button></div>` : ""}
+      ${(isAdminMe() || myModLevel() >= 1) ? `<div class="comment-actions admin-actions"><button type="button" data-admin-action="${p.hidden ? "unhide-post" : "hide-post"}" data-id="${esc(p.id)}">${esc(t(p.hidden ? "admin.unhide" : "admin.hide"))}</button>${(isAdminMe() || myModLevel() >= 2) ? `<button type="button" class="link-danger" data-admin-action="del-post" data-id="${esc(p.id)}">${esc(t("common.delete").replace("🗑️ ", ""))}</button>` : ""}</div>` : ""}
       <div class="post-stats">${stats}<button class="bm-btn" data-share="${esc(p.id)}" title="${esc(t("post.share"))}">🔗</button><button class="bm-btn${myBookmarks.has(p.id) ? " active" : ""}" data-bookmark="${esc(p.id)}" title="${esc(t("post.save"))}">🔖</button></div>
     </article>`;
 }
@@ -2816,8 +2897,8 @@ async function renderPostDetail(postId, instant = false) {
                   <button type="button" class="link-danger" data-del-btn="${esc(c.id)}">${esc(t("common.delete").replace("🗑️ ", ""))}</button>`
                : `${!isReply ? `<button type="button" data-reply-btn="${esc(c.id)}">${esc(t("comment.reply"))}</button>` : ""}
                   <button type="button" data-report-comment="${esc(c.id)}">${esc(t("report.button"))}</button>
-                  ${isAdminMe() ? `<button type="button" data-admin-action="${c.hidden ? "unhide-comment" : "hide-comment"}" data-id="${esc(c.id)}">${esc(t(c.hidden ? "admin.unhide" : "admin.hide"))}</button>
-                  <button type="button" class="link-danger" data-admin-action="del-comment" data-id="${esc(c.id)}">${esc(t("common.delete").replace("🗑️ ", ""))}</button>` : ""}`}
+                  ${(isAdminMe() || myModLevel() >= 1) ? `<button type="button" data-admin-action="${c.hidden ? "unhide-comment" : "hide-comment"}" data-id="${esc(c.id)}">${esc(t(c.hidden ? "admin.unhide" : "admin.hide"))}</button>
+                  ${(isAdminMe() || myModLevel() >= 2) ? `<button type="button" class="link-danger" data-admin-action="del-comment" data-id="${esc(c.id)}">${esc(t("common.delete").replace("🗑️ ", ""))}</button>` : ""}` : ""}`}
            </div>`
         : "";
       const children = (childrenOf[c.id] || []).map((ch) => commentHtml(ch, true)).join("");
@@ -2897,13 +2978,13 @@ async function renderPostDetail(postId, instant = false) {
         ? `<div class="owner-actions"><button class="btn small" data-report-post="${esc(post.id)}" type="button">${esc(t("report.button"))}</button></div>`
         : "";
 
-    const adminPostBlock = isAdminMe()
+    const adminPostBlock = isStaffMe()
       ? `<div class="owner-actions admin-actions">
-           ${!isPostOwner ? `<button class="btn small danger" type="button" data-admin-action="del-post" data-id="${esc(post.id)}">${esc(t("common.delete"))}</button>` : ""}
+           ${!isPostOwner && (isAdminMe() || myModLevel() >= 2) ? `<button class="btn small danger" type="button" data-admin-action="del-post" data-id="${esc(post.id)}">${esc(t("common.delete"))}</button>` : ""}
            <button class="btn small" type="button" data-admin-action="${post.hidden ? "unhide-post" : "hide-post"}" data-id="${esc(post.id)}">${esc(t(post.hidden ? "admin.unhide" : "admin.hide"))}</button>
-           <button class="btn small" type="button" data-admin-action="${post.comments_locked ? "unlock-post" : "lock-post"}" data-id="${esc(post.id)}">${esc(t(post.comments_locked ? "admin.unlock" : "admin.lock"))}</button>
-           <button class="btn small" type="button" data-admin-action="${post.featured ? "unfeature-post" : "feature-post"}" data-id="${esc(post.id)}">${esc(t(post.featured ? "admin.unfeature" : "admin.feature"))}</button>
-           ${post.image_url ? `<button class="btn small" type="button" data-admin-action="clear-post-image" data-id="${esc(post.id)}">${esc(t("admin.clear_image"))}</button>` : ""}
+           ${(isAdminMe() || myModLevel() >= 2) ? `<button class="btn small" type="button" data-admin-action="${post.comments_locked ? "unlock-post" : "lock-post"}" data-id="${esc(post.id)}">${esc(t(post.comments_locked ? "admin.unlock" : "admin.lock"))}</button>` : ""}
+           ${(isAdminMe() || myModLevel() >= 3) ? `<button class="btn small" type="button" data-admin-action="${post.featured ? "unfeature-post" : "feature-post"}" data-id="${esc(post.id)}">${esc(t(post.featured ? "admin.unfeature" : "admin.feature"))}</button>` : ""}
+           ${post.image_url && (isAdminMe() || myModLevel() >= 2) ? `<button class="btn small" type="button" data-admin-action="clear-post-image" data-id="${esc(post.id)}">${esc(t("admin.clear_image"))}</button>` : ""}
          </div>`
       : "";
 
@@ -3279,6 +3360,17 @@ async function renderProfile(username) {
                : profSanction.muted
                  ? esc(t("admin.muted_until").replace("{d}", fmtDate(profile.muted_until)))
                  : esc(t("admin.sanction_none"))}</p>
+           <p style="margin-top:0.75rem"><a class="btn small" href="#/admin-dms/${esc(profile.username)}">💬 ${esc(t("admin.dms"))}</a></p>
+           <form id="modlevel-form" class="form" style="margin-top:0.75rem">
+             <label>${esc(t("admin.mod_level"))}</label>
+             <select id="modlevel-select">
+               <option value="0"${profile.mod_level === 0 ? " selected" : ""}>${esc(t("admin.mod_none"))}</option>
+               <option value="1"${profile.mod_level === 1 ? " selected" : ""}>${esc(t("admin.mod_1"))}</option>
+               <option value="2"${profile.mod_level === 2 ? " selected" : ""}>${esc(t("admin.mod_2"))}</option>
+               <option value="3"${profile.mod_level === 3 ? " selected" : ""}>${esc(t("admin.mod_3"))}</option>
+             </select>
+             <button type="submit" class="btn small">${esc(t("admin.apply"))}</button>
+           </form>
            <form id="sanction-form" class="form">
              <select id="sanction-kind">
                <option value="mute">${esc(t("admin.kind_mute"))}</option>
@@ -3304,6 +3396,27 @@ async function renderProfile(username) {
              ${profile.banner_url ? `<button class="btn small" type="button" data-admin-action="clear-banner" data-id="${esc(profile.id)}">${esc(t("admin.clear_banner"))}</button>` : ""}
              <button class="btn small danger" type="button" data-admin-action="purge" data-id="${esc(profile.id)}" data-name="${esc(profile.username)}">${esc(t("admin.purge"))}</button>
            </div>
+         </details>`
+      : "";
+    const modProfileBlock = !isAdminMe() && !isOwner && myModLevel() > 0
+      ? `<details class="avatar-edit">
+           <summary>🛡️ ${esc(t("admin.mod_tools"))} · ${esc(t("profile.moderator"))} ${myModLevel()}</summary>
+           ${myModLevel() >= 2 ? `<form id="warn-form" class="form" style="margin-top:0.75rem">
+             <label>${esc(t("admin.warn"))}</label>
+             <textarea id="warn-text" rows="2" maxlength="300" placeholder="${esc(t("admin.warn_ph"))}"></textarea>
+             <button type="submit" class="btn small">${esc(t("admin.warn_send"))}</button>
+           </form>` : ""}
+           ${myModLevel() >= 3 ? `<form id="sanction-form" class="form" style="margin-top:0.75rem">
+             <select id="sanction-kind">
+               <option value="mute">${esc(t("admin.kind_mute"))}</option>
+             </select>
+             <select id="sanction-days">
+               <option value="1">${esc(t("admin.days_1"))}</option>
+               <option value="7" selected>${esc(t("admin.days_7"))}</option>
+               <option value="30">${esc(t("admin.days_30"))}</option>
+             </select>
+             <button type="submit" class="primary">${esc(t("admin.apply"))}</button>
+           </form>` : ""}
          </details>`
       : "";
     const renameState = isOwner ? renameStatus(profile) : null;
@@ -3336,7 +3449,7 @@ async function renderProfile(username) {
         <div class="profile-head">
           ${avatarBlock}
           <div class="profile-info">
-            <h1>${esc(profile.username)}${profile.verified ? `<span class="verified" title="${esc(t("profile.verified"))}">✓</span>` : ""}${profile.is_admin ? `<span class="admin-chip">${esc(t("profile.admin"))}</span>` : ""}${profile.banned ? `<span class="banned-chip">${esc(t("admin.banned_chip"))}</span>` : ""}</h1>
+            <h1>${esc(profile.username)}${profile.verified ? `<span class="verified" title="${esc(t("profile.verified"))}">✓</span>` : ""}${profile.is_admin ? `<span class="admin-chip">${esc(t("profile.admin"))}</span>` : ""}${modChipHtml(profile)}${profile.banned ? `<span class="banned-chip">${esc(t("admin.banned_chip"))}</span>` : ""}</h1>
             <p class="small">${esc(t("profile.member_since"))} ${fmtDate(profile.created_at)}</p>
             ${badgeRow}
             ${bioBlock}
@@ -3346,6 +3459,7 @@ async function renderProfile(username) {
             ${bioForm}
             ${renameForm}
             ${adminProfileBlock}
+            ${modProfileBlock}
             ${sanctionBlock}
           </div>
         </div>
@@ -3401,6 +3515,17 @@ async function renderProfile(username) {
       });
     }
 
+    const modlevelFormEl = $("modlevel-form");
+    if (modlevelFormEl) {
+      modlevelFormEl.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const lvl = parseInt($("modlevel-select").value, 10) || 0;
+        if (await adminRpc("admin_set_moderator", { target: profile.id, lvl })) {
+          showToast(t("admin.done"), "success");
+          await renderProfile(profile.username);
+        }
+      });
+    }
     const sanctionFormEl = $("sanction-form");
     if (sanctionFormEl) {
       sanctionFormEl.addEventListener("submit", async (e) => {
@@ -3495,6 +3620,15 @@ function sanctionState(p) {
     banned: !!p.banned
   };
 }
+
+function myModLevel() {
+  const me = profilesById[session?.user?.id];
+  return me ? (me.mod_level || 0) : 0;
+}
+function isStaffMe() { return isAdminMe() || myModLevel() > 0; }
+function modChipHtml(p) {
+  return p && p.mod_level ? ` <span class="mod-chip">${esc(t("profile.moderator"))} ${p.mod_level}</span>` : "";
+}
 function isMutedMe() {
   const me = profilesById[session?.user?.id];
   if (!me) return false;
@@ -3520,8 +3654,10 @@ async function adminRpc(fn, args) {
 // uniquement dans le HTML généré pour les administrateurs).
 document.addEventListener("click", async (e) => {
   const el = e.target.closest("[data-admin-action]");
-  if (!el || !isAdminMe()) return;
+  if (!el) return;
   const action = el.dataset.adminAction, id = el.dataset.id, name = el.dataset.name || "";
+  const ACTION_MIN_MOD = { "hide-post": 1, "unhide-post": 1, "hide-comment": 1, "unhide-comment": 1, "dismiss-report": 1, "del-post": 2, "del-comment": 2, "lock-post": 2, "unlock-post": 2, "clear-post-image": 2, "feature-post": 3, "unfeature-post": 3, "sanction-clear": 3 };
+  if (!isAdminMe() && !(ACTION_MIN_MOD[action] !== undefined && myModLevel() >= ACTION_MIN_MOD[action])) return;
   let ok = false;
   if (action === "del-post") { if (!(await confirmYesNo(t("admin.confirm_delete_post"), { icon: "trash", danger: true }))) return; ok = await adminRpc("admin_delete_post", { pid: id }); }
   else if (action === "hide-post") { ok = await adminRpc("admin_set_post_hidden", { pid: id, val: true }); }
@@ -3560,10 +3696,11 @@ document.addEventListener("click", async (e) => {
 
 // ---------- Page Admin ----------
 async function renderAdmin() {
-  if (!session?.user) { view.innerHTML = `<section class="card"><p class="empty">${esc(t("admin.only"))}</p></section>`; return; }
+  if (!session?.user) { view.innerHTML = `<section class="card" data-admin-only><p class="empty">${esc(t("admin.only"))}</p></section>`; return; }
   view.innerHTML = skeletonHtml(2);
   await loadAggregates();
-  if (!isAdminMe()) { view.innerHTML = `<section class="card"><p class="message error">${esc(t("admin.only"))}</p></section>`; return; }
+  if (!isAdminMe() && myModLevel() === 0) { view.innerHTML = `<section class="card"><p class="message error">${esc(t("admin.only"))}</p></section>`; return; }
+  const isAdm = isAdminMe();
   const [{ data: members }, { data: reports }, { data: hiddenPosts }, { data: hiddenComments }, { count: postsCount }, { count: commentsCount }, { data: logRows }] = await Promise.all([
     supabase.from("profiles").select("*").order("created_at", { ascending: true }),
     supabase.from("reports").select("*").order("created_at", { ascending: false }),
@@ -3639,17 +3776,21 @@ async function renderAdmin() {
         <li><span>${esc(t("admin.stats_reports"))}</span><strong>${(reports || []).length}</strong></li>
       </ul>
     </section>
-    <section class="card"><h2>📣 ${esc(t("admin.broadcast"))}</h2>
+    <section class="card" data-admin-only><h2>📣 ${esc(t("admin.broadcast"))}</h2>
       <form id="broadcast-form" class="form">
         <textarea id="broadcast-text" rows="2" maxlength="300" placeholder="${esc(t("admin.broadcast_ph"))}"></textarea>
         <button type="submit" class="primary">${esc(t("admin.broadcast_send"))}</button>
       </form>
     </section>
     <section class="card"><h2>${esc(t("admin.reports"))}</h2>${reportsHtml}</section>
-    <section class="card"><h2>${esc(t("admin.members"))}</h2>${membersHtml}</section>
+    <section class="card" data-admin-only><h2>${esc(t("admin.members"))}</h2>${membersHtml}</section>
     <section class="card"><h2>${esc(t("admin.hidden_posts"))}</h2>${hiddenPostsHtml}</section>
     <section class="card"><h2>${esc(t("admin.hidden_comments"))}</h2>${hiddenCommentsHtml}</section>
-    <section class="card"><h2>${esc(t("admin.log"))}</h2>${logHtml}</section>`;
+    <section class="card" data-admin-only><h2>${esc(t("admin.log"))}</h2>${logHtml}</section>`;
+  if (!isAdm) {
+    view.querySelectorAll("[data-admin-only]").forEach((s) => s.remove());
+    view.insertAdjacentHTML("afterbegin", `<section class="card"><h1>🛡️ ${esc(t("admin.mod_title"))}</h1><p class="small">${esc(t("profile.moderator"))} ${myModLevel()}</p></section>`);
+  }
 
   const broadcastForm = $("broadcast-form");
   if (broadcastForm) {
@@ -3671,6 +3812,55 @@ async function renderAdmin() {
 applyStaticTexts();
 
 // ---------- Annuaire des membres ----------
+async function renderAdminDms(username) {
+  if (!isAdminMe()) { view.innerHTML = `<section class="card"><p class="message error">${esc(t("admin.only"))}</p></section>`; return; }
+  view.innerHTML = skeletonHtml(2);
+  const { data: profile } = await supabase.from("profiles").select("*").eq("username", username).maybeSingle();
+  if (!profile) { view.innerHTML = `<section class="card"><p class="empty">${esc(t("search.no_results"))}</p></section>`; return; }
+  const { data, error } = await supabase.rpc("admin_list_conversations", { p_user_id: profile.id });
+  if (error) { showToast(error.message, "error"); view.innerHTML = `<section class="card"><p class="message error">${esc(error.message)}</p></section>`; return; }
+  const rows = (data || []).map((c) => {
+    const partner = profilesById[c.partner_id];
+    const pname = partner?.username || "—";
+    const av = partner?.avatar_url ? `<img class="msg-avatar" src="${esc(partner.avatar_url)}" alt="">` : `<span class="msg-avatar msg-avatar-letter">${esc(pname.charAt(0).toUpperCase())}</span>`;
+    return `<a class="dms-row" href="#/admin-dms/${esc(profile.username)}/${esc(pname)}">${av}<span class="dms-main"><span class="dms-top"><strong>${esc(pname)}</strong><span class="convo-time">${esc(fmtDate(c.last_at))}</span></span><span class="small">${esc((c.last_content || "").slice(0, 80))} · ${c.msg_count} ${esc(t("admin.dms_count"))}</span></span></a>`;
+  }).join("");
+  view.innerHTML = `
+    <section class="card">
+      <p><a class="author-link" href="#/user/${esc(profile.username)}">${esc(t("admin.dms_back"))}</a></p>
+      <h1>💬 ${esc(t("admin.dms_title").replace("{name}", profile.username))}</h1>
+      <p class="small dms-note">🔒 ${esc(t("admin.dms_readonly"))}</p>
+      ${rows || `<p class="empty">${esc(t("admin.dms_empty"))}</p>`}
+    </section>`;
+}
+
+async function renderAdminThread(username, partnerUsername) {
+  if (!isAdminMe()) { view.innerHTML = `<section class="card"><p class="message error">${esc(t("admin.only"))}</p></section>`; return; }
+  view.innerHTML = skeletonHtml(2);
+  const member = profileByUsername[username];
+  const partner = profileByUsername[partnerUsername];
+  if (!member || !partner) { view.innerHTML = `<section class="card"><p class="empty">${esc(t("search.no_results"))}</p></section>`; return; }
+  const { data, error } = await supabase.rpc("admin_read_thread", { p_user_id: member.id, p_partner_id: partner.id });
+  if (error) { showToast(error.message, "error"); view.innerHTML = `<section class="card"><p class="message error">${esc(error.message)}</p></section>`; return; }
+  let lastDay = "";
+  const rows = (data || []).map((m) => {
+    const day = dayKey(m.created_at);
+    const sep = day !== lastDay ? `<div class="msg-day"><span>${esc(dayLabel(m.created_at))}</span></div>` : "";
+    lastDay = day;
+    const mine = m.sender_id === member.id;
+    const sender = profilesById[m.sender_id];
+    const av = sender?.avatar_url ? `<img class="msg-avatar" src="${esc(sender.avatar_url)}" alt="">` : `<span class="msg-avatar msg-avatar-letter">${esc((sender?.username || "?").charAt(0).toUpperCase())}</span>`;
+    return `${sep}<div class="msg-row${mine ? " mine" : ""}">${av}<div class="msg-col"><div class="msg-bubble" title="${esc(fmtDate(m.created_at))}">${esc(m.content)}</div><div class="msg-when">${esc(mine ? member.username : partner.username)} · ${esc(fmtTime(m.created_at))}</div></div></div>`;
+  }).join("");
+  view.innerHTML = `
+    <section class="card">
+      <p><a class="author-link" href="#/admin-dms/${esc(member.username)}">← ${esc(t("admin.dms_title").replace("{name}", member.username))}</a></p>
+      <h1>💬 ${esc(t("admin.dms_between").replace("{a}", member.username).replace("{b}", partner.username))}</h1>
+      <p class="small dms-note">🔒 ${esc(t("admin.dms_readonly"))}</p>
+      <div class="msg-list">${rows || `<p class="empty">${esc(t("admin.dms_empty"))}</p>`}</div>
+    </section>`;
+}
+
 function memberCardHtml(m) {
   const badges = badgeIcons(m.id);
   const av = m.avatar_url
@@ -3803,6 +3993,83 @@ async function renderConversations() {
   }
 }
 
+// ---------- Conversation protégée (anti-captures, au mieux du web) ----------
+function protectShield(onOff) {
+  document.body.classList.toggle("protect-shield", !!(onOff && protectOn && document.querySelector(".thread-screen")));
+}
+document.addEventListener("visibilitychange", () => protectShield(document.hidden));
+window.addEventListener("blur", () => protectShield(true));
+window.addEventListener("focus", () => protectShield(false));
+document.addEventListener("keydown", (e) => {
+  if (!protectOn) return;
+  if (e.key === "PrintScreen") {
+    protectShield(true);
+    showToast(t("msg.capture_warned"), "error");
+    setTimeout(() => { if (!document.hidden) protectShield(false); }, 3000);
+  }
+});
+document.addEventListener("contextmenu", (e) => {
+  if (protectOn && e.target.closest(".thread-screen")) e.preventDefault();
+});
+
+function applyProtectionUI() {
+  const screen = document.querySelector(".thread-screen");
+  if (!screen) return;
+  screen.classList.toggle("protected", protectOn);
+  const wm = $("protect-watermark");
+  if (wm) {
+    if (protectOn) {
+      const name = currentUsername || "";
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='260' height='170'><text x='8' y='88' font-size='16' font-weight='700' fill='rgba(148,163,184,0.15)' transform='rotate(-24 130 85)'>${name}</text></svg>`;
+      wm.style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+      wm.style.display = "block";
+    } else {
+      wm.style.display = "none";
+    }
+  }
+  const btn = $("protect-btn");
+  if (btn) { btn.textContent = protectOn ? "🔒" : "🔓"; btn.classList.toggle("on", protectOn); }
+  const banner = $("protect-banner");
+  if (banner) {
+    banner.hidden = !protectOn;
+    if (protectOn) banner.textContent = "🔒 " + t("msg.protect_banner") + (protectByName ? " " + t("msg.protect_by").replace("{name}", protectByName) : "");
+  }
+  if (!protectOn) protectShield(false);
+}
+
+async function loadProtection(otherId) {
+  if (!session?.user) return;
+  const me = session.user.id;
+  const [lo, hi] = me < otherId ? [me, otherId] : [otherId, me];
+  protectPair = { lo, hi, otherId };
+  try {
+    const { data, error } = await supabase.from("chat_protections").select("*").eq("user_lo", lo).eq("user_hi", hi).maybeSingle();
+    if (error) { protectOn = false; protectByName = ""; }
+    else {
+      protectOn = !!data;
+      protectByName = data ? (profilesById[data.enabled_by]?.username || "") : "";
+    }
+  } catch { protectOn = false; protectByName = ""; }
+  applyProtectionUI();
+}
+
+async function toggleProtection() {
+  if (!protectPair) return;
+  const { lo, hi, otherId } = protectPair;
+  if (!protectOn) {
+    if (!(await confirmYesNo(t("msg.protect_confirm_on")))) return;
+    const { error } = await supabase.from("chat_protections").upsert({ user_lo: lo, user_hi: hi, enabled_by: session.user.id, updated_at: new Date().toISOString() });
+    if (error) { showToast(error.message, "error"); return; }
+    showToast(t("msg.protect_on_toast"), "success");
+  } else {
+    if (!(await confirmYesNo(t("msg.protect_confirm_off"), { icon: "warn", danger: true }))) return;
+    const { error } = await supabase.from("chat_protections").delete().eq("user_lo", lo).eq("user_hi", hi);
+    if (error) { showToast(error.message, "error"); return; }
+    showToast(t("msg.protect_off_toast"), "success");
+  }
+  await loadProtection(otherId);
+}
+
 async function renderThread(username) {
   view.innerHTML = skeletonHtml(2);
   if (!session?.user) {
@@ -3832,7 +4099,11 @@ async function renderThread(username) {
           <a class="thread-back" href="#/messages" aria-label="${esc(t("msg.title"))}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
           ${av}
           <h2><a class="author-link" href="#/user/${esc(profile.username)}">${esc(profile.username)}</a></h2>
+          <button id="protect-btn" class="thread-protect" type="button" title="${esc(t("msg.protect"))}">🔓</button>
         </div>
+        <div id="protect-banner" class="protect-banner" hidden></div>
+        <div id="protect-watermark" class="protect-watermark"></div>
+        <div class="protect-shield-note">🔒 <span>${esc(t("msg.protect_shield"))}</span></div>
         <div id="thread-list" class="thread-list"></div>
         <form id="msg-form" class="msg-form">
           <textarea id="msg-input" rows="1" maxlength="2000" required placeholder="${esc(t("msg.placeholder"))}"></textarea>
@@ -3840,9 +4111,11 @@ async function renderThread(username) {
         </form>
       </section>`;
     await loadThreadMessages(profile.id);
+    await loadProtection(profile.id);
+    $("protect-btn")?.addEventListener("click", toggleProtection);
     if (msgPoll) clearInterval(msgPoll);
     msgPoll = setInterval(() => {
-      if (location.hash === `#/messages/${username}`) loadThreadMessages(profile.id, true);
+      if (location.hash === `#/messages/${username}`) { loadThreadMessages(profile.id, true); loadProtection(profile.id); }
     }, 12000);
     const msgInput = $("msg-input");
     msgInput.addEventListener("input", () => {

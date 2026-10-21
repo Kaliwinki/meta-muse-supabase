@@ -45,7 +45,7 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="style.css?v=32">
+  <link rel="stylesheet" href="style.css?v=35">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0f172a">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -162,6 +162,9 @@
               <button class="settings-item style-choice" data-style-value="compact" type="button" data-i18n="settings.density_compact">Compact</button>
               <button class="settings-item style-choice" data-style-value="ultra" type="button" data-i18n="settings.density_ultra">Ultra-compact</button>
             </div>
+            <div class="settings-label" data-i18n="settings.reset_all">Reset everything</div>
+            <p class="small" data-i18n="settings.reset_all_hint">Theme, colors, accent, font, corners, animations and density back to the defaults.</p>
+            <p><button class="btn danger" id="style-reset-all" type="button">↺ <span data-i18n="settings.reset_all">Reset everything</span></button></p>
           </div>
           <div id="settings-admin" hidden>
             <div class="settings-title" data-i18n="settings.admin_mode">Admin mode</div>
@@ -259,6 +262,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=32"></script>
+  <script type="module" src="app.js?v=35"></script>
 </body>
 </html>
