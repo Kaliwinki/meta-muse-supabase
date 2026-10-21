@@ -1478,3 +1478,27 @@ body.protect-shield .protect-shield-note { display: flex; }
 body{top:0!important}
 .settings-select{width:100%;padding:0.45rem 0.5rem;margin:0.15rem 0 0.3rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--card);color:var(--text);font:inherit}
 .settings-note{font-size:0.78rem;color:var(--muted);margin:0.1rem 0 0.4rem;line-height:1.35}
+
+/* Lot n° 32 — catégories du blog */
+.form select{width:100%;padding:0.55rem 0.6rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--card);color:var(--text);font:inherit}
+.cat-chip{display:inline-block;margin:0.35rem 0 0.1rem;padding:0.18rem 0.6rem;border-radius:999px;border:1px solid var(--cat,#94a3b8);color:var(--cat,#94a3b8);font-size:0.78rem;font-weight:600;text-decoration:none}
+.cat-chips{display:flex;gap:0.4rem;flex-wrap:wrap;margin:0.6rem 0}
+.cat-filter-chip{padding:0.3rem 0.7rem;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-size:0.85rem}
+.cat-filter-chip.active{border-color:var(--accent);color:var(--accent);font-weight:700}
+.sections-title{margin:0.8rem 0 0.4rem}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.6rem;margin-bottom:1rem}
+.cat-card{position:relative;display:flex;flex-direction:column;gap:0.15rem;padding:0.8rem;border:1px solid var(--border);border-top:3px solid var(--cat);border-radius:0.7rem;background:var(--card);cursor:pointer}
+.cat-card-icon{font-size:1.5rem}
+.cat-card-name{font-weight:700}
+.cat-card-desc{font-size:0.78rem;color:var(--muted);line-height:1.3}
+.cat-card-count{font-size:0.75rem;color:var(--muted)}
+.fav-star{position:absolute;top:0.4rem;right:0.4rem;background:none;border:none;font-size:1.05rem;cursor:pointer;color:var(--muted)}
+.fav-star.active{color:#fbbf24}
+.fav-star.big{position:static;font-size:1.6rem}
+.cat-hero{display:flex;gap:1rem;align-items:center;border-top:4px solid var(--cat)}
+.cat-hero-icon{font-size:2.6rem}
+.cat-hero-main{flex:1}
+.cat-hero-main h1{margin:0.1rem 0}
+.fav-cats{display:flex;flex-wrap:wrap;gap:0.35rem;padding:0.2rem 0 0.5rem}
+.fav-cat-chip{padding:0.28rem 0.6rem;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-size:0.82rem}
+.fav-cat-chip.active{border-color:#fbbf24;color:#fbbf24;font-weight:700}

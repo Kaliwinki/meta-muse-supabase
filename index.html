@@ -45,7 +45,7 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="style.css?v=37">
+  <link rel="stylesheet" href="style.css?v=38">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0f172a">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -189,6 +189,17 @@
             <p class="small" data-i18n="settings.reset_all_hint">Theme, colors, accent, font, corners, animations and density back to the defaults.</p>
             <p><button class="btn danger" id="style-reset-all" type="button">↺ <span data-i18n="settings.reset_all">Reset everything</span></button></p>
           </div>
+          <div class="settings-title" data-i18n="settings.blog">Blog</div>
+          <div class="settings-label" data-i18n="settings.blog_view">Category display</div>
+          <button class="settings-item" data-blogview="simple" type="button" data-i18n="settings.view_simple">Simple (filters)</button>
+          <button class="settings-item" data-blogview="sections" type="button" data-i18n="settings.view_sections">By sections (Reddit-style)</button>
+          <div class="settings-label" data-i18n="settings.feed_mode">Default feed</div>
+          <button class="settings-item" data-feedmode="all" type="button" data-i18n="settings.feed_all">Everyone</button>
+          <button class="settings-item" data-feedmode="following" type="button" data-i18n="settings.feed_following">My follows</button>
+          <button class="settings-item" data-feedmode="cats" type="button" data-i18n="settings.feed_cats">My favorite categories</button>
+          <button class="settings-item" data-feedmode="mix" type="button" data-i18n="settings.feed_mix">Mixed (follows + categories)</button>
+          <div class="settings-label" data-i18n="settings.fav_cats">Favorite categories</div>
+          <div id="fav-cats" class="fav-cats"></div>
           <div id="settings-admin" hidden>
             <div class="settings-title" data-i18n="settings.admin_mode">Admin mode</div>
             <button class="settings-item" id="admin-mode-btn" type="button"></button>
@@ -285,6 +296,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=37"></script>
+  <script type="module" src="app.js?v=38"></script>
 </body>
 </html>

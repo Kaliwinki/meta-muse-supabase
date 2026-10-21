@@ -435,7 +435,40 @@ const I18N = {
     "photo.need_username": "Choose your username first.",
     "settings.other_langs": "Other languages (Google)",
     "settings.glang_choose": "Choose a language…",
-    "settings.glang_hint": "Translated on the fly by Google, members' posts included. Pick a native language above to turn it off."
+    "settings.glang_hint": "Translated on the fly by Google, members' posts included. Pick a native language above to turn it off.",
+    "cat.techno": "Technology",
+    "cat.marques": "Brands & Products",
+    "cat.ia": "Artificial Intelligence",
+    "cat.mode": "Fashion & Luxury",
+    "cat.actualites": "News",
+    "cat.discussions": "Discussions",
+    "cat.divers": "Miscellaneous",
+    "cat.techno_desc": "Gadgets, hardware, radio and maker projects",
+    "cat.marques_desc": "The big brands and their products",
+    "cat.ia_desc": "AI assistants, news and debates",
+    "cat.mode_desc": "Fashion houses, style and luxury",
+    "cat.actualites_desc": "What's happening, here and elsewhere",
+    "cat.discussions_desc": "Everyday talk and community life",
+    "cat.divers_desc": "Everything that fits nowhere else",
+    "blog.category": "Category",
+    "blog.all_categories": "All",
+    "blog.sections_title": "Browse the sections",
+    "blog.cat_posts": "posts",
+    "blog.cat_empty": "No posts in this category yet.",
+    "feed.cats": "⭐ My categories",
+    "feed.mix": "🔀 Mixed",
+    "feed.empty_cats": "No posts in your favorite categories yet. Pick your favorites in ⚙️ Settings → Blog.",
+    "feed.empty_mix": "Nothing here yet: follow members or pick favorite categories in ⚙️ Settings → Blog.",
+    "settings.blog": "Blog",
+    "settings.blog_view": "Category display",
+    "settings.view_simple": "Simple (filters)",
+    "settings.view_sections": "By sections (Reddit-style)",
+    "settings.feed_mode": "Default feed",
+    "settings.feed_all": "Everyone",
+    "settings.feed_following": "My follows",
+    "settings.feed_cats": "My favorite categories",
+    "settings.feed_mix": "Mixed (follows + categories)",
+    "settings.fav_cats": "Favorite categories"
   },
   fr: {
     "meta.title": "Pierre — Accueil",
@@ -869,7 +902,40 @@ const I18N = {
     "photo.need_username": "Choisis d'abord ton nom d'utilisateur.",
     "settings.other_langs": "Autres langues (Google)",
     "settings.glang_choose": "Choisir une langue…",
-    "settings.glang_hint": "Traduit à la volée par Google, publications des membres comprises. Choisis une langue native ci-dessus pour le désactiver."
+    "settings.glang_hint": "Traduit à la volée par Google, publications des membres comprises. Choisis une langue native ci-dessus pour le désactiver.",
+    "cat.techno": "Technologie",
+    "cat.marques": "Marques & Produits",
+    "cat.ia": "Intelligence artificielle",
+    "cat.mode": "Mode & Luxe",
+    "cat.actualites": "Actualités",
+    "cat.discussions": "Discussions",
+    "cat.divers": "Divers",
+    "cat.techno_desc": "Gadgets, matériel, radio et projets bidouille",
+    "cat.marques_desc": "Les grandes marques et leurs produits",
+    "cat.ia_desc": "Assistants IA, nouvelles et débats",
+    "cat.mode_desc": "Maisons de mode, style et luxe",
+    "cat.actualites_desc": "Ce qui se passe, ici et ailleurs",
+    "cat.discussions_desc": "La vie de tous les jours et de la communauté",
+    "cat.divers_desc": "Tout ce qui ne rentre nulle part ailleurs",
+    "blog.category": "Catégorie",
+    "blog.all_categories": "Toutes",
+    "blog.sections_title": "Parcourir les sections",
+    "blog.cat_posts": "publications",
+    "blog.cat_empty": "Aucune publication dans cette catégorie pour le moment.",
+    "feed.cats": "⭐ Mes catégories",
+    "feed.mix": "🔀 Mixte",
+    "feed.empty_cats": "Aucune publication dans tes catégories préférées pour le moment. Choisis tes préférées dans ⚙️ Paramètres → Blog.",
+    "feed.empty_mix": "Rien ici pour le moment : suis des membres ou choisis des catégories préférées dans ⚙️ Paramètres → Blog.",
+    "settings.blog": "Blog",
+    "settings.blog_view": "Affichage des catégories",
+    "settings.view_simple": "Simple (filtres)",
+    "settings.view_sections": "Par sections (façon Reddit)",
+    "settings.feed_mode": "Fil par défaut",
+    "settings.feed_all": "Tout le monde",
+    "settings.feed_following": "Mes abonnements",
+    "settings.feed_cats": "Mes catégories préférées",
+    "settings.feed_mix": "Mixte (abonnements + catégories)",
+    "settings.fav_cats": "Catégories préférées"
   },
   es: {
     "meta.title": "Pierre — Inicio",
@@ -1303,7 +1369,40 @@ const I18N = {
     "photo.need_username": "Primero elige tu nombre de usuario.",
     "settings.other_langs": "Otros idiomas (Google)",
     "settings.glang_choose": "Elige un idioma…",
-    "settings.glang_hint": "Traducido al instante por Google, publicaciones de los miembros incluidas. Elige un idioma nativo arriba para desactivarlo."
+    "settings.glang_hint": "Traducido al instante por Google, publicaciones de los miembros incluidas. Elige un idioma nativo arriba para desactivarlo.",
+    "cat.techno": "Tecnología",
+    "cat.marques": "Marcas y productos",
+    "cat.ia": "Inteligencia artificial",
+    "cat.mode": "Moda y lujo",
+    "cat.actualites": "Noticias",
+    "cat.discussions": "Discusiones",
+    "cat.divers": "Varios",
+    "cat.techno_desc": "Gadgets, hardware, radio y proyectos maker",
+    "cat.marques_desc": "Las grandes marcas y sus productos",
+    "cat.ia_desc": "Asistentes de IA, noticias y debates",
+    "cat.mode_desc": "Casas de moda, estilo y lujo",
+    "cat.actualites_desc": "Lo que está pasando, aquí y en todas partes",
+    "cat.discussions_desc": "La vida diaria y la comunidad",
+    "cat.divers_desc": "Todo lo que no encaja en ningún otro lado",
+    "blog.category": "Categoría",
+    "blog.all_categories": "Todas",
+    "blog.sections_title": "Explorar las secciones",
+    "blog.cat_posts": "publicaciones",
+    "blog.cat_empty": "Aún no hay publicaciones en esta categoría.",
+    "feed.cats": "⭐ Mis categorías",
+    "feed.mix": "🔀 Mixto",
+    "feed.empty_cats": "Aún no hay publicaciones en tus categorías favoritas. Elige tus favoritas en ⚙️ Ajustes → Blog.",
+    "feed.empty_mix": "Nada por aquí todavía: sigue a miembros o elige categorías favoritas en ⚙️ Ajustes → Blog.",
+    "settings.blog": "Blog",
+    "settings.blog_view": "Visualización de categorías",
+    "settings.view_simple": "Simple (filtros)",
+    "settings.view_sections": "Por secciones (estilo Reddit)",
+    "settings.feed_mode": "Feed predeterminado",
+    "settings.feed_all": "Todo el mundo",
+    "settings.feed_following": "A quienes sigo",
+    "settings.feed_cats": "Mis categorías favoritas",
+    "settings.feed_mix": "Mixto (seguidos + categorías)",
+    "settings.fav_cats": "Categorías favoritas"
   }
 };
 
@@ -1329,6 +1428,7 @@ function setLang(newLang) {
   lang = newLang;
   localStorage.setItem("mm_lang", newLang);
   applyStaticTexts();
+  renderFavCatChips();
   renderAuthArea();
   render();
 }
@@ -2336,6 +2436,38 @@ if (glangSelect) {
 if (gLang) loadGoogleTranslate(() => applyGoogleLang(gLang));
 syncGLangUI();
 
+// ---------- Réglages du Blog : vues, fil par défaut, catégories préférées (lot n° 32) ----------
+function renderFavCatChips() {
+  const wrap = $("fav-cats");
+  if (!wrap) return;
+  wrap.innerHTML = CATEGORIES.map((c) => `<button type="button" class="fav-cat-chip${favCats.includes(c.slug) ? " active" : ""}" data-favcatchip="${c.slug}">${c.icon} ${esc(t("cat." + c.slug))}</button>`).join("");
+  wrap.querySelectorAll("[data-favcatchip]").forEach((b) => b.addEventListener("click", () => toggleFavCat(b.dataset.favcatchip)));
+}
+function toggleFavCat(slug) {
+  favCats = favCats.includes(slug) ? favCats.filter((s) => s !== slug) : [...favCats, slug];
+  localStorage.setItem("mm_fav_cats", JSON.stringify(favCats));
+  renderFavCatChips();
+  applyBlogPrefs();
+}
+function applyBlogPrefs() {
+  document.querySelectorAll("[data-blogview]").forEach((b) => b.classList.toggle("active", b.dataset.blogview === blogView));
+  document.querySelectorAll("[data-feedmode]").forEach((b) => b.classList.toggle("active", b.dataset.feedmode === feedMode));
+}
+document.querySelectorAll("[data-blogview]").forEach((b) => b.addEventListener("click", () => {
+  blogView = b.dataset.blogview;
+  localStorage.setItem("mm_blog_view", blogView);
+  applyBlogPrefs();
+  if (currentRoute().name === "blog") renderBlog();
+}));
+document.querySelectorAll("[data-feedmode]").forEach((b) => b.addEventListener("click", () => {
+  feedMode = b.dataset.feedmode;
+  localStorage.setItem("mm_feed_mode", feedMode);
+  applyBlogPrefs();
+  if (currentRoute().name === "blog") renderBlog();
+}));
+renderFavCatChips();
+applyBlogPrefs();
+
 // ---------- Thème clair / sombre ----------
 let theme = localStorage.getItem("mm_theme") || "dark";
 function applyTheme() {
@@ -2684,6 +2816,8 @@ function currentRoute() {
   if (dmsThreadMatch) return { name: "admin-thread", username: dmsThreadMatch[1], partner: dmsThreadMatch[2] };
   const dmsMatch = hash.match(/^#\/admin-dms\/([A-Za-z0-9_.-]{3,20})$/);
   if (dmsMatch) return { name: "admin-dms", username: dmsMatch[1] };
+  const catRoute = hash.match(/^#\/categorie\/([a-z]+)$/);
+  if (catRoute) return { name: "category", slug: catRoute[1] };
   if (hash === "#/blog") return { name: "blog" };
   if (hash === "#/members") return { name: "members" };
   if (hash === "#/badges") return { name: "badges" };
@@ -2736,6 +2870,8 @@ async function render() {
     await renderThread(route.username);
   } else if (route.name === "admin-dms") {
     await renderAdminDms(route.username);
+  } else if (route.name === "category") {
+    await renderCategory(route.slug);
   } else if (route.name === "admin-thread") {
     await renderAdminThread(route.username, route.partner);
   } else {
@@ -2936,6 +3072,49 @@ function avgRating(ratingsByPost, postId) {
 }
 
 /** Carte d'un article (utilisée par le blog et les pages personnelles). */
+// ---------- Catégories du blog (lot n° 32) ----------
+const CATEGORIES = [
+  { slug: "techno", icon: "🛠️", color: "#38bdf8" },
+  { slug: "marques", icon: "📱", color: "#f59e0b" },
+  { slug: "ia", icon: "🤖", color: "#a78bfa" },
+  { slug: "mode", icon: "👗", color: "#ec4899" },
+  { slug: "actualites", icon: "📰", color: "#34d399" },
+  { slug: "discussions", icon: "💬", color: "#94a3b8" },
+  { slug: "divers", icon: "🎲", color: "#f472b6" },
+];
+const catMeta = (slug) => CATEGORIES.find((c) => c.slug === slug) || CATEGORIES.find((c) => c.slug === "discussions");
+const postCat = (p) => (p && CATEGORIES.some((c) => c.slug === p.category) ? p.category : "discussions");
+function catChipHtml(p) {
+  const m = catMeta(postCat(p));
+  return `<a class="cat-chip" href="#/categorie/${m.slug}" style="--cat:${m.color}">${m.icon} ${esc(t("cat." + m.slug))}</a>`;
+}
+let blogView = localStorage.getItem("mm_blog_view") || "simple";
+let favCats = [];
+try { favCats = JSON.parse(localStorage.getItem("mm_fav_cats") || "[]"); } catch (e) { favCats = []; }
+if (!Array.isArray(favCats)) favCats = [];
+let catFilter = "all";
+function catCounts(posts) {
+  const counts = {};
+  for (const p of posts) { const s = postCat(p); counts[s] = (counts[s] || 0) + 1; }
+  return counts;
+}
+function catChipsHtml(posts) {
+  const counts = catCounts(posts);
+  const chip = (slug, label) => `<button type="button" class="cat-filter-chip${catFilter === slug ? " active" : ""}" data-cat="${slug}">${label}</button>`;
+  return `<div class="cat-chips">${chip("all", esc(t("blog.all_categories")))}${CATEGORIES.map((c) => chip(c.slug, `${c.icon} ${esc(t("cat." + c.slug))} · ${counts[c.slug] || 0}`)).join("")}</div>`;
+}
+function sectionsGridHtml(posts) {
+  const counts = catCounts(posts);
+  return `<h2 class="sections-title">${esc(t("blog.sections_title"))}</h2><div class="cat-grid">${CATEGORIES.map((c) => `
+    <div class="cat-card" data-gocat="${c.slug}" style="--cat:${c.color}">
+      <span class="cat-card-icon">${c.icon}</span>
+      <span class="cat-card-name">${esc(t("cat." + c.slug))}</span>
+      <span class="cat-card-desc">${esc(t("cat." + c.slug + "_desc"))}</span>
+      <span class="cat-card-count">${counts[c.slug] || 0} ${esc(t("blog.cat_posts"))}</span>
+      <button type="button" class="fav-star${favCats.includes(c.slug) ? " active" : ""}" data-favcat="${c.slug}" title="${esc(t("settings.fav_cats"))}">${favCats.includes(c.slug) ? "⭐" : "☆"}</button>
+    </div>`).join("")}</div>`;
+}
+
 function postCardHtml(p, agg) {
   const avg = avgRating(agg.ratingsByPost, p.id);
   const rc = agg.reactionsByPost[p.id] ?? {};
@@ -2954,6 +3133,7 @@ function postCardHtml(p, agg) {
         </div>
       </div>
       <h2><a href="#/post/${esc(p.id)}">${esc(p.title)}</a></h2>
+      ${catChipHtml(p)}
       ${p.hidden ? `<div class="hidden-chip">${esc(t("post.hidden_chip"))}</div>` : ""}
       ${p.featured ? `<div class="featured-chip">⭐ ${esc(t("admin.featured_chip"))}</div>` : ""}
       ${p.image_url ? `<img class="post-image" src="${esc(p.image_url)}" alt="">` : ""}
@@ -2974,7 +3154,8 @@ function bindPostCards() {
 }
 
 // ---------- Vue Blog (liste) ----------
-let feedMode = "all";
+let feedMode = localStorage.getItem("mm_feed_mode") || "all";
+if (!["all", "following", "trending", "saved", "cats", "mix"].includes(feedMode)) feedMode = "all";
 let blogTag = null;
 let blogCache = null;
 
@@ -2999,12 +3180,24 @@ function postsZoneHtml() {
     list = list.filter((p) => myBookmarks.has(p.id));
     if (!list.length) return `<section class="card"><p class="empty">${esc(t("feed.empty_saved"))}</p></section>`;
   }
+  if (feedMode === "cats") {
+    list = list.filter((p) => favCats.includes(postCat(p)));
+    if (!list.length) return `<section class="card"><p class="empty">${esc(t("feed.empty_cats"))}</p></section>`;
+  }
+  if (feedMode === "mix" && session?.user) {
+    list = list.filter((p) => followingSet.has(p.user_id) || p.user_id === session.user.id || favCats.includes(postCat(p)));
+    if (!list.length) return `<section class="card"><p class="empty">${esc(t("feed.empty_mix"))}</p></section>`;
+  }
   if (feedMode === "trending") {
     const weekAgo = Date.now() - 7 * 864e5;
     list = list
       .filter((p) => new Date(p.created_at).getTime() >= weekAgo)
       .sort((a, b) => totalReactions(b, agg) - totalReactions(a, agg));
     if (!list.length) return `<section class="card"><p class="empty">${esc(t("feed.empty_trending"))}</p></section>`;
+  }
+  if (catFilter !== "all") {
+    list = list.filter((p) => postCat(p) === catFilter);
+    if (!list.length) return `<section class="card"><p class="empty">${esc(t("blog.cat_empty"))}</p></section>`;
   }
   if (blogTag) {
     const needle = "#" + blogTag;
@@ -3204,6 +3397,8 @@ async function renderBlog() {
             <input id="post-title" maxlength="120" required placeholder="${esc(t("blog.post_title_ph"))}">
             <label for="post-content">${esc(t("blog.post_content"))}</label>
             <textarea id="post-content" rows="4" maxlength="5000" required placeholder="${esc(t("blog.post_content_ph"))}"></textarea>
+            <label for="post-category">${esc(t("blog.category"))}</label>
+            <select id="post-category">${CATEGORIES.map((c) => `<option value="${c.slug}"${c.slug === "discussions" ? " selected" : ""}>${c.icon} ${esc(t("cat." + c.slug))}</option>`).join("")}</select>
             <label class="poll-toggle"><input type="checkbox" id="poll-toggle"> ${esc(t("poll.add"))}</label>
             <div id="poll-fields" class="hidden">
               <div class="poll-opts">
@@ -3234,6 +3429,8 @@ async function renderBlog() {
         <button class="seg-tab${feedMode === "all" ? " active" : ""}" data-feed="all" type="button">${esc(t("feed.all"))}</button>
         ${session?.user ? `<button class="seg-tab${feedMode === "following" ? " active" : ""}" data-feed="following" type="button">${esc(t("feed.following"))}</button>` : ""}
         <button class="seg-tab${feedMode === "trending" ? " active" : ""}" data-feed="trending" type="button">${esc(t("feed.trending"))}</button>
+        <button class="seg-tab${feedMode === "cats" ? " active" : ""}" data-feed="cats" type="button">${esc(t("feed.cats"))}</button>
+        ${session?.user ? `<button class="seg-tab${feedMode === "mix" ? " active" : ""}" data-feed="mix" type="button">${esc(t("feed.mix"))}</button>` : ""}
         ${session?.user ? `<button class="seg-tab${feedMode === "saved" ? " active" : ""}" data-feed="saved" type="button">${esc(t("feed.saved"))}</button>` : ""}
       </div>`;
 
@@ -3244,6 +3441,8 @@ async function renderBlog() {
       <div class="blog-header"><h1>${esc(t("blog.title"))}</h1>${composerToggle}</div>
       ${composerFinal}
       ${tabs}
+      ${blogView === "sections" ? sectionsGridHtml(posts) : ""}
+      ${catChipsHtml(posts)}
       <input id="post-search" class="search-input" type="search" placeholder="${esc(t("search.posts"))}">
       ${blogTag ? `<div class="tag-chip">🏷️ #${esc(blogTag)} <button type="button" id="clear-tag" title="✖">✖</button></div>` : ""}
       <div id="posts-zone">${postsZoneHtml()}</div>`;
@@ -3256,9 +3455,32 @@ async function renderBlog() {
     document.querySelectorAll("[data-feed]").forEach((b) => {
       b.addEventListener("click", () => {
         feedMode = b.dataset.feed;
+        localStorage.setItem("mm_feed_mode", feedMode);
+        applyBlogPrefs();
         document.querySelectorAll("[data-feed]").forEach((x) => x.classList.toggle("active", x === b));
         $("posts-zone").innerHTML = postsZoneHtml();
         bindPostCards();
+      });
+    });
+    document.querySelectorAll("[data-cat]").forEach((b) => {
+      b.addEventListener("click", () => {
+        catFilter = b.dataset.cat;
+        document.querySelectorAll("[data-cat]").forEach((x) => x.classList.toggle("active", x === b));
+        $("posts-zone").innerHTML = postsZoneHtml();
+        bindPostCards();
+      });
+    });
+    document.querySelectorAll("[data-gocat]").forEach((card) => {
+      card.addEventListener("click", (e) => {
+        if (e.target.closest("[data-favcat]")) return;
+        location.hash = `#/categorie/${card.dataset.gocat}`;
+      });
+    });
+    document.querySelectorAll("[data-favcat]").forEach((b) => {
+      b.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleFavCat(b.dataset.favcat);
+        renderBlog();
       });
     });
     $("post-search").addEventListener("input", () => {
@@ -3326,7 +3548,8 @@ async function renderBlog() {
           user_id: session.user.id,
           author_email: session.user.email,
           author_username: currentUsername,
-          image_url: imageUrl
+          image_url: imageUrl,
+          category: $("post-category")?.value || "discussions"
         }).select("id").single();
         if (error) {
           showToast(t("blog.err_publish") + error.message, "error");
@@ -3348,6 +3571,43 @@ async function renderBlog() {
 }
 
 // ---------- Vue détail d'une publication ----------
+async function renderCategory(slug) {
+  const meta = CATEGORIES.find((c) => c.slug === slug);
+  if (!meta) {
+    view.innerHTML = `<section class="card"><p class="message error">${esc(t("post.not_found"))}</p><a class="back-link" href="#/blog">${esc(t("post.back"))}</a></section>`;
+    return;
+  }
+  view.innerHTML = skeletonHtml(3);
+  try {
+    const [posts, agg] = await Promise.all([loadPosts(), loadAggregates()]);
+    blogCache = { posts, agg };
+    pollsCache = await loadPolls(posts.map((p) => p.id));
+    let list = posts.filter((p) => postCat(p) === slug);
+    if (session?.user) {
+      if (myBlocks.size) list = list.filter((p) => !myBlocks.has(p.user_id));
+      list = list.filter((p) => !p.hidden || p.user_id === session.user.id || isAdminMe());
+    }
+    if (!isAdminMe()) list = list.filter((p) => !bannedIds.has(p.user_id) || p.user_id === session?.user?.id);
+    const fav = favCats.includes(slug);
+    view.innerHTML = `
+      <a class="back-link" href="#/blog">${esc(t("post.back"))}</a>
+      <section class="card cat-hero" style="--cat:${meta.color}">
+        <div class="cat-hero-icon">${meta.icon}</div>
+        <div class="cat-hero-main">
+          <h1>${esc(t("cat." + slug))}</h1>
+          <p>${esc(t("cat." + slug + "_desc"))}</p>
+          <p class="small">${list.length} ${esc(t("blog.cat_posts"))}</p>
+        </div>
+        <button type="button" class="fav-star big${fav ? " active" : ""}" id="cat-fav-btn" title="${esc(t("settings.fav_cats"))}">${fav ? "⭐" : "☆"}</button>
+      </section>
+      <div id="posts-zone">${list.length ? list.map((p) => postCardHtml(p, agg)).join("") : `<section class="card"><p class="empty">${esc(t("blog.cat_empty"))}</p></section>`}</div>`;
+    bindPostCards();
+    $("cat-fav-btn")?.addEventListener("click", () => { toggleFavCat(slug); renderCategory(slug); });
+  } catch (e) {
+    view.innerHTML = `<section class="card"><p class="message error">${esc(t("blog.err_load"))}</p></section>`;
+  }
+}
+
 async function renderPostDetail(postId, instant = false) {
   if (!instant) view.innerHTML = skeletonHtml(2);
   try {
@@ -3472,6 +3732,8 @@ async function renderPostDetail(postId, instant = false) {
           <input id="edit-title" maxlength="120" required value="${esc(post.title)}">
           <label for="edit-content">${esc(t("blog.post_content"))}</label>
           <textarea id="edit-content" rows="6" maxlength="5000" required>${esc(post.content)}</textarea>
+          <label for="edit-category">${esc(t("blog.category"))}</label>
+          <select id="edit-category">${CATEGORIES.map((c) => `<option value="${c.slug}"${postCat(post) === c.slug ? " selected" : ""}>${c.icon} ${esc(t("cat." + c.slug))}</option>`).join("")}</select>
           <label for="edit-image">${esc(t("photo.add"))}</label>
           <input id="edit-image" type="file" accept="image/*">
           <div class="owner-actions">
@@ -3498,6 +3760,7 @@ async function renderPostDetail(postId, instant = false) {
       <div class="post-layout">
       <article class="card post-full">
         <h1>${esc(post.title)}</h1>
+        ${catChipHtml(post)}
         <div class="post-meta">${esc(t("post.by"))} ${authorHtml(post)} · ${fmtDate(post.created_at)}</div>
         ${ownerBlock}
         ${adminPostBlock}
@@ -3567,6 +3830,7 @@ async function renderPostDetail(postId, instant = false) {
         const content = $("edit-content").value.trim();
         if (!title || !content) return;
         const updates = { title, content };
+        updates.category = $("edit-category")?.value || postCat(post);
         const imageFile = $("edit-image").files[0];
         if (imageFile) {
           const url = await uploadPhoto(imageFile, "posts");
