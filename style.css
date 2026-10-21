@@ -152,6 +152,7 @@ main {
 }
 
 .hidden { display: none; }
+[hidden] { display: none !important; } /* l'attribut hidden gagne toujours sur le display des composants (lot n° 33) */
 .small { font-size: 0.8rem; color: var(--muted); }
 
 /* ---------- Page d'accueil ---------- */
