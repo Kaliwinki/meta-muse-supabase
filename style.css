@@ -1397,3 +1397,31 @@ html[data-corners="square"] .card, html[data-corners="square"] .btn, html[data-c
 html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 html[data-density="compact"] .card { padding: 0.95rem 1.05rem; margin-bottom: 0.7rem; }
 html[data-density="compact"] .settings-item { padding-top: 0.35rem; padding-bottom: 0.35rem; }
+
+/* ---------- Lot n° 22 : options enrichies + palettes prêtes à l'emploi ---------- */
+.palette-list { display: flex; flex-direction: column; gap: 0.25rem; margin: 0.15rem 0 0.2rem; }
+.palette-chip { display: flex; align-items: center; gap: 0.55rem; width: 100%; padding: 0.38rem 0.55rem; background: none; border: 1px solid var(--border); border-radius: 10px; color: var(--text); cursor: pointer; font-size: 0.92rem; text-align: left; }
+.palette-chip:hover { background: var(--hover-bg); }
+.palette-dots { display: inline-flex; }
+.palette-dots i { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.35); margin-left: -5px; }
+.palette-dots i:first-child { margin-left: 0; }
+html[data-font="typewriter"] body, html[data-font="typewriter"] button, html[data-font="typewriter"] input, html[data-font="typewriter"] textarea, html[data-font="typewriter"] select { font-family: ui-monospace, "Courier New", Courier, monospace; }
+html[data-font="handwriting"] body, html[data-font="handwriting"] button, html[data-font="handwriting"] input, html[data-font="handwriting"] textarea, html[data-font="handwriting"] select { font-family: "Segoe Script", "Bradley Hand", "Apple Chancery", cursive; }
+html[data-font="condensed"] body, html[data-font="condensed"] button, html[data-font="condensed"] input, html[data-font="condensed"] textarea, html[data-font="condensed"] select { font-family: "Arial Narrow", "Helvetica Neue Condensed", Impact, sans-serif; letter-spacing: 0.02em; }
+html[data-textsize="tiny"] { font-size: 87.5%; }
+html[data-textsize="huge"] { font-size: 125%; }
+html[data-corners="pill"] .card, html[data-corners="pill"] .btn, html[data-corners="pill"] .settings-menu, html[data-corners="pill"] .notif-panel, html[data-corners="pill"] .seg-tab, html[data-corners="pill"] input, html[data-corners="pill"] textarea, html[data-corners="pill"] select { border-radius: 28px; }
+html[data-corners="sharp"] .card, html[data-corners="sharp"] .btn, html[data-corners="sharp"] .settings-menu, html[data-corners="sharp"] .notif-panel, html[data-corners="sharp"] .seg-tab, html[data-corners="sharp"] input, html[data-corners="sharp"] textarea, html[data-corners="sharp"] select { border-radius: 0; }
+html[data-anim="soft"] *, html[data-anim="soft"] *::before, html[data-anim="soft"] *::after { transition-duration: 0.5s !important; animation-duration: 1.4s !important; }
+html[data-anim="none"] *, html[data-anim="none"] *::before, html[data-anim="none"] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+html[data-density="airy"] .card { padding: 1.9rem 2rem; margin-bottom: 1.6rem; }
+html[data-density="ultra"] .card { padding: 0.6rem 0.75rem; margin-bottom: 0.45rem; }
+html[data-density="ultra"] .settings-item { padding-top: 0.2rem; padding-bottom: 0.2rem; }
+
+/* ---------- Lot n° 23 : polices supplémentaires ---------- */
+html[data-font="calligraphy"] body, html[data-font="calligraphy"] button, html[data-font="calligraphy"] input, html[data-font="calligraphy"] textarea, html[data-font="calligraphy"] select { font-family: "Brush Script MT", "Segoe Script", "Apple Chancery", cursive; }
+html[data-font="elegant"] body, html[data-font="elegant"] button, html[data-font="elegant"] input, html[data-font="elegant"] textarea, html[data-font="elegant"] select { font-family: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif; }
+html[data-font="poster"] body, html[data-font="poster"] button, html[data-font="poster"] input, html[data-font="poster"] textarea, html[data-font="poster"] select { font-family: Impact, "Arial Black", "Franklin Gothic Heavy", sans-serif; letter-spacing: 0.01em; }
+
+/* ---------- Lot n° 24 : styles découplés des couleurs ---------- */
+.style-preview { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 22px; border: 1px solid var(--border); border-radius: 6px; background: var(--hover-bg); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }

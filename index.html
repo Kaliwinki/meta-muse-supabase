@@ -45,7 +45,7 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="style.css?v=26">
+  <link rel="stylesheet" href="style.css?v=30">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0f172a">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -76,7 +76,18 @@
           <button class="settings-item" data-theme="light" type="button" data-i18n="theme.light">☀️ Light</button>
           <button class="settings-item settings-style-toggle" id="style-toggle" type="button"><span data-i18n="settings.style">Style</span><span class="style-chev" id="style-chev">▾</span></button>
           <div id="style-panel" class="style-panel hidden">
-            <div class="settings-label" data-i18n="settings.accent">Accent color</div>
+            <div class="settings-label" data-i18n="settings.fullstyles">Complete styles</div>
+            <div class="palette-list">
+                            <button class="palette-chip" data-fullstyle="hacker" type="button"><span class="style-preview" style="font-family:ui-monospace, 'Courier New', monospace">Ag</span><span data-i18n="settings.style_hacker">Hacker</span></button>
+              <button class="palette-chip" data-fullstyle="playero" type="button"><span class="style-preview" style="font-family:ui-rounded, 'Trebuchet MS', sans-serif">Ag</span><span data-i18n="settings.style_playero">Playero</span></button>
+              <button class="palette-chip" data-fullstyle="kawaii" type="button"><span class="style-preview" style="font-family:ui-rounded, 'Trebuchet MS', sans-serif">Ag</span><span data-i18n="settings.style_kawaii">Kawaii</span></button>
+              <button class="palette-chip" data-fullstyle="cyberpunk" type="button"><span class="style-preview" style="font-family:'Arial Narrow', Impact, sans-serif">Ag</span><span data-i18n="settings.style_cyberpunk">Cyberpunk</span></button>
+              <button class="palette-chip" data-fullstyle="royal" type="button"><span class="style-preview" style="font-family:'Palatino Linotype', 'Book Antiqua', serif">Ag</span><span data-i18n="settings.style_royal">Royal</span></button>
+              <button class="palette-chip" data-fullstyle="arcade" type="button"><span class="style-preview" style="font-family:ui-monospace, 'Courier New', monospace">Ag</span><span data-i18n="settings.style_arcade">Arcade</span></button>
+              <button class="palette-chip" data-fullstyle="zen" type="button"><span class="style-preview" style="font-family:Georgia, serif">Ag</span><span data-i18n="settings.style_zen">Zen</span></button>
+              <button class="palette-chip" data-fullstyle="galaxy" type="button"><span class="style-preview" style="font-family:system-ui, sans-serif">Ag</span><span data-i18n="settings.style_galaxy">Galaxy</span></button>
+            </div>
+            <p class="small" data-i18n="settings.fullstyles_hint">Styles change the shape (font, corners, density) — colors stay yours: combine with any palette.</p>       <div class="settings-label" data-i18n="settings.accent">Accent color</div>
             <div class="settings-accent">
               <input type="color" id="accent-picker" value="#38bdf8" aria-label="Accent color">
               <button class="btn small" id="accent-reset" type="button" data-i18n="settings.accent_reset">Reset</button>
@@ -87,6 +98,26 @@
             <div class="color-row"><span data-i18n="settings.color_text">Text</span><input type="color" id="color-text" value="#e2e8f0" aria-label="Text"></div>
             <div class="color-row"><span data-i18n="settings.color_muted">Secondary text</span><input type="color" id="color-muted" value="#94a3b8" aria-label="Secondary text"></div>
             <div class="color-row"><span data-i18n="settings.color_border">Borders</span><input type="color" id="color-border" value="#334155" aria-label="Borders"></div>
+            <div class="settings-label" data-i18n="settings.palettes">Ready-made palettes</div>
+            <div class="palette-list">
+              <button class="palette-chip" data-palette="default" type="button"><span class="palette-dots"><i style="background:#0f172a"></i><i style="background:#1e293b"></i><i style="background:#38bdf8"></i></span><span data-i18n="settings.palette_default">Default</span></button>
+              <button class="palette-chip" data-palette="ocean" type="button"><span class="palette-dots"><i style="background:#082f49"></i><i style="background:#0c4a6e"></i><i style="background:#38bdf8"></i></span><span data-i18n="settings.palette_ocean">Ocean</span></button>
+              <button class="palette-chip" data-palette="forest" type="button"><span class="palette-dots"><i style="background:#052e16"></i><i style="background:#14532d"></i><i style="background:#4ade80"></i></span><span data-i18n="settings.palette_forest">Forest</span></button>
+              <button class="palette-chip" data-palette="sunset" type="button"><span class="palette-dots"><i style="background:#200d02"></i><i style="background:#431407"></i><i style="background:#fb923c"></i></span><span data-i18n="settings.palette_sunset">Sunset</span></button>
+              <button class="palette-chip" data-palette="candy" type="button"><span class="palette-dots"><i style="background:#2b0a1e"></i><i style="background:#500f38"></i><i style="background:#ec4899"></i></span><span data-i18n="settings.palette_candy">Candy</span></button>
+              <button class="palette-chip" data-palette="violet" type="button"><span class="palette-dots"><i style="background:#150826"></i><i style="background:#2e1065"></i><i style="background:#a78bfa"></i></span><span data-i18n="settings.palette_violet">Midnight violet</span></button>
+              <button class="palette-chip" data-palette="mono" type="button"><span class="palette-dots"><i style="background:#0a0a0a"></i><i style="background:#262626"></i><i style="background:#e5e5e5"></i></span><span data-i18n="settings.palette_mono">Monochrome</span></button>
+              <button class="palette-chip" data-palette="lagoon" type="button"><span class="palette-dots"><i style="background:#04211f"></i><i style="background:#0a3632"></i><i style="background:#2dd4bf"></i></span><span data-i18n="settings.palette_lagoon">Lagoon</span></button>
+              <button class="palette-chip" data-palette="lava" type="button"><span class="palette-dots"><i style="background:#170505"></i><i style="background:#2b0a0a"></i><i style="background:#ef4444"></i></span><span data-i18n="settings.palette_lava">Lava</span></button>
+              <button class="palette-chip" data-palette="royal" type="button"><span class="palette-dots"><i style="background:#0a1030"></i><i style="background:#131c4e"></i><i style="background:#fbbf24"></i></span><span data-i18n="settings.palette_royal">Royal</span></button>
+              <button class="palette-chip" data-palette="bubblegum" type="button"><span class="palette-dots"><i style="background:#26082e"></i><i style="background:#3f1150"></i><i style="background:#e879f9"></i></span><span data-i18n="settings.palette_bubblegum">Bubblegum</span></button>
+              <button class="palette-chip" data-palette="coffee" type="button"><span class="palette-dots"><i style="background:#170d06"></i><i style="background:#2b1a0e"></i><i style="background:#e08e45"></i></span><span data-i18n="settings.palette_coffee">Coffee</span></button>
+              <button class="palette-chip" data-palette="citrus" type="button"><span class="palette-dots"><i style="background:#141a05"></i><i style="background:#232b08"></i><i style="background:#a3e635"></i></span><span data-i18n="settings.palette_citrus">Citrus</span></button>
+              <button class="palette-chip" data-palette="neon" type="button"><span class="palette-dots"><i style="background:#050510"></i><i style="background:#0d0d26"></i><i style="background:#00fff9"></i></span><span data-i18n="settings.palette_neon">Neon</span></button>
+              <button class="palette-chip" data-palette="desert" type="button"><span class="palette-dots"><i style="background:#171310"></i><i style="background:#292019"></i><i style="background:#eab308"></i></span><span data-i18n="settings.palette_desert">Desert</span></button>
+              <button class="palette-chip" data-palette="pastel" type="button"><span class="palette-dots"><i style="background:#fdf2f8"></i><i style="background:#ffffff"></i><i style="background:#ec4899"></i></span><span data-i18n="settings.palette_pastel">Pastel</span></button>
+              <button class="palette-chip" data-palette="cream" type="button"><span class="palette-dots"><i style="background:#faf6ef"></i><i style="background:#ffffff"></i><i style="background:#d97706"></i></span><span data-i18n="settings.palette_cream">Cream coffee</span></button>
+            </div>
             <button class="btn small color-reset" id="colors-reset" type="button" data-i18n="settings.colors_reset">Reset colors</button>
             <p class="small" data-i18n="settings.colors_hint">Your colors apply on this device and override the theme.</p>
             <div class="settings-label" data-i18n="settings.font">Font</div>
@@ -94,28 +125,42 @@
               <button class="settings-item style-choice" data-style-value="modern" type="button" data-i18n="settings.font_modern">Modern</button>
               <button class="settings-item style-choice" data-style-value="classic" type="button" data-i18n="settings.font_classic">Classic</button>
               <button class="settings-item style-choice" data-style-value="rounded" type="button" data-i18n="settings.font_rounded">Rounded</button>
+              <button class="settings-item style-choice" data-style-value="typewriter" type="button" data-i18n="settings.font_typewriter">Typewriter</button>
+              <button class="settings-item style-choice" data-style-value="handwriting" type="button" data-i18n="settings.font_handwriting">Handwriting</button>
+              <button class="settings-item style-choice" data-style-value="condensed" type="button" data-i18n="settings.font_condensed">Condensed</button>
+              <button class="settings-item style-choice" data-style-value="calligraphy" type="button" data-i18n="settings.font_calligraphy">Calligraphy</button>
+              <button class="settings-item style-choice" data-style-value="elegant" type="button" data-i18n="settings.font_elegant">Elegant</button>
+              <button class="settings-item style-choice" data-style-value="poster" type="button" data-i18n="settings.font_poster">Poster</button>
             </div>
             <div class="settings-label" data-i18n="settings.textsize">Text size</div>
             <div class="style-choices" data-style-group="textsize">
+              <button class="settings-item style-choice" data-style-value="tiny" type="button" data-i18n="settings.size_tiny">Tiny</button>
               <button class="settings-item style-choice" data-style-value="small" type="button" data-i18n="settings.size_small">Small</button>
               <button class="settings-item style-choice" data-style-value="normal" type="button" data-i18n="settings.size_normal">Normal</button>
               <button class="settings-item style-choice" data-style-value="large" type="button" data-i18n="settings.size_large">Large</button>
+              <button class="settings-item style-choice" data-style-value="huge" type="button" data-i18n="settings.size_huge">Huge</button>
             </div>
             <div class="settings-label" data-i18n="settings.corners">Corners</div>
             <div class="style-choices" data-style-group="corners">
               <button class="settings-item style-choice" data-style-value="rounded" type="button" data-i18n="settings.corners_rounded">Rounded</button>
               <button class="settings-item style-choice" data-style-value="soft" type="button" data-i18n="settings.corners_soft">Soft</button>
+              <button class="settings-item style-choice" data-style-value="pill" type="button" data-i18n="settings.corners_pill">Very round</button>
               <button class="settings-item style-choice" data-style-value="square" type="button" data-i18n="settings.corners_square">Square</button>
+              <button class="settings-item style-choice" data-style-value="sharp" type="button" data-i18n="settings.corners_sharp">Sharp</button>
             </div>
             <div class="settings-label" data-i18n="settings.anim">Animations</div>
             <div class="style-choices" data-style-group="anim">
               <button class="settings-item style-choice" data-style-value="on" type="button" data-i18n="settings.anim_on">On</button>
+              <button class="settings-item style-choice" data-style-value="soft" type="button" data-i18n="settings.anim_soft">Gentle</button>
               <button class="settings-item style-choice" data-style-value="off" type="button" data-i18n="settings.anim_off">Reduced</button>
+              <button class="settings-item style-choice" data-style-value="none" type="button" data-i18n="settings.anim_none">None</button>
             </div>
             <div class="settings-label" data-i18n="settings.density">Density</div>
             <div class="style-choices" data-style-group="density">
+              <button class="settings-item style-choice" data-style-value="airy" type="button" data-i18n="settings.density_airy">Airy</button>
               <button class="settings-item style-choice" data-style-value="comfortable" type="button" data-i18n="settings.density_comfortable">Comfortable</button>
               <button class="settings-item style-choice" data-style-value="compact" type="button" data-i18n="settings.density_compact">Compact</button>
+              <button class="settings-item style-choice" data-style-value="ultra" type="button" data-i18n="settings.density_ultra">Ultra-compact</button>
             </div>
           </div>
           <div id="settings-admin" hidden>
@@ -214,6 +259,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=26"></script>
+  <script type="module" src="app.js?v=30"></script>
 </body>
 </html>

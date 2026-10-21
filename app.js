@@ -43,6 +43,48 @@ const I18N = {
     "settings.density": "Density",
     "settings.density_comfortable": "Comfortable",
     "settings.density_compact": "Compact",
+    "settings.font_typewriter": "Typewriter",
+    "settings.font_handwriting": "Handwriting",
+    "settings.font_condensed": "Condensed",
+    "settings.font_calligraphy": "Calligraphy",
+    "settings.font_elegant": "Elegant",
+    "settings.font_poster": "Poster",
+    "settings.size_tiny": "Tiny",
+    "settings.size_huge": "Huge",
+    "settings.corners_pill": "Very round",
+    "settings.corners_sharp": "Sharp",
+    "settings.anim_soft": "Gentle",
+    "settings.anim_none": "None",
+    "settings.density_airy": "Airy",
+    "settings.density_ultra": "Ultra-compact",
+    "settings.palettes": "Ready-made palettes",
+    "settings.palette_lagoon": "Lagoon",
+    "settings.palette_lava": "Lava",
+    "settings.palette_royal": "Royal",
+    "settings.palette_bubblegum": "Bubblegum",
+    "settings.palette_coffee": "Coffee",
+    "settings.palette_citrus": "Citrus",
+    "settings.palette_neon": "Neon",
+    "settings.palette_desert": "Desert",
+    "settings.palette_pastel": "Pastel",
+    "settings.palette_cream": "Cream coffee",
+    "settings.fullstyles": "Complete styles",
+    "settings.style_hacker": "Hacker",
+    "settings.style_playero": "Playero",
+    "settings.style_kawaii": "Kawaii",
+    "settings.style_cyberpunk": "Cyberpunk",
+    "settings.style_royal": "Royal",
+    "settings.style_arcade": "Arcade",
+    "settings.style_zen": "Zen",
+    "settings.style_galaxy": "Galaxy",
+    "settings.fullstyles_hint": "Styles change the shape (font, corners, density) — colors stay yours: combine with any palette.",
+    "settings.palette_default": "Default",
+    "settings.palette_ocean": "Ocean",
+    "settings.palette_forest": "Forest",
+    "settings.palette_sunset": "Sunset",
+    "settings.palette_candy": "Candy",
+    "settings.palette_violet": "Midnight violet",
+    "settings.palette_mono": "Monochrome",
     "settings.admin_mode": "Admin mode",
     "settings.admin_on": "On",
     "settings.admin_off": "Off",
@@ -404,6 +446,48 @@ const I18N = {
     "settings.density": "Densité",
     "settings.density_comfortable": "Confortable",
     "settings.density_compact": "Compacte",
+    "settings.font_typewriter": "Machine à écrire",
+    "settings.font_handwriting": "Manuscrite",
+    "settings.font_condensed": "Condensée",
+    "settings.font_calligraphy": "Calligraphie",
+    "settings.font_elegant": "Élégante",
+    "settings.font_poster": "Affiche",
+    "settings.size_tiny": "Très petit",
+    "settings.size_huge": "Très grande",
+    "settings.corners_pill": "Très arrondis",
+    "settings.corners_sharp": "Pointus",
+    "settings.anim_soft": "Douces",
+    "settings.anim_none": "Aucune",
+    "settings.density_airy": "Aérée",
+    "settings.density_ultra": "Ultra-compacte",
+    "settings.palettes": "Palettes prêtes à l'emploi",
+    "settings.palette_lagoon": "Lagune",
+    "settings.palette_lava": "Lave",
+    "settings.palette_royal": "Royal",
+    "settings.palette_bubblegum": "Gomme balloune",
+    "settings.palette_coffee": "Café",
+    "settings.palette_citrus": "Agrumes",
+    "settings.palette_neon": "Néon",
+    "settings.palette_desert": "Désert",
+    "settings.palette_pastel": "Pastel",
+    "settings.palette_cream": "Café crème",
+    "settings.fullstyles": "Styles complets",
+    "settings.style_hacker": "Hacker",
+    "settings.style_playero": "Playero",
+    "settings.style_kawaii": "Kawaii",
+    "settings.style_cyberpunk": "Cyberpunk",
+    "settings.style_royal": "Royal",
+    "settings.style_arcade": "Arcade",
+    "settings.style_zen": "Zen",
+    "settings.style_galaxy": "Galaxie",
+    "settings.fullstyles_hint": "Les styles changent la forme (police, coins, densité) — les couleurs restent les tiennes : combine avec n'importe quelle palette.",
+    "settings.palette_default": "Défaut",
+    "settings.palette_ocean": "Océan",
+    "settings.palette_forest": "Forêt",
+    "settings.palette_sunset": "Coucher de soleil",
+    "settings.palette_candy": "Bonbon",
+    "settings.palette_violet": "Violet de minuit",
+    "settings.palette_mono": "Monochrome",
     "settings.admin_mode": "Mode administrateur",
     "settings.admin_on": "Activé",
     "settings.admin_off": "Désactivé",
@@ -1798,6 +1882,74 @@ $("style-toggle")?.addEventListener("click", () => {
   if (isOpen) refreshColorUI();
 });
 applyColors();
+
+// ---------- Palettes de couleurs prêtes à l'emploi ----------
+const PALETTES = {
+  ocean: { bg: "#082f49", card: "#0c4a6e", text: "#e0f2fe", muted: "#7dd3fc", border: "#075985", accent: "#38bdf8" },
+  forest: { bg: "#052e16", card: "#14532d", text: "#dcfce7", muted: "#86efac", border: "#166534", accent: "#4ade80" },
+  sunset: { bg: "#200d02", card: "#431407", text: "#ffedd5", muted: "#fdba74", border: "#9a3412", accent: "#fb923c" },
+  candy: { bg: "#2b0a1e", card: "#500f38", text: "#fce7f3", muted: "#f9a8d4", border: "#9d174d", accent: "#ec4899" },
+  violet: { bg: "#150826", card: "#2e1065", text: "#ede9fe", muted: "#c4b5fd", border: "#5b21b6", accent: "#a78bfa" },
+  mono: { bg: "#0a0a0a", card: "#262626", text: "#f5f5f5", muted: "#a3a3a3", border: "#404040", accent: "#e5e5e5" },
+  lagoon: { bg: "#04211f", card: "#0a3632", text: "#ccfbf1", muted: "#5eead4", border: "#115e59", accent: "#2dd4bf" },
+  lava: { bg: "#170505", card: "#2b0a0a", text: "#fee2e2", muted: "#fca5a5", border: "#7f1d1d", accent: "#ef4444" },
+  royal: { bg: "#0a1030", card: "#131c4e", text: "#fef9c3", muted: "#fde68a", border: "#854d0e", accent: "#fbbf24" },
+  bubblegum: { bg: "#26082e", card: "#3f1150", text: "#fae8ff", muted: "#f0abfc", border: "#86198f", accent: "#e879f9" },
+  coffee: { bg: "#170d06", card: "#2b1a0e", text: "#f5e6d3", muted: "#c8a165", border: "#6f4e26", accent: "#e08e45" },
+  citrus: { bg: "#141a05", card: "#232b08", text: "#f7fee7", muted: "#bef264", border: "#3f6212", accent: "#a3e635" },
+  neon: { bg: "#050510", card: "#0d0d26", text: "#e0e7ff", muted: "#f472b6", border: "#312e81", accent: "#00fff9" },
+  desert: { bg: "#171310", card: "#292019", text: "#f3e9d2", muted: "#c2a878", border: "#57534e", accent: "#eab308" },
+  pastel: { bg: "#fdf2f8", card: "#ffffff", text: "#500f38", muted: "#a35a86", border: "#f5c6e0", accent: "#ec4899" },
+  cream: { bg: "#faf6ef", card: "#ffffff", text: "#3b2314", muted: "#96755a", border: "#e7d8c3", accent: "#d97706" },
+};
+document.querySelectorAll("[data-palette]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const name = btn.dataset.palette;
+    if (name === "default") {
+      try { localStorage.removeItem("mm_colors"); } catch { /* stockage indisponible */ }
+      applyColors();
+      refreshColorUI();
+      $("accent-reset")?.click();
+      return;
+    }
+    const pal = PALETTES[name];
+    if (!pal) return;
+    const { accent, ...colors } = pal;
+    saveColors(colors);
+    applyColors();
+    refreshColorUI();
+    const picker = $("accent-picker");
+    if (picker && accent) {
+      picker.value = accent;
+      picker.dispatchEvent(new Event("input"));
+    }
+  });
+});
+
+// ---------- Styles complets pré-configurés (FORME seulement : police, coins, densité, animations) ----------
+// Indépendants des palettes : un style ne touche JAMAIS les couleurs, une palette ne touche JAMAIS la forme.
+const FULL_STYLES = {
+  hacker: { font: "typewriter", textsize: "normal", corners: "sharp", anim: "on", density: "compact" },
+  playero: { font: "rounded", textsize: "normal", corners: "pill", anim: "soft", density: "airy" },
+  kawaii: { font: "rounded", textsize: "normal", corners: "pill", anim: "soft", density: "airy" },
+  cyberpunk: { font: "condensed", textsize: "normal", corners: "square", anim: "on", density: "compact" },
+  royal: { font: "elegant", textsize: "normal", corners: "soft", anim: "soft", density: "airy" },
+  arcade: { font: "typewriter", textsize: "normal", corners: "square", anim: "on", density: "compact" },
+  zen: { font: "classic", textsize: "normal", corners: "soft", anim: "soft", density: "airy" },
+  galaxy: { font: "modern", textsize: "normal", corners: "pill", anim: "soft", density: "comfortable" },
+};
+function applyFullStyle(name) {
+  const st = FULL_STYLES[name];
+  if (!st) return;
+  const prefs = loadStylePrefs();
+  prefs.font = st.font; prefs.textsize = st.textsize; prefs.corners = st.corners;
+  prefs.anim = st.anim; prefs.density = st.density;
+  try { localStorage.setItem("mm_style", JSON.stringify(prefs)); } catch { /* stockage indisponible */ }
+  applyStylePrefs();
+}
+document.querySelectorAll("[data-fullstyle]").forEach((btn) => {
+  btn.addEventListener("click", () => applyFullStyle(btn.dataset.fullstyle));
+});
 
 // ---------- Préférences de style (police, taille, coins, animations, densité) ----------
 const STYLE_DEFAULTS = { font: "modern", textsize: "normal", corners: "rounded", anim: "on", density: "comfortable" };
