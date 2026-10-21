@@ -236,7 +236,10 @@ main {
   outline: 2px solid var(--accent);
   border-color: var(--accent);
 }
-.primary {
+/* Bouton plein largeur des formulaires UNIQUEMENT (lot n° 9 : la règle
+   générique .primary polluait tous les boutons « btn primary » — marge de
+   1.2rem et police 1rem — d'où les boutons décalés/plus gros). */
+.form .primary, .msg-form .primary {
   width: 100%;
   margin-top: 1.2rem;
   padding: 0.8rem;
@@ -248,7 +251,7 @@ main {
   font-weight: 700;
   cursor: pointer;
 }
-.primary:hover { background: var(--accent-dark); }
+.form .primary:hover, .msg-form .primary:hover { background: var(--accent-dark); }
 
 .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
 .tab {
