@@ -1353,7 +1353,7 @@ footer {
 }
 
 /* ---------- Chat plein écran total (lot n° 14) ---------- */
-body.chat-mode .navbar { display: none; }
+body.chat-mode .navbar, body.chat-mode footer { display: none; }
 .thread-head { position: sticky; top: 0; z-index: 45; }
 @media (max-width: 860px) {
   .thread-list { padding: 0.8rem 0.5rem; }
