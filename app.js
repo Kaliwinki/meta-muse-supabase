@@ -17,6 +17,11 @@ const I18N = {
     "settings.theme": "Theme",
     "settings.accent": "Accent color",
     "settings.accent_reset": "Reset",
+    "settings.admin_mode": "Admin mode",
+    "settings.admin_on": "On",
+    "settings.admin_off": "Off",
+    "settings.admin_toast_on": "Admin mode on",
+    "settings.admin_toast_off": "Admin mode off — member view",
     "theme.dark": "🌙 Dark",
     "theme.light": "☀️ Light",
     "feed.whats_new": "What's new, {u}?",
@@ -346,6 +351,11 @@ const I18N = {
     "settings.theme": "Thème",
     "settings.accent": "Couleur d'accent",
     "settings.accent_reset": "Réinitialiser",
+    "settings.admin_mode": "Mode administrateur",
+    "settings.admin_on": "Activé",
+    "settings.admin_off": "Désactivé",
+    "settings.admin_toast_on": "Mode administrateur activé",
+    "settings.admin_toast_off": "Mode administrateur désactivé — vue membre",
     "theme.dark": "🌙 Sombre",
     "theme.light": "☀️ Clair",
     "feed.whats_new": "Quoi de neuf, {u} ?",
@@ -1608,6 +1618,7 @@ $("username-form").addEventListener("submit", async (e) => {
 $("settings-btn").addEventListener("click", (e) => {
   e.stopPropagation();
   applyStaticTexts();
+  refreshAdminModeUI();
   $("settings-menu").classList.toggle("hidden");
 });
 document.addEventListener("click", (e) => {
@@ -1671,6 +1682,26 @@ $("accent-reset").addEventListener("click", async () => {
     profilesById[session.user.id].accent_color = null;
     await supabase.from("profiles").update({ accent_color: null }).eq("id", session.user.id);
   }
+});
+
+// ---------- Mode administrateur (vue membre quand désactivé) ----------
+function refreshAdminModeUI() {
+  const row = $("settings-admin");
+  if (row) row.hidden = !isRealAdmin();
+  const btn = $("admin-mode-btn");
+  if (btn) {
+    btn.textContent = adminViewOff ? t("settings.admin_off") : t("settings.admin_on");
+    btn.classList.toggle("active", !adminViewOff);
+  }
+}
+$("admin-mode-btn")?.addEventListener("click", async () => {
+  adminViewOff = !adminViewOff;
+  try { localStorage.setItem("mm_admin_view", adminViewOff ? "off" : "on"); } catch { /* stockage indisponible */ }
+  $("settings-menu").classList.add("hidden");
+  refreshAdminModeUI();
+  showToast(t(adminViewOff ? "settings.admin_toast_off" : "settings.admin_toast_on"));
+  if (adminViewOff && location.hash.startsWith("#/admin")) location.hash = "#/";
+  else await render();
 });
 
 // ---------- Délégation globale : suivre, signaler, notifications ----------
@@ -3123,7 +3154,10 @@ async function doRename(profile, newName) {
 }
 
 // ---------- Super pouvoirs administrateur ----------
-function isAdminMe() { return !!profilesById[session?.user?.id]?.is_admin; }
+let adminViewOff = false;
+try { adminViewOff = localStorage.getItem("mm_admin_view") === "off"; } catch { /* stockage indisponible */ }
+function isRealAdmin() { return !!profilesById[session?.user?.id]?.is_admin; }
+function isAdminMe() { return !adminViewOff && isRealAdmin(); }
 
 function sanctionState(p) {
   if (!p) return { muted: false, suspended: false, banned: false };
