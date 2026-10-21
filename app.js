@@ -273,6 +273,7 @@ const I18N = {
     "blog.post_content": "Content",
     "blog.post_content_ph": "Tell the community something…",
     "blog.publish": "Publish",
+    "blog.create_post": "Create a post",
     "blog.need_account": "To publish an article, you first need an account.",
     "blog.login_signup": "Log in / Sign up",
     "blog.empty": "No posts yet. Be the first to write!",
@@ -607,6 +608,7 @@ const I18N = {
     "blog.post_content": "Contenu",
     "blog.post_content_ph": "Raconte quelque chose à la communauté…",
     "blog.publish": "Publier",
+    "blog.create_post": "Créer une publication",
     "blog.need_account": "Pour publier un article, il faut d'abord avoir un compte.",
     "blog.login_signup": "Se connecter / S'inscrire",
     "blog.empty": "Aucune publication pour le moment. Sois le premier ou la première à écrire !",
@@ -2298,10 +2300,12 @@ async function renderBlog() {
 
     const composer = session?.user
       ? `
-        <section class="card">
+        <button class="btn primary composer-open" id="composer-open" type="button">+ ${esc(t("blog.create_post"))}</button>
+        <section class="card hidden" id="composer-card">
           <div class="composer-head">
             ${myFeedAvatarHtml()}
             <h2>${esc(t("feed.whats_new").replace("{u}", currentUsername || ""))}</h2>
+            <button class="btn small composer-close" id="composer-close" type="button" aria-label="✕">✕</button>
           </div>
           <form id="post-form" class="form">
             <label for="post-title">${esc(t("blog.post_title"))}</label>
@@ -2385,6 +2389,20 @@ async function renderBlog() {
         input.maxLength = 80;
         input.placeholder = `${t("poll.opt_ph")} ${wrap.children.length + 1}`;
         wrap.appendChild(input);
+      });
+    }
+
+    const composerOpen = $("composer-open");
+    const composerCard = $("composer-card");
+    if (composerOpen && composerCard) {
+      composerOpen.addEventListener("click", () => {
+        composerCard.classList.remove("hidden");
+        composerOpen.classList.add("hidden");
+        $("post-title")?.focus();
+      });
+      $("composer-close")?.addEventListener("click", () => {
+        composerCard.classList.add("hidden");
+        composerOpen.classList.remove("hidden");
       });
     }
 

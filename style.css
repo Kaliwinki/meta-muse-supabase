@@ -1359,3 +1359,8 @@ body.chat-mode .navbar, body.chat-mode footer { display: none; }
   .thread-list { padding: 0.8rem 0.5rem; }
   .msg-col { max-width: 88%; }
 }
+
+/* ---------- Lot n° 17 : compositeur du blog replié ---------- */
+.composer-open { width: 100%; padding: 0.85rem; font-size: 1rem; margin-bottom: 1rem; }
+#composer-card.hidden, #composer-open.hidden { display: none; }
+.composer-close { margin-left: auto; }
