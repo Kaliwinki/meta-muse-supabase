@@ -198,6 +198,9 @@ const I18N = {
     "msg.button": "✉️ Message",
     "msg.thread_empty": "No messages yet. Say hi!",
     "msg.signin": "Log in to see your messages.",
+    "msg.today": "Today",
+    "msg.yesterday": "Yesterday",
+    "msg.you": "You:",
     "members.title": "Members",
     "profile.bio_edit": "Edit bio",
     "profile.bio_placeholder": "Tell everyone about yourself…",
@@ -524,6 +527,9 @@ const I18N = {
     "msg.button": "✉️ Message",
     "msg.thread_empty": "Aucun message pour le moment. Dis bonjour !",
     "msg.signin": "Connecte-toi pour voir tes messages.",
+    "msg.today": "Aujourd'hui",
+    "msg.yesterday": "Hier",
+    "msg.you": "Toi :",
     "members.title": "Membres",
     "profile.bio_edit": "Modifier ma bio",
     "profile.bio_placeholder": "Présente-toi en quelques mots…",
@@ -703,6 +709,24 @@ function fmtDate(iso) {
     hour: "2-digit",
     minute: "2-digit"
   });
+}
+
+function fmtTime(iso) {
+  return new Date(iso).toLocaleTimeString(DATE_LOCALE(), { hour: "2-digit", minute: "2-digit" });
+}
+function dayKey(iso) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+function dayLabel(iso) {
+  if (dayKey(iso) === dayKey(new Date().toISOString())) return t("msg.today");
+  const yest = new Date(); yest.setDate(yest.getDate() - 1);
+  if (dayKey(iso) === dayKey(yest.toISOString())) return t("msg.yesterday");
+  return new Date(iso).toLocaleDateString(DATE_LOCALE(), { day: "numeric", month: "long", year: "numeric" });
+}
+function fmtConvoTime(iso) {
+  if (dayKey(iso) === dayKey(new Date().toISOString())) return fmtTime(iso);
+  return new Date(iso).toLocaleDateString(DATE_LOCALE(), { day: "numeric", month: "short" });
 }
 
 function excerpt(text, max = 160) {
@@ -3389,19 +3413,20 @@ async function renderConversations() {
       const av = pr?.avatar_url
         ? `<img class="feed-avatar" src="${esc(pr.avatar_url)}" alt="">`
         : `<div class="feed-avatar feed-avatar-letter">${esc(username.charAt(0).toUpperCase())}</div>`;
+      const lastMine = c.last.sender_id === me;
       items.push(`
-        <div class="convo-item" data-convo="${esc(username)}">
+        <div class="convo-item${c.unread ? " unread" : ""}" data-convo="${esc(username)}">
           ${av}
           <div class="convo-main">
-            <div><a class="author-link" href="#/user/${esc(username)}">${esc(username)}</a></div>
-            <div class="convo-last">${esc(c.last.content)}</div>
+            <div class="convo-top"><a class="author-link" href="#/user/${esc(username)}">${esc(username)}</a><span class="convo-time">${esc(fmtConvoTime(c.last.created_at))}</span></div>
+            <div class="convo-last">${lastMine ? `${esc(t("msg.you"))} ` : ""}${esc(c.last.content)}</div>
           </div>
           ${c.unread ? `<span class="convo-unread">${c.unread}</span>` : ""}
         </div>`);
     }
     view.innerHTML = `
       <div class="blog-header"><h1>${esc(t("msg.title"))}</h1></div>
-      <section class="card">
+      <section class="card convo-card">
         ${items.length ? items.join("") : `<p class="empty">${esc(t("msg.empty"))}</p>`}
       </section>`;
     document.querySelectorAll("[data-convo]").forEach((el) => {
@@ -3438,15 +3463,15 @@ async function renderThread(username) {
       : `<div class="feed-avatar feed-avatar-letter">${esc(profile.username.charAt(0).toUpperCase())}</div>`;
     view.innerHTML = `
       <a class="back-link" href="#/messages">${esc(t("msg.title"))}</a>
-      <section class="card">
-        <div class="composer-head">
+      <section class="card thread-card">
+        <div class="thread-head">
           ${av}
           <h2><a class="author-link" href="#/user/${esc(profile.username)}">${esc(profile.username)}</a></h2>
         </div>
         <div id="thread-list" class="thread-list"></div>
         <form id="msg-form" class="msg-form">
-          <textarea id="msg-input" rows="2" maxlength="2000" required placeholder="${esc(t("msg.placeholder"))}"></textarea>
-          <button type="submit" class="primary">${esc(t("msg.send"))}</button>
+          <textarea id="msg-input" rows="1" maxlength="2000" required placeholder="${esc(t("msg.placeholder"))}"></textarea>
+          <button type="submit" class="msg-send" aria-label="${esc(t("msg.send"))}" title="${esc(t("msg.send"))}"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
         </form>
       </section>`;
     await loadThreadMessages(profile.id);
@@ -3454,12 +3479,21 @@ async function renderThread(username) {
     msgPoll = setInterval(() => {
       if (location.hash === `#/messages/${username}`) loadThreadMessages(profile.id, true);
     }, 12000);
+    const msgInput = $("msg-input");
+    msgInput.addEventListener("input", () => {
+      msgInput.style.height = "auto";
+      msgInput.style.height = Math.min(msgInput.scrollHeight, 120) + "px";
+    });
+    msgInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("msg-form").requestSubmit(); }
+    });
     $("msg-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       if (isMutedMe()) { showToast(myBlockMessage(), "error"); return; }
       const content = $("msg-input").value.trim();
       if (!content) return;
       $("msg-input").value = "";
+      $("msg-input").style.height = "auto";
       const { error } = await supabase.from("messages").insert({
         sender_id: session.user.id,
         recipient_id: profile.id,
@@ -3482,13 +3516,38 @@ async function loadThreadMessages(otherId, quiet = false) {
       .order("created_at", { ascending: true }).limit(200);
     if (error) throw error;
     if (!list) return;
-    list.innerHTML = (data || []).map((m) => `
-      <div class="msg-row${m.sender_id === me ? " mine" : ""}">
-        <div>
-          <div class="msg-bubble">${esc(m.content)}</div>
-          <div class="msg-when">${fmtDate(m.created_at)}</div>
+    const msgs = data || [];
+    const rows = [];
+    let lastDay = "";
+    let prevSender = null;
+    msgs.forEach((m, i) => {
+      const day = dayKey(m.created_at);
+      if (day !== lastDay) {
+        rows.push(`<div class="msg-day"><span>${esc(dayLabel(m.created_at))}</span></div>`);
+        lastDay = day;
+        prevSender = null;
+      }
+      const mine = m.sender_id === me;
+      const grouped = prevSender === m.sender_id;
+      const next = msgs[i + 1];
+      const showWhen = !next || next.sender_id !== m.sender_id || dayKey(next.created_at) !== day;
+      const other = profilesById[m.sender_id];
+      const avHtml = mine ? "" : grouped
+        ? `<span class="msg-avatar msg-avatar-spacer"></span>`
+        : other?.avatar_url
+          ? `<img class="msg-avatar" src="${esc(other.avatar_url)}" alt="">`
+          : `<span class="msg-avatar msg-avatar-letter">${esc((other?.username || "?").charAt(0).toUpperCase())}</span>`;
+      rows.push(`
+      <div class="msg-row${mine ? " mine" : ""}${grouped ? " grp" : ""}">
+        ${avHtml}
+        <div class="msg-col">
+          <div class="msg-bubble" title="${esc(fmtDate(m.created_at))}">${esc(m.content)}</div>
+          ${showWhen ? `<div class="msg-when">${esc(fmtTime(m.created_at))}</div>` : ""}
         </div>
-      </div>`).join("") || `<p class="empty">${esc(t("msg.thread_empty"))}</p>`;
+      </div>`);
+      prevSender = m.sender_id;
+    });
+    list.innerHTML = rows.join("") || `<p class="empty">${esc(t("msg.thread_empty"))}</p>`;
     if (!quiet) list.scrollIntoView({ block: "end" });
     const unreadIds = (data || []).filter((m) => m.recipient_id === me && !m.read_at).map((m) => m.id);
     if (unreadIds.length) {
