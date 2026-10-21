@@ -1,0 +1,5 @@
+# Pierre — robots.txt
+User-agent: *
+Allow: /
+
+Sitemap: https://pierre-afm.pages.dev/sitemap.xml
