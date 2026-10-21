@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pierre — Home</title>
-  <link rel="stylesheet" href="style.css?v=20">
+  <link rel="stylesheet" href="style.css?v=22">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0f172a">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -39,6 +39,10 @@
             <button class="btn small" id="accent-reset" type="button" data-i18n="settings.accent_reset">Reset</button>
           </div>
           <p class="small" id="accent-hint"></p>
+          <div id="settings-admin" hidden>
+            <div class="settings-title" data-i18n="settings.admin_mode">Admin mode</div>
+            <button class="settings-item" id="admin-mode-btn" type="button"></button>
+          </div>
         </div>
       </div>
     </div>
@@ -131,6 +135,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=20"></script>
+  <script type="module" src="app.js?v=22"></script>
 </body>
 </html>
