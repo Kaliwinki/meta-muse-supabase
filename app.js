@@ -761,13 +761,25 @@ function showModalMessage(text, kind = "info") {
  * à la demande de l'utilisateur : déconnexion, suppressions…). Résout true = Oui.
  * Cliquer sur le voile = Non.
  */
+const _svgIcon = (inner) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
+/** Icônes maison (SVG) des fenêtres de confirmation — aucun émoji. */
+const CONFIRM_ICONS = {
+  door: _svgIcon('<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>'),
+  trash: _svgIcon('<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/>'),
+  ban: _svgIcon('<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>'),
+  warn: _svgIcon('<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>'),
+  pencil: _svgIcon('<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>'),
+  mega: _svgIcon('<path d="m3 11 18-5v12L3 14v-3Z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>'),
+  help: _svgIcon('<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>')
+};
+
 function confirmYesNo(message, opts = {}) {
   return new Promise((resolve) => {
     const modal = $("confirm-modal");
     const yesBtn = $("confirm-yes");
     const noBtn = $("confirm-no");
     const iconEl = $("confirm-icon");
-    iconEl.textContent = opts.icon || "?";
+    iconEl.innerHTML = CONFIRM_ICONS[opts.icon] || CONFIRM_ICONS.help;
     iconEl.classList.toggle("danger", !!opts.danger);
     yesBtn.classList.toggle("danger", !!opts.danger);
     $("confirm-text").textContent = message;
@@ -1388,7 +1400,7 @@ function renderAuthArea() {
       ${nameHtml}
       <button class="btn" id="logout-btn" type="button">${esc(t("nav.logout"))}</button>`;
     $("logout-btn").addEventListener("click", async () => {
-      if (!(await confirmYesNo(t("nav.logout_confirm"), { icon: "🚪" }))) return;
+      if (!(await confirmYesNo(t("nav.logout_confirm"), { icon: "door" }))) return;
       const { error } = await supabase.auth.signOut();
       if (error) showToast(authErrorMessage(error.message), "error");
     });
@@ -2192,7 +2204,7 @@ document.addEventListener("click", async (e) => {
   const unblockBtn = e.target.closest("[data-unblock]");
   if (blockBtn) {
     if (!session?.user) return;
-    if (!(await confirmYesNo(t("profile.block_confirm"), { icon: "🚫", danger: true }))) return;
+    if (!(await confirmYesNo(t("profile.block_confirm"), { icon: "ban", danger: true }))) return;
     const uid = blockBtn.dataset.block;
     const { error } = await supabase.from("blocks").insert({ blocker_id: session.user.id, blocked_id: uid });
     if (error) { showToast(t("profile.err_block") + error.message, "error"); return; }
@@ -2573,7 +2585,7 @@ async function renderPostDetail(postId, instant = false) {
       editPostBtn.addEventListener("click", () => $("edit-post-form").classList.toggle("hidden"));
       $("edit-cancel").addEventListener("click", () => $("edit-post-form").classList.add("hidden"));
       $("delete-post-btn").addEventListener("click", async () => {
-        if (!(await confirmYesNo(t("post.delete_confirm"), { icon: "🗑️", danger: true }))) return;
+        if (!(await confirmYesNo(t("post.delete_confirm"), { icon: "trash", danger: true }))) return;
         const { error } = await supabase.from("posts").delete().eq("id", post.id);
         if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
         showToast(t("post.deleted"), "success");
@@ -2625,7 +2637,7 @@ async function renderPostDetail(postId, instant = false) {
     });
     document.querySelectorAll("[data-del-btn]").forEach((btn) => {
       btn.addEventListener("click", async () => {
-        if (!(await confirmYesNo(t("comment.delete_confirm"), { icon: "🗑️", danger: true }))) return;
+        if (!(await confirmYesNo(t("comment.delete_confirm"), { icon: "trash", danger: true }))) return;
         const { error } = await supabase.from("comments").delete().eq("id", btn.dataset.delBtn);
         if (error) { showToast(t("post.err_comment") + error.message, "error"); return; }
         showToast(t("comment.deleted"), "success");
@@ -3011,7 +3023,7 @@ async function renderProfile(username) {
         e.preventDefault();
         const kind = $("sanction-kind").value;
         const days = parseInt($("sanction-days").value, 10) || 7;
-        if (!(await confirmYesNo(t("admin.confirm_sanction").replace("{name}", profile.username), { icon: "⚠️", danger: true }))) return;
+        if (!(await confirmYesNo(t("admin.confirm_sanction").replace("{name}", profile.username), { icon: "warn", danger: true }))) return;
         if (await adminRpc("admin_sanction", { target: profile.id, kind, days })) {
           showToast(t("admin.done"), "success");
           await renderProfile(profile.username);
@@ -3071,7 +3083,7 @@ async function doRename(profile, newName) {
   if (newName === profile.username) { showToast(t("profile.rename_same"), "error"); return; }
   const { data: taken } = await supabase.from("profiles").select("id").ilike("username", newName).neq("id", profile.id).maybeSingle();
   if (taken) { showToast(t("auth.err_username_taken"), "error"); return; }
-  const ok = await confirmYesNo(t("profile.rename_confirm").replace("{name}", newName), { icon: "✏️" });
+  const ok = await confirmYesNo(t("profile.rename_confirm").replace("{name}", newName), { icon: "pencil" });
   if (!ok) return;
   const { error } = await supabase.from("profiles").update({ username: newName }).eq("id", profile.id);
   if (error) { showToast(error.message, "error"); return; }
@@ -3124,17 +3136,17 @@ document.addEventListener("click", async (e) => {
   if (!el || !isAdminMe()) return;
   const action = el.dataset.adminAction, id = el.dataset.id, name = el.dataset.name || "";
   let ok = false;
-  if (action === "del-post") { if (!(await confirmYesNo(t("admin.confirm_delete_post"), { icon: "🗑️", danger: true }))) return; ok = await adminRpc("admin_delete_post", { pid: id }); }
+  if (action === "del-post") { if (!(await confirmYesNo(t("admin.confirm_delete_post"), { icon: "trash", danger: true }))) return; ok = await adminRpc("admin_delete_post", { pid: id }); }
   else if (action === "hide-post") { ok = await adminRpc("admin_set_post_hidden", { pid: id, val: true }); }
   else if (action === "unhide-post") { ok = await adminRpc("admin_set_post_hidden", { pid: id, val: false }); }
-  else if (action === "del-comment") { if (!(await confirmYesNo(t("admin.confirm_delete_comment"), { icon: "🗑️", danger: true }))) return; ok = await adminRpc("admin_delete_comment", { cid: id }); }
+  else if (action === "del-comment") { if (!(await confirmYesNo(t("admin.confirm_delete_comment"), { icon: "trash", danger: true }))) return; ok = await adminRpc("admin_delete_comment", { cid: id }); }
   else if (action === "hide-comment") { ok = await adminRpc("admin_set_comment_hidden", { cid: id, val: true }); }
   else if (action === "unhide-comment") { ok = await adminRpc("admin_set_comment_hidden", { cid: id, val: false }); }
   else if (action === "verify") { if (!(await confirmYesNo(t("admin.confirm_verify").replace("{name}", name)))) return; ok = await adminRpc("admin_set_verified", { target: id, val: true }); }
   else if (action === "unverify") { if (!(await confirmYesNo(t("admin.confirm_unverify").replace("{name}", name)))) return; ok = await adminRpc("admin_set_verified", { target: id, val: false }); }
   else if (action === "make-admin") { if (!(await confirmYesNo(t("admin.confirm_make_admin").replace("{name}", name)))) return; ok = await adminRpc("admin_set_admin", { target: id, val: true }); }
   else if (action === "remove-admin") { if (!(await confirmYesNo(t("admin.confirm_remove_admin").replace("{name}", name)))) return; ok = await adminRpc("admin_set_admin", { target: id, val: false }); }
-  else if (action === "ban") { if (!(await confirmYesNo(t("admin.confirm_ban").replace("{name}", name), { icon: "🚫", danger: true }))) return; ok = await adminRpc("admin_set_banned", { target: id, val: true }); }
+  else if (action === "ban") { if (!(await confirmYesNo(t("admin.confirm_ban").replace("{name}", name), { icon: "ban", danger: true }))) return; ok = await adminRpc("admin_set_banned", { target: id, val: true }); }
   else if (action === "unban") { if (!(await confirmYesNo(t("admin.confirm_unban").replace("{name}", name)))) return; ok = await adminRpc("admin_set_banned", { target: id, val: false }); }
   else if (action === "lock-post") { ok = await adminRpc("admin_set_comments_locked", { pid: id, val: true }); }
   else if (action === "unlock-post") { ok = await adminRpc("admin_set_comments_locked", { pid: id, val: false }); }
@@ -3145,8 +3157,8 @@ document.addEventListener("click", async (e) => {
   else if (action === "clear-banner") { if (!(await confirmYesNo(t("admin.clear_banner") + " ?"))) return; ok = await adminRpc("admin_clear_banner", { target: id }); }
   else if (action === "sanction-clear") { if (!(await confirmYesNo(t("admin.confirm_clear").replace("{name}", name)))) return; ok = await adminRpc("admin_sanction", { target: id, kind: "clear", days: 0 }); }
   else if (action === "purge") {
-    if (!(await confirmYesNo(t("admin.confirm_purge").replace("{name}", name), { icon: "⚠️", danger: true }))) return;
-    if (!(await confirmYesNo(t("admin.confirm_purge2").replace("{name}", name), { icon: "⚠️", danger: true }))) return;
+    if (!(await confirmYesNo(t("admin.confirm_purge").replace("{name}", name), { icon: "warn", danger: true }))) return;
+    if (!(await confirmYesNo(t("admin.confirm_purge2").replace("{name}", name), { icon: "warn", danger: true }))) return;
     ok = await adminRpc("admin_purge_content", { target: id });
   }
   else if (action === "dismiss-report") { const { error } = await supabase.from("reports").delete().eq("id", id); if (error) { showToast(error.message, "error"); return; } ok = true; }
@@ -3258,7 +3270,7 @@ async function renderAdmin() {
       e.preventDefault();
       const msg = $("broadcast-text").value.trim();
       if (!msg) return;
-      if (!(await confirmYesNo(t("admin.confirm_broadcast"), { icon: "📣" }))) return;
+      if (!(await confirmYesNo(t("admin.confirm_broadcast"), { icon: "mega" }))) return;
       if (await adminRpc("admin_broadcast", { msg })) {
         showToast(t("admin.broadcast_sent"), "success");
         $("broadcast-text").value = "";
