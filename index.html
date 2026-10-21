@@ -45,7 +45,7 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="style.css?v=41">
+  <link rel="stylesheet" href="style.css?v=42">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0f172a">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -190,6 +190,18 @@
             <p class="small" data-i18n="settings.reset_all_hint">Theme, colors, accent, font, corners, animations and density back to the defaults.</p>
             <p><button class="btn danger" id="style-reset-all" type="button">↺ <span data-i18n="settings.reset_all">Reset everything</span></button></p>
           </div>
+          <button class="settings-item settings-style-toggle" id="push-toggle" type="button"><span>🔔 <span data-i18n="settings.notifications">Notifications</span></span><span class="style-chev" id="push-chev">▾</span></button>
+          <div id="push-panel" class="style-panel hidden">
+            <p class="settings-hint" id="push-device-line"></p>
+            <div class="push-row"><span data-i18n="push.type_message">Private messages</span><label class="switch"><input type="checkbox" data-push-pref="message"><span class="switch-track"></span></label></div>
+            <div class="push-row"><span data-i18n="push.type_mention">Mentions</span><label class="switch"><input type="checkbox" data-push-pref="mention"><span class="switch-track"></span></label></div>
+            <div class="push-row"><span data-i18n="push.type_comment">Comments &amp; replies</span><label class="switch"><input type="checkbox" data-push-pref="comment"><span class="switch-track"></span></label></div>
+            <div class="push-row"><span data-i18n="push.type_reaction">Reactions</span><label class="switch"><input type="checkbox" data-push-pref="reaction"><span class="switch-track"></span></label></div>
+            <div class="push-row"><span data-i18n="push.type_follow">New followers</span><label class="switch"><input type="checkbox" data-push-pref="follow"><span class="switch-track"></span></label></div>
+            <button class="settings-item" id="push-device-btn" type="button" hidden></button>
+            <button class="settings-item" id="push-test" type="button">🧪 <span data-i18n="push.test">Send a test notification</span></button>
+            <p class="settings-hint" data-i18n="push.hint">Notifications arrive on this device even when the app is closed. Private messages are on by default; the others stay off until you turn them on.</p>
+          </div>
           <div class="settings-title" data-i18n="settings.blog">Blog</div>
           <div class="settings-label" data-i18n="settings.blog_view">Category display</div>
           <button class="settings-item" data-blogview="simple" type="button" data-i18n="settings.view_simple">Simple (filters)</button>
@@ -297,6 +309,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=41"></script>
+  <script type="module" src="app.js?v=42"></script>
 </body>
 </html>

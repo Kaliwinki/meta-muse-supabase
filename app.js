@@ -469,7 +469,24 @@ const I18N = {
     "settings.feed_cats": "My favorite categories",
     "settings.feed_mix": "Mixed (follows + categories)",
     "settings.fav_cats": "Favorite categories",
-    "settings.my_profile": "My profile"
+    "settings.my_profile": "My profile",
+    "settings.notifications": "Notifications",
+    "push.type_message": "Private messages",
+    "push.type_mention": "Mentions",
+    "push.type_comment": "Comments & replies",
+    "push.type_reaction": "Reactions",
+    "push.type_follow": "New followers",
+    "push.test": "Send a test notification",
+    "push.hint": "Notifications arrive on this device even when the app is closed. Private messages are on by default; the others stay off until you turn them on.",
+    "push.device_on": "✅ This device receives notifications.",
+    "push.device_off": "This device is not subscribed yet — turn a notification on to subscribe it.",
+    "push.enable_device": "Enable on this device",
+    "push.disable_device": "Disable on this device",
+    "push.unsupported": "Push notifications are not supported on this browser. On iPhone, install the app on your home screen first.",
+    "push.denied": "Notifications are blocked in your browser settings.",
+    "push.need_login": "Log in to manage your notifications.",
+    "push.test_sent": "Test sent — check your notifications!",
+    "push.test_none": "No device subscribed yet."
   },
   fr: {
     "meta.title": "Pierre — Accueil",
@@ -937,7 +954,24 @@ const I18N = {
     "settings.feed_cats": "Mes catégories préférées",
     "settings.feed_mix": "Mixte (abonnements + catégories)",
     "settings.fav_cats": "Catégories préférées",
-    "settings.my_profile": "Mon profil"
+    "settings.my_profile": "Mon profil",
+    "settings.notifications": "Notifications",
+    "push.type_message": "Messages privés",
+    "push.type_mention": "Mentions",
+    "push.type_comment": "Commentaires et réponses",
+    "push.type_reaction": "Réactions",
+    "push.type_follow": "Nouveaux abonnés",
+    "push.test": "Envoyer une notification test",
+    "push.hint": "Les notifications arrivent sur cet appareil même quand l'application est fermée. Les messages privés sont activés par défaut; les autres restent éteints tant que tu ne les actives pas.",
+    "push.device_on": "✅ Cet appareil reçoit les notifications.",
+    "push.device_off": "Cet appareil n'est pas encore abonné — active une notification pour l'abonner.",
+    "push.enable_device": "Activer sur cet appareil",
+    "push.disable_device": "Désactiver sur cet appareil",
+    "push.unsupported": "Les notifications push ne sont pas supportées par ce navigateur. Sur iPhone, installe d'abord l'application sur l'écran d'accueil.",
+    "push.denied": "Les notifications sont bloquées dans les réglages de ton navigateur.",
+    "push.need_login": "Connecte-toi pour gérer tes notifications.",
+    "push.test_sent": "Test envoyé — regarde tes notifications !",
+    "push.test_none": "Aucun appareil abonné pour l'instant."
   },
   es: {
     "meta.title": "Pierre — Inicio",
@@ -1405,7 +1439,24 @@ const I18N = {
     "settings.feed_cats": "Mis categorías favoritas",
     "settings.feed_mix": "Mixto (seguidos + categorías)",
     "settings.fav_cats": "Categorías favoritas",
-    "settings.my_profile": "Mi perfil"
+    "settings.my_profile": "Mi perfil",
+    "settings.notifications": "Notificaciones",
+    "push.type_message": "Mensajes privados",
+    "push.type_mention": "Menciones",
+    "push.type_comment": "Comentarios y respuestas",
+    "push.type_reaction": "Reacciones",
+    "push.type_follow": "Nuevos seguidores",
+    "push.test": "Enviar una notificación de prueba",
+    "push.hint": "Las notificaciones llegan a este dispositivo aunque la aplicación esté cerrada. Los mensajes privados están activados por defecto; los demás quedan desactivados hasta que los actives.",
+    "push.device_on": "✅ Este dispositivo recibe notificaciones.",
+    "push.device_off": "Este dispositivo aún no está suscrito: activa una notificación para suscribirlo.",
+    "push.enable_device": "Activar en este dispositivo",
+    "push.disable_device": "Desactivar en este dispositivo",
+    "push.unsupported": "Las notificaciones push no son compatibles con este navegador. En iPhone, instala primero la aplicación en tu pantalla de inicio.",
+    "push.denied": "Las notificaciones están bloqueadas en los ajustes de tu navegador.",
+    "push.need_login": "Inicia sesión para gestionar tus notificaciones.",
+    "push.test_sent": "Prueba enviada: ¡revisa tus notificaciones!",
+    "push.test_none": "Aún no hay ningún dispositivo suscrito."
   }
 };
 
@@ -1432,6 +1483,7 @@ function setLang(newLang) {
   localStorage.setItem("mm_lang", newLang);
   applyStaticTexts();
   renderFavCatChips();
+  renderPushPanel();
   renderAuthArea();
   render();
 }
@@ -2213,6 +2265,7 @@ function syncMyProfileBtn() {
 }
 function renderAuthArea() {
   syncMyProfileBtn();
+  renderPushPanel();
   const area = $("auth-area");
   if (session?.user) {
     const display = currentUsername || t("nav.account");
@@ -2449,6 +2502,128 @@ $("settings-my-profile")?.addEventListener("click", () => {
   if (!currentUsername) return;
   $("settings-menu").classList.add("hidden");
   location.hash = `#/user/${currentUsername}`;
+});
+
+// ---------- Notifications push : préférences et abonnement de l'appareil (lot n° 34) ----------
+const PUSH_DEFAULTS = { message: true, mention: false, comment: false, reaction: false, follow: false };
+let myPushPrefs = null;
+const pushSupported = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+function urlB64ToUint8Push(b64) {
+  const pad = "=".repeat((4 - (b64.length % 4)) % 4);
+  const raw = atob((b64 + pad).replace(/-/g, "+").replace(/_/g, "/"));
+  return Uint8Array.from([...raw].map((c) => c.charCodeAt(0)));
+}
+async function callPushFn(payload) {
+  try {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token || supabaseConfig.anonKey;
+    const r = await fetch(`${supabaseConfig.url}/functions/v1/send-push`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: supabaseConfig.anonKey, Authorization: `Bearer ${token}` },
+      body: JSON.stringify(payload),
+    });
+    return r.ok ? await r.json() : null;
+  } catch { return null; }
+}
+async function loadPushPrefs() {
+  if (!session?.user) { myPushPrefs = { ...PUSH_DEFAULTS }; return myPushPrefs; }
+  const { data } = await supabase.from("profiles").select("push_prefs").eq("id", session.user.id).maybeSingle();
+  myPushPrefs = { ...PUSH_DEFAULTS, ...(data?.push_prefs || {}) };
+  return myPushPrefs;
+}
+async function devicePushState() {
+  if (!pushSupported) return "unsupported";
+  if (Notification.permission === "denied") return "denied";
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    return sub ? "on" : "off";
+  } catch { return "unsupported"; }
+}
+async function subscribePushDevice() {
+  if (!session?.user) return false;
+  const perm = await Notification.requestPermission();
+  if (perm !== "granted") return false;
+  const key = await callPushFn({ action: "public-key" });
+  if (!key?.publicKey) return false;
+  const reg = await navigator.serviceWorker.ready;
+  let sub = await reg.pushManager.getSubscription();
+  if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlB64ToUint8Push(key.publicKey) });
+  const j = sub.toJSON();
+  await supabase.from("push_subscriptions").upsert(
+    { user_id: session.user.id, endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth },
+    { onConflict: "endpoint" }
+  );
+  return true;
+}
+async function unsubscribePushDevice() {
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (sub) {
+      await supabase.from("push_subscriptions").delete().eq("endpoint", sub.endpoint);
+      await sub.unsubscribe();
+    }
+  } catch { /* appareil déjà désabonné */ }
+}
+async function renderPushPanel() {
+  const line = $("push-device-line");
+  if (!line) return;
+  const prefs = myPushPrefs || (await loadPushPrefs());
+  document.querySelectorAll("[data-push-pref]").forEach((inp) => {
+    inp.checked = !!prefs[inp.dataset.pushPref];
+    inp.disabled = !session?.user;
+  });
+  const state = await devicePushState();
+  line.textContent = !session?.user ? t("push.need_login")
+    : state === "unsupported" ? t("push.unsupported")
+    : state === "denied" ? t("push.denied")
+    : state === "on" ? t("push.device_on") : t("push.device_off");
+  const btn = $("push-device-btn");
+  if (btn) {
+    btn.hidden = !session?.user || state === "unsupported" || state === "denied";
+    btn.textContent = state === "on" ? `🔕 ${t("push.disable_device")}` : `🔔 ${t("push.enable_device")}`;
+  }
+}
+$("push-toggle")?.addEventListener("click", () => {
+  const panel = $("push-panel");
+  const isOpen = panel.classList.toggle("hidden") === false;
+  $("push-chev")?.classList.toggle("open", isOpen);
+  if (isOpen) renderPushPanel();
+});
+document.querySelectorAll("[data-push-pref]").forEach((inp) => {
+  inp.addEventListener("change", async () => {
+    if (!session?.user) return;
+    const kind = inp.dataset.pushPref;
+    if (inp.checked) {
+      const state = await devicePushState();
+      if (state !== "on") {
+        const ok = await subscribePushDevice();
+        if (!ok) { inp.checked = false; renderPushPanel(); return; }
+      }
+    }
+    const prefs = { ...(myPushPrefs || PUSH_DEFAULTS), [kind]: inp.checked };
+    myPushPrefs = prefs;
+    await supabase.from("profiles").update({ push_prefs: prefs }).eq("id", session.user.id);
+    renderPushPanel();
+  });
+});
+$("push-device-btn")?.addEventListener("click", async () => {
+  const state = await devicePushState();
+  if (state === "on") await unsubscribePushDevice();
+  else await subscribePushDevice();
+  renderPushPanel();
+});
+$("push-test")?.addEventListener("click", async () => {
+  if (!session?.user) return;
+  const state = await devicePushState();
+  if (state !== "on") {
+    const ok = await subscribePushDevice();
+    if (!ok) { renderPushPanel(); return; }
+  }
+  const r = await callPushFn({ action: "test" });
+  showToast(r && r.sent > 0 ? t("push.test_sent") : t("push.test_none"));
+  renderPushPanel();
 });
 
 // ---------- Réglages du Blog : vues, fil par défaut, catégories préférées (lot n° 32) ----------

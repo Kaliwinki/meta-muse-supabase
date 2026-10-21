@@ -1,5 +1,5 @@
 // Pierre — service worker : réseau d'abord avec revalidation forcée (toujours la dernière version), cache en secours hors-ligne
-const CACHE = "pierre-v2";
+const CACHE = "pierre-v3";
 const CORE = ["./", "./index.html", "./style.css", "./app.js", "./supabase-config.js", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (event) => {
@@ -30,5 +30,33 @@ self.addEventListener("fetch", (event) => {
         return response;
       })
       .catch(() => caches.match(request))
+  );
+});
+
+// ---------- Notifications push (lot n° 34) ----------
+self.addEventListener("push", (event) => {
+  let data = { title: "Pierre", body: "", url: "./", tag: undefined };
+  try { data = { ...data, ...event.data.json() }; } catch { try { data.body = event.data.text(); } catch { /* charge vide */ } }
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: "./icon-192.png",
+      badge: "./icon-192.png",
+      tag: data.tag || undefined,
+      data: { url: data.url || "./" },
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = (event.notification.data && event.notification.data.url) || "./";
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
+      for (const c of list) {
+        if ("focus" in c) { if ("navigate" in c) c.navigate(url); return c.focus(); }
+      }
+      return clients.openWindow(url);
+    })
   );
 });

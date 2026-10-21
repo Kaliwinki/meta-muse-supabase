@@ -1503,3 +1503,13 @@ body{top:0!important}
 .fav-cats{display:flex;flex-wrap:wrap;gap:0.35rem;padding:0.2rem 0 0.5rem}
 .fav-cat-chip{padding:0.28rem 0.6rem;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-size:0.82rem}
 .fav-cat-chip.active{border-color:#fbbf24;color:#fbbf24;font-weight:700}
+
+/* Lot n° 34 : rangées et interrupteurs des notifications push */
+.push-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.45rem 0.5rem; }
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; flex: none; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch-track { position: absolute; inset: 0; border-radius: 999px; background: var(--border); transition: background 0.2s; cursor: pointer; }
+.switch-track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.2s; }
+.switch input:checked + .switch-track { background: var(--accent); }
+.switch input:checked + .switch-track::after { transform: translateX(20px); }
+.switch input:disabled + .switch-track { opacity: 0.45; cursor: default; }
