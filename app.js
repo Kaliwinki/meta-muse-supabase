@@ -25,6 +25,24 @@ const I18N = {
     "settings.color_border": "Borders",
     "settings.colors_reset": "Reset colors",
     "settings.colors_hint": "Your colors apply on this device and override the theme.",
+    "settings.font": "Font",
+    "settings.font_modern": "Modern",
+    "settings.font_classic": "Classic",
+    "settings.font_rounded": "Rounded",
+    "settings.textsize": "Text size",
+    "settings.size_small": "Small",
+    "settings.size_normal": "Normal",
+    "settings.size_large": "Large",
+    "settings.corners": "Corners",
+    "settings.corners_rounded": "Rounded",
+    "settings.corners_soft": "Soft",
+    "settings.corners_square": "Square",
+    "settings.anim": "Animations",
+    "settings.anim_on": "On",
+    "settings.anim_off": "Reduced",
+    "settings.density": "Density",
+    "settings.density_comfortable": "Comfortable",
+    "settings.density_compact": "Compact",
     "settings.admin_mode": "Admin mode",
     "settings.admin_on": "On",
     "settings.admin_off": "Off",
@@ -368,6 +386,24 @@ const I18N = {
     "settings.color_border": "Bordures",
     "settings.colors_reset": "Réinitialiser les couleurs",
     "settings.colors_hint": "Tes couleurs s'appliquent sur cet appareil et remplacent celles du thème.",
+    "settings.font": "Police d'écriture",
+    "settings.font_modern": "Moderne",
+    "settings.font_classic": "Classique",
+    "settings.font_rounded": "Arrondie",
+    "settings.textsize": "Taille du texte",
+    "settings.size_small": "Petit",
+    "settings.size_normal": "Normale",
+    "settings.size_large": "Grande",
+    "settings.corners": "Coins",
+    "settings.corners_rounded": "Arrondis",
+    "settings.corners_soft": "Légers",
+    "settings.corners_square": "Carrés",
+    "settings.anim": "Animations",
+    "settings.anim_on": "Activées",
+    "settings.anim_off": "Réduites",
+    "settings.density": "Densité",
+    "settings.density_comfortable": "Confortable",
+    "settings.density_compact": "Compacte",
     "settings.admin_mode": "Mode administrateur",
     "settings.admin_on": "Activé",
     "settings.admin_off": "Désactivé",
@@ -1762,6 +1798,38 @@ $("style-toggle")?.addEventListener("click", () => {
   if (isOpen) refreshColorUI();
 });
 applyColors();
+
+// ---------- Préférences de style (police, taille, coins, animations, densité) ----------
+const STYLE_DEFAULTS = { font: "modern", textsize: "normal", corners: "rounded", anim: "on", density: "comfortable" };
+function loadStylePrefs() {
+  try { return { ...STYLE_DEFAULTS, ...JSON.parse(localStorage.getItem("mm_style") || "{}") }; }
+  catch { return { ...STYLE_DEFAULTS }; }
+}
+function applyStylePrefs() {
+  const p = loadStylePrefs();
+  const root = document.documentElement;
+  for (const key of Object.keys(STYLE_DEFAULTS)) {
+    if (p[key] && p[key] !== STYLE_DEFAULTS[key]) root.dataset[key] = p[key];
+    else delete root.dataset[key];
+  }
+  document.querySelectorAll("[data-style-group]").forEach((group) => {
+    const key = group.dataset.styleGroup;
+    group.querySelectorAll(".style-choice").forEach((btn) =>
+      btn.classList.toggle("active", btn.dataset.styleValue === p[key]));
+  });
+}
+document.querySelectorAll("[data-style-group]").forEach((group) => {
+  const key = group.dataset.styleGroup;
+  group.querySelectorAll(".style-choice").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const p = loadStylePrefs();
+      p[key] = btn.dataset.styleValue;
+      try { localStorage.setItem("mm_style", JSON.stringify(p)); } catch { /* stockage indisponible */ }
+      applyStylePrefs();
+    });
+  });
+});
+applyStylePrefs();
 
 // ---------- Mode administrateur (vue membre quand désactivé) ----------
 function refreshAdminModeUI() {

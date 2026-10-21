@@ -45,11 +45,11 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="style.css?v=25">
+  <link rel="stylesheet" href="style.css?v=26">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0f172a">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <script>try{document.documentElement.dataset.theme=localStorage.getItem('mm_theme')||'dark';var pc=JSON.parse(localStorage.getItem('mm_colors')||'{}');var pm={bg:'--bg',card:'--card',text:'--text',muted:'--muted',border:'--border'};for(var pk in pm){if(pc[pk])document.documentElement.style.setProperty(pm[pk],pc[pk]);}var pa=localStorage.getItem('mm_accent');if(pa)document.documentElement.style.setProperty('--accent',pa);}catch(e){}</script>
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('mm_theme')||'dark';var pc=JSON.parse(localStorage.getItem('mm_colors')||'{}');var pm={bg:'--bg',card:'--card',text:'--text',muted:'--muted',border:'--border'};for(var pk in pm){if(pc[pk])document.documentElement.style.setProperty(pm[pk],pc[pk]);}var pa=localStorage.getItem('mm_accent');if(pa)document.documentElement.style.setProperty('--accent',pa);var ps=JSON.parse(localStorage.getItem('mm_style')||'{}');var pd={font:'modern',textsize:'normal',corners:'rounded',anim:'on',density:'comfortable'};for(var sk in pd){if(ps[sk]&&ps[sk]!==pd[sk])document.documentElement.dataset[sk]=ps[sk];}}catch(e){}</script>
 </head>
 <body>
   <!-- Barre de navigation : onglets à gauche, paramètres + connexion à droite -->
@@ -89,6 +89,34 @@
             <div class="color-row"><span data-i18n="settings.color_border">Borders</span><input type="color" id="color-border" value="#334155" aria-label="Borders"></div>
             <button class="btn small color-reset" id="colors-reset" type="button" data-i18n="settings.colors_reset">Reset colors</button>
             <p class="small" data-i18n="settings.colors_hint">Your colors apply on this device and override the theme.</p>
+            <div class="settings-label" data-i18n="settings.font">Font</div>
+            <div class="style-choices" data-style-group="font">
+              <button class="settings-item style-choice" data-style-value="modern" type="button" data-i18n="settings.font_modern">Modern</button>
+              <button class="settings-item style-choice" data-style-value="classic" type="button" data-i18n="settings.font_classic">Classic</button>
+              <button class="settings-item style-choice" data-style-value="rounded" type="button" data-i18n="settings.font_rounded">Rounded</button>
+            </div>
+            <div class="settings-label" data-i18n="settings.textsize">Text size</div>
+            <div class="style-choices" data-style-group="textsize">
+              <button class="settings-item style-choice" data-style-value="small" type="button" data-i18n="settings.size_small">Small</button>
+              <button class="settings-item style-choice" data-style-value="normal" type="button" data-i18n="settings.size_normal">Normal</button>
+              <button class="settings-item style-choice" data-style-value="large" type="button" data-i18n="settings.size_large">Large</button>
+            </div>
+            <div class="settings-label" data-i18n="settings.corners">Corners</div>
+            <div class="style-choices" data-style-group="corners">
+              <button class="settings-item style-choice" data-style-value="rounded" type="button" data-i18n="settings.corners_rounded">Rounded</button>
+              <button class="settings-item style-choice" data-style-value="soft" type="button" data-i18n="settings.corners_soft">Soft</button>
+              <button class="settings-item style-choice" data-style-value="square" type="button" data-i18n="settings.corners_square">Square</button>
+            </div>
+            <div class="settings-label" data-i18n="settings.anim">Animations</div>
+            <div class="style-choices" data-style-group="anim">
+              <button class="settings-item style-choice" data-style-value="on" type="button" data-i18n="settings.anim_on">On</button>
+              <button class="settings-item style-choice" data-style-value="off" type="button" data-i18n="settings.anim_off">Reduced</button>
+            </div>
+            <div class="settings-label" data-i18n="settings.density">Density</div>
+            <div class="style-choices" data-style-group="density">
+              <button class="settings-item style-choice" data-style-value="comfortable" type="button" data-i18n="settings.density_comfortable">Comfortable</button>
+              <button class="settings-item style-choice" data-style-value="compact" type="button" data-i18n="settings.density_compact">Compact</button>
+            </div>
           </div>
           <div id="settings-admin" hidden>
             <div class="settings-title" data-i18n="settings.admin_mode">Admin mode</div>
@@ -186,6 +214,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=25"></script>
+  <script type="module" src="app.js?v=26"></script>
 </body>
 </html>

@@ -1383,3 +1383,17 @@ body.chat-mode .navbar, body.chat-mode footer { display: none; }
 .color-row input[type="color"]::-webkit-color-swatch { border: none; border-radius: 999px; }
 .color-row input[type="color"]::-moz-color-swatch { border: none; border-radius: 999px; }
 .color-reset { margin-top: 0.45rem; }
+
+/* ---------- Lot n° 21 : kit Style complet (police, taille, coins, animations, densité) ---------- */
+.settings-menu { max-height: 80vh; overflow-y: auto; }
+.style-choices { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.15rem 0 0.35rem; }
+.style-choices .settings-item { width: auto; padding: 0.35rem 0.6rem; font-size: 0.88rem; border: 1px solid var(--border); border-radius: 999px; }
+html[data-font="classic"] body, html[data-font="classic"] button, html[data-font="classic"] input, html[data-font="classic"] textarea, html[data-font="classic"] select { font-family: Georgia, "Times New Roman", serif; }
+html[data-font="rounded"] body, html[data-font="rounded"] button, html[data-font="rounded"] input, html[data-font="rounded"] textarea, html[data-font="rounded"] select { font-family: ui-rounded, "SF Pro Rounded", "Trebuchet MS", "Comic Sans MS", sans-serif; }
+html[data-textsize="small"] { font-size: 93.75%; }
+html[data-textsize="large"] { font-size: 112.5%; }
+html[data-corners="soft"] .card, html[data-corners="soft"] .btn, html[data-corners="soft"] .settings-menu, html[data-corners="soft"] .notif-panel, html[data-corners="soft"] .seg-tab, html[data-corners="soft"] input, html[data-corners="soft"] textarea, html[data-corners="soft"] select { border-radius: 8px; }
+html[data-corners="square"] .card, html[data-corners="square"] .btn, html[data-corners="square"] .settings-menu, html[data-corners="square"] .notif-panel, html[data-corners="square"] .seg-tab, html[data-corners="square"] input, html[data-corners="square"] textarea, html[data-corners="square"] select { border-radius: 2px; }
+html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+html[data-density="compact"] .card { padding: 0.95rem 1.05rem; margin-bottom: 0.7rem; }
+html[data-density="compact"] .settings-item { padding-top: 0.35rem; padding-bottom: 0.35rem; }
