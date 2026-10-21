@@ -468,7 +468,8 @@ const I18N = {
     "settings.feed_following": "My follows",
     "settings.feed_cats": "My favorite categories",
     "settings.feed_mix": "Mixed (follows + categories)",
-    "settings.fav_cats": "Favorite categories"
+    "settings.fav_cats": "Favorite categories",
+    "settings.my_profile": "My profile"
   },
   fr: {
     "meta.title": "Pierre — Accueil",
@@ -935,7 +936,8 @@ const I18N = {
     "settings.feed_following": "Mes abonnements",
     "settings.feed_cats": "Mes catégories préférées",
     "settings.feed_mix": "Mixte (abonnements + catégories)",
-    "settings.fav_cats": "Catégories préférées"
+    "settings.fav_cats": "Catégories préférées",
+    "settings.my_profile": "Mon profil"
   },
   es: {
     "meta.title": "Pierre — Inicio",
@@ -1402,7 +1404,8 @@ const I18N = {
     "settings.feed_following": "A quienes sigo",
     "settings.feed_cats": "Mis categorías favoritas",
     "settings.feed_mix": "Mixto (seguidos + categorías)",
-    "settings.fav_cats": "Categorías favoritas"
+    "settings.fav_cats": "Categorías favoritas",
+    "settings.my_profile": "Mi perfil"
   }
 };
 
@@ -2204,7 +2207,12 @@ function authErrorMessage(message) {
   return t("auth.err_generic");
 }
 
+function syncMyProfileBtn() {
+  const btn = $("settings-my-profile");
+  if (btn) btn.hidden = !(session?.user && currentUsername);
+}
 function renderAuthArea() {
+  syncMyProfileBtn();
   const area = $("auth-area");
   if (session?.user) {
     const display = currentUsername || t("nav.account");
@@ -2435,6 +2443,13 @@ if (glangSelect) {
 }
 if (gLang) loadGoogleTranslate(() => applyGoogleLang(gLang));
 syncGLangUI();
+
+// ---------- Paramètres : voir son propre profil (lot n° 33) ----------
+$("settings-my-profile")?.addEventListener("click", () => {
+  if (!currentUsername) return;
+  $("settings-menu").classList.add("hidden");
+  location.hash = `#/user/${currentUsername}`;
+});
 
 // ---------- Réglages du Blog : vues, fil par défaut, catégories préférées (lot n° 32) ----------
 function renderFavCatChips() {
