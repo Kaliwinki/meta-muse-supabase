@@ -45,11 +45,11 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="style.css?v=24">
+  <link rel="stylesheet" href="style.css?v=25">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0f172a">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <script>try{document.documentElement.dataset.theme=localStorage.getItem('mm_theme')||'dark'}catch(e){}</script>
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('mm_theme')||'dark';var pc=JSON.parse(localStorage.getItem('mm_colors')||'{}');var pm={bg:'--bg',card:'--card',text:'--text',muted:'--muted',border:'--border'};for(var pk in pm){if(pc[pk])document.documentElement.style.setProperty(pm[pk],pc[pk]);}var pa=localStorage.getItem('mm_accent');if(pa)document.documentElement.style.setProperty('--accent',pa);}catch(e){}</script>
 </head>
 <body>
   <!-- Barre de navigation : onglets à gauche, paramètres + connexion à droite -->
@@ -74,12 +74,22 @@
           <div class="settings-title" data-i18n="settings.theme">Theme</div>
           <button class="settings-item" data-theme="dark" type="button" data-i18n="theme.dark">🌙 Dark</button>
           <button class="settings-item" data-theme="light" type="button" data-i18n="theme.light">☀️ Light</button>
-          <div class="settings-title" data-i18n="settings.accent">Accent color</div>
-          <div class="settings-accent">
-            <input type="color" id="accent-picker" value="#38bdf8" aria-label="Accent color">
-            <button class="btn small" id="accent-reset" type="button" data-i18n="settings.accent_reset">Reset</button>
+          <button class="settings-item settings-style-toggle" id="style-toggle" type="button"><span data-i18n="settings.style">Style</span><span class="style-chev" id="style-chev">▾</span></button>
+          <div id="style-panel" class="style-panel hidden">
+            <div class="settings-label" data-i18n="settings.accent">Accent color</div>
+            <div class="settings-accent">
+              <input type="color" id="accent-picker" value="#38bdf8" aria-label="Accent color">
+              <button class="btn small" id="accent-reset" type="button" data-i18n="settings.accent_reset">Reset</button>
+            </div>
+            <p class="small" id="accent-hint"></p>
+            <div class="color-row"><span data-i18n="settings.color_bg">Background</span><input type="color" id="color-bg" value="#0f172a" aria-label="Background"></div>
+            <div class="color-row"><span data-i18n="settings.color_card">Cards</span><input type="color" id="color-card" value="#1e293b" aria-label="Cards"></div>
+            <div class="color-row"><span data-i18n="settings.color_text">Text</span><input type="color" id="color-text" value="#e2e8f0" aria-label="Text"></div>
+            <div class="color-row"><span data-i18n="settings.color_muted">Secondary text</span><input type="color" id="color-muted" value="#94a3b8" aria-label="Secondary text"></div>
+            <div class="color-row"><span data-i18n="settings.color_border">Borders</span><input type="color" id="color-border" value="#334155" aria-label="Borders"></div>
+            <button class="btn small color-reset" id="colors-reset" type="button" data-i18n="settings.colors_reset">Reset colors</button>
+            <p class="small" data-i18n="settings.colors_hint">Your colors apply on this device and override the theme.</p>
           </div>
-          <p class="small" id="accent-hint"></p>
           <div id="settings-admin" hidden>
             <div class="settings-title" data-i18n="settings.admin_mode">Admin mode</div>
             <button class="settings-item" id="admin-mode-btn" type="button"></button>
@@ -176,6 +186,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=24"></script>
+  <script type="module" src="app.js?v=25"></script>
 </body>
 </html>

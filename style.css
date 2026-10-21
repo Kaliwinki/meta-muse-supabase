@@ -1370,3 +1370,16 @@ body.chat-mode .navbar, body.chat-mode footer { display: none; }
 .blog-header .composer-open { width: auto; margin: 0; padding: 0.6rem 1.1rem; font-size: 0.95rem; white-space: nowrap; }
 .seg-tabs { flex-wrap: nowrap; gap: 0.4rem; }
 .seg-tab { flex: 1 1 0; padding: 0.45rem 0.25rem; font-size: 0.85rem; white-space: nowrap; text-align: center; }
+
+/* ---------- Lot n° 20 : sous-menu Style (palette de couleurs) ---------- */
+.settings-style-toggle { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.style-chev { transition: transform 0.2s ease; font-size: 0.8rem; opacity: 0.8; }
+.style-chev.open { transform: rotate(180deg); }
+.style-panel { padding: 0.2rem 0 0.35rem; }
+.style-panel .settings-label { margin-top: 0.35rem; }
+.color-row { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; padding: 0.32rem 0.1rem; font-size: 0.92rem; }
+.color-row input[type="color"] { width: 46px; height: 30px; border: 1px solid var(--border); border-radius: 999px; background: none; padding: 2px; cursor: pointer; flex-shrink: 0; }
+.color-row input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+.color-row input[type="color"]::-webkit-color-swatch { border: none; border-radius: 999px; }
+.color-row input[type="color"]::-moz-color-swatch { border: none; border-radius: 999px; }
+.color-reset { margin-top: 0.45rem; }

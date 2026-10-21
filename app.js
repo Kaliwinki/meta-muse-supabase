@@ -17,6 +17,14 @@ const I18N = {
     "settings.theme": "Theme",
     "settings.accent": "Accent color",
     "settings.accent_reset": "Reset",
+    "settings.style": "Style",
+    "settings.color_bg": "Background",
+    "settings.color_card": "Cards",
+    "settings.color_text": "Text",
+    "settings.color_muted": "Secondary text",
+    "settings.color_border": "Borders",
+    "settings.colors_reset": "Reset colors",
+    "settings.colors_hint": "Your colors apply on this device and override the theme.",
     "settings.admin_mode": "Admin mode",
     "settings.admin_on": "On",
     "settings.admin_off": "Off",
@@ -352,6 +360,14 @@ const I18N = {
     "settings.theme": "Thème",
     "settings.accent": "Couleur d'accent",
     "settings.accent_reset": "Réinitialiser",
+    "settings.style": "Style",
+    "settings.color_bg": "Fond",
+    "settings.color_card": "Cartes",
+    "settings.color_text": "Texte",
+    "settings.color_muted": "Texte secondaire",
+    "settings.color_border": "Bordures",
+    "settings.colors_reset": "Réinitialiser les couleurs",
+    "settings.colors_hint": "Tes couleurs s'appliquent sur cet appareil et remplacent celles du thème.",
     "settings.admin_mode": "Mode administrateur",
     "settings.admin_on": "Activé",
     "settings.admin_off": "Désactivé",
@@ -1685,6 +1701,67 @@ $("accent-reset").addEventListener("click", async () => {
     await supabase.from("profiles").update({ accent_color: null }).eq("id", session.user.id);
   }
 });
+
+// ---------- Palette de couleurs personnelle (sous-menu Style) ----------
+const COLOR_VARS = { bg: "--bg", card: "--card", text: "--text", muted: "--muted", border: "--border" };
+function loadColors() {
+  try { return JSON.parse(localStorage.getItem("mm_colors") || "{}"); } catch { return {}; }
+}
+function saveColors(c) {
+  try { localStorage.setItem("mm_colors", JSON.stringify(c)); } catch { /* stockage indisponible */ }
+}
+function hexToRgba(hex, a) {
+  const n = parseInt(hex.slice(1), 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+}
+function applyColors() {
+  const c = loadColors();
+  const root = document.documentElement;
+  for (const [key, v] of Object.entries(COLOR_VARS)) {
+    if (c[key]) root.style.setProperty(v, c[key]);
+    else root.style.removeProperty(v);
+  }
+  if (c.bg || c.card) {
+    // Variables dérivées : la barre de navigation, les champs et le dégradé suivent la palette.
+    const cs = getComputedStyle(root);
+    const bgv = cs.getPropertyValue("--bg").trim();
+    const cardv = cs.getPropertyValue("--card").trim();
+    root.style.setProperty("--body-grad", `linear-gradient(160deg, ${bgv}, ${cardv})`);
+    root.style.setProperty("--hover-bg", cardv);
+    root.style.setProperty("--input-bg", bgv);
+    try { root.style.setProperty("--nav-bg", hexToRgba(bgv, 0.92)); } catch { /* couleur non hexadécimale */ }
+  } else {
+    for (const v of ["--body-grad", "--hover-bg", "--input-bg", "--nav-bg"]) root.style.removeProperty(v);
+  }
+}
+function refreshColorUI() {
+  const c = loadColors();
+  const cs = getComputedStyle(document.documentElement);
+  for (const [key, v] of Object.entries(COLOR_VARS)) {
+    const input = $("color-" + key);
+    if (input) input.value = c[key] || cs.getPropertyValue(v).trim();
+  }
+}
+for (const key of Object.keys(COLOR_VARS)) {
+  $("color-" + key)?.addEventListener("input", (e) => {
+    const c = loadColors();
+    c[key] = e.target.value;
+    saveColors(c);
+    applyColors();
+  });
+}
+$("colors-reset")?.addEventListener("click", () => {
+  try { localStorage.removeItem("mm_colors"); } catch { /* stockage indisponible */ }
+  applyColors();
+  refreshColorUI();
+});
+$("style-toggle")?.addEventListener("click", () => {
+  const panel = $("style-panel");
+  const isOpen = panel.classList.toggle("hidden") === false;
+  $("style-chev")?.classList.toggle("open", isOpen);
+  if (isOpen) refreshColorUI();
+});
+applyColors();
 
 // ---------- Mode administrateur (vue membre quand désactivé) ----------
 function refreshAdminModeUI() {
