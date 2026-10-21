@@ -3347,7 +3347,18 @@ async function renderProfile(username) {
            <button class="btn small" type="button" data-admin-action="${profile.verified ? "unverify" : "verify"}" data-id="${esc(profile.id)}" data-name="${esc(profile.username)}">${esc(t(profile.verified ? "admin.unverify" : "admin.verify"))}</button>
            <button class="btn small" type="button" data-admin-action="${profile.is_admin ? "remove-admin" : "make-admin"}" data-id="${esc(profile.id)}" data-name="${esc(profile.username)}">${esc(t(profile.is_admin ? "admin.remove_admin" : "admin.make_admin"))}</button>
            <button class="btn small danger" type="button" data-admin-action="${profile.banned ? "unban" : "ban"}" data-id="${esc(profile.id)}" data-name="${esc(profile.username)}">${esc(t(profile.banned ? "admin.unban" : "admin.ban"))}</button>
-         </div>`
+         </div>
+           <p style="margin-top:0.75rem"><a class="btn small" href="#/admin-dms/${esc(profile.username)}">💬 ${esc(t("admin.dms"))}</a></p>
+           <form id="modlevel-form" class="form" style="margin-top:0.75rem">
+             <label>${esc(t("admin.mod_level"))}</label>
+             <select id="modlevel-select">
+               <option value="0"${profile.mod_level === 0 ? " selected" : ""}>${esc(t("admin.mod_none"))}</option>
+               <option value="1"${profile.mod_level === 1 ? " selected" : ""}>${esc(t("admin.mod_1"))}</option>
+               <option value="2"${profile.mod_level === 2 ? " selected" : ""}>${esc(t("admin.mod_2"))}</option>
+               <option value="3"${profile.mod_level === 3 ? " selected" : ""}>${esc(t("admin.mod_3"))}</option>
+             </select>
+             <button type="submit" class="btn small">${esc(t("admin.apply"))}</button>
+           </form>`
       : "";
     const profSanction = sanctionState(profile);
     const sanctionBlock = isAdminMe() && !isOwner
@@ -3360,17 +3371,6 @@ async function renderProfile(username) {
                : profSanction.muted
                  ? esc(t("admin.muted_until").replace("{d}", fmtDate(profile.muted_until)))
                  : esc(t("admin.sanction_none"))}</p>
-           <p style="margin-top:0.75rem"><a class="btn small" href="#/admin-dms/${esc(profile.username)}">💬 ${esc(t("admin.dms"))}</a></p>
-           <form id="modlevel-form" class="form" style="margin-top:0.75rem">
-             <label>${esc(t("admin.mod_level"))}</label>
-             <select id="modlevel-select">
-               <option value="0"${profile.mod_level === 0 ? " selected" : ""}>${esc(t("admin.mod_none"))}</option>
-               <option value="1"${profile.mod_level === 1 ? " selected" : ""}>${esc(t("admin.mod_1"))}</option>
-               <option value="2"${profile.mod_level === 2 ? " selected" : ""}>${esc(t("admin.mod_2"))}</option>
-               <option value="3"${profile.mod_level === 3 ? " selected" : ""}>${esc(t("admin.mod_3"))}</option>
-             </select>
-             <button type="submit" class="btn small">${esc(t("admin.apply"))}</button>
-           </form>
            <form id="sanction-form" class="form">
              <select id="sanction-kind">
                <option value="mute">${esc(t("admin.kind_mute"))}</option>
