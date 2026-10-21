@@ -2266,6 +2266,7 @@ function syncMyProfileBtn() {
 function renderAuthArea() {
   syncMyProfileBtn();
   renderPushPanel();
+  if (window.matchMedia("(display-mode: standalone)").matches) maybeAutoSubscribePush();
   const area = $("auth-area");
   if (session?.user) {
     const display = currentUsername || t("nav.account");
@@ -2542,7 +2543,10 @@ async function devicePushState() {
 }
 async function subscribePushDevice() {
   if (!session?.user) return false;
-  const perm = await Notification.requestPermission();
+  let perm = Notification.permission;
+  if (perm !== "granted") {
+    try { perm = await Notification.requestPermission(); } catch { return false; }
+  }
   if (perm !== "granted") return false;
   const key = await callPushFn({ action: "public-key" });
   if (!key?.publicKey) return false;
@@ -2556,6 +2560,20 @@ async function subscribePushDevice() {
   );
   return true;
 }
+let pushAutoTried = false;
+async function maybeAutoSubscribePush() {
+  if (pushAutoTried || !session?.user || !pushSupported) return;
+  if (localStorage.getItem("mm_push_autoask")) return;
+  if (Notification.permission !== "default") return;
+  pushAutoTried = true;
+  const prefs = myPushPrefs || (await loadPushPrefs());
+  if (!prefs.message) return;
+  localStorage.setItem("mm_push_autoask", "1");
+  const ok = await subscribePushDevice();
+  if (ok) showToast(t("push.device_on"));
+  renderPushPanel();
+}
+window.addEventListener("appinstalled", () => { maybeAutoSubscribePush(); });
 async function unsubscribePushDevice() {
   try {
     const reg = await navigator.serviceWorker.ready;
