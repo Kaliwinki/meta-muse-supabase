@@ -2300,7 +2300,6 @@ async function renderBlog() {
 
     const composer = session?.user
       ? `
-        <button class="btn primary composer-open" id="composer-open" type="button">+ ${esc(t("blog.create_post"))}</button>
         <section class="card hidden" id="composer-card">
           <div class="composer-head">
             ${myFeedAvatarHtml()}
@@ -2345,8 +2344,11 @@ async function renderBlog() {
         ${session?.user ? `<button class="seg-tab${feedMode === "saved" ? " active" : ""}" data-feed="saved" type="button">${esc(t("feed.saved"))}</button>` : ""}
       </div>`;
 
+    const composerToggle = session?.user && !isMutedMe()
+      ? `<button class="btn primary composer-open" id="composer-open" type="button">+ ${esc(t("blog.create_post"))}</button>`
+      : "";
     view.innerHTML = `
-      <div class="blog-header"><h1>${esc(t("blog.title"))}</h1></div>
+      <div class="blog-header"><h1>${esc(t("blog.title"))}</h1>${composerToggle}</div>
       ${composerFinal}
       ${tabs}
       <input id="post-search" class="search-input" type="search" placeholder="${esc(t("search.posts"))}">

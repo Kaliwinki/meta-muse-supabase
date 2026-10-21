@@ -1364,3 +1364,9 @@ body.chat-mode .navbar, body.chat-mode footer { display: none; }
 .composer-open { width: 100%; padding: 0.85rem; font-size: 1rem; margin-bottom: 1rem; }
 #composer-card.hidden, #composer-open.hidden { display: none; }
 .composer-close { margin-left: auto; }
+
+/* ---------- Lot n° 18 : bouton publication dans l'en-tête, filtres sur une ligne ---------- */
+.blog-header { align-items: center; }
+.blog-header .composer-open { width: auto; margin: 0; padding: 0.6rem 1.1rem; font-size: 0.95rem; white-space: nowrap; }
+.seg-tabs { flex-wrap: nowrap; gap: 0.4rem; }
+.seg-tab { flex: 1 1 0; padding: 0.45rem 0.25rem; font-size: 0.85rem; white-space: nowrap; text-align: center; }
