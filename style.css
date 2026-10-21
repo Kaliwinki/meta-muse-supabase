@@ -1471,3 +1471,10 @@ html[data-density="airy"] .hero { margin-bottom: 2.2rem; }
 .protect-shield-note { position: absolute; inset: 0; z-index: 6; display: none; align-items: center; justify-content: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text); pointer-events: none; }
 body.protect-shield .thread-head, body.protect-shield .thread-list, body.protect-shield .msg-form { filter: blur(14px); }
 body.protect-shield .protect-shield-note { display: flex; }
+
+/* Lot n° 31 — langues : espagnol natif + Google Traduction */
+.gt-offscreen{position:absolute;left:-9999px;top:0;width:1px;height:1px;overflow:hidden}
+.goog-te-banner-frame.skiptranslate{display:none!important}
+body{top:0!important}
+.settings-select{width:100%;padding:0.45rem 0.5rem;margin:0.15rem 0 0.3rem;border-radius:0.5rem;border:1px solid var(--border);background:var(--card);color:var(--text);font:inherit}
+.settings-note{font-size:0.78rem;color:var(--muted);margin:0.1rem 0 0.4rem;line-height:1.35}
