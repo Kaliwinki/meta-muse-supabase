@@ -746,13 +746,6 @@ footer { padding: 1.5rem; text-align: center; }
   }
   .nav-links a { padding: 0.4rem 0.55rem; font-size: 0.95rem; }
   /* Le panneau de notifications devient plein largeur utile, bien cadré */
-  .notif-panel {
-    position: fixed;
-    top: 7rem;
-    right: 0.6rem;
-    left: 0.6rem;
-    width: auto;
-  }
 }
 
 /* ---------- Pack social : onglets, recherche, notifications, messages ---------- */
@@ -919,14 +912,23 @@ footer { padding: 1.5rem; text-align: center; }
 .convo-top { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; }
 .convo-time { font-size: 0.72rem; color: var(--muted); flex: none; }
 .convo-item.unread .convo-last { color: var(--text); font-weight: 600; }
-.thread-card { padding: 0; overflow: hidden; }
+main.thread-mode { max-width: 940px; padding: 0 0 5.4rem; }
+.thread-screen { display: flex; flex-direction: column; }
+.thread-back {
+  width: 38px; height: 38px; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; color: var(--text); text-decoration: none;
+}
+.thread-back:hover { background: var(--hover-bg); }
+.thread-back svg { width: 22px; height: 22px; display: block; }
 .thread-head {
-  display: flex; align-items: center; gap: 0.7rem;
-  padding: 0.75rem 1rem; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.55rem;
+  padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border);
+  background: var(--card);
 }
 .thread-head .feed-avatar { width: 40px; height: 40px; }
 .thread-head h2 { font-size: 1.05rem; margin: 0; }
-.thread-list { display: flex; flex-direction: column; gap: 0.55rem; padding: 1rem; }
+.thread-list { display: flex; flex-direction: column; gap: 0.55rem; padding: 1rem; scroll-margin-bottom: 5.4rem; }
 .msg-day { text-align: center; margin: 0.5rem 0 0.2rem; }
 .msg-day span {
   background: var(--hover-bg); color: var(--muted);
@@ -982,6 +984,14 @@ footer { padding: 1.5rem; text-align: center; }
 }
 .msg-send svg { width: 20px; height: 20px; display: block; }
 .msg-send:hover { filter: brightness(1.1); }
+main.thread-mode .msg-form {
+  position: fixed;
+  left: 50%; transform: translateX(-50%);
+  bottom: 0; width: 100%; max-width: 940px;
+  background: var(--card);
+  padding-bottom: calc(0.65rem + env(safe-area-inset-bottom));
+  z-index: 40;
+}
 @media (max-width: 860px) {
   .thread-list { padding: 0.8rem 0.6rem; }
   .msg-col { max-width: 86%; }
@@ -1327,4 +1337,25 @@ footer {
   line-height: 1;
   padding-top: 0;
   padding-bottom: 0;
+}
+
+/* ---------- Panneau de notifications centré sur mobile (lot n° 13) ---------- */
+@media (max-width: 860px) {
+  .notif-panel {
+    position: fixed;
+    top: 7rem;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: min(94vw, 380px);
+    max-height: 70vh;
+  }
+}
+
+/* ---------- Chat plein écran total (lot n° 14) ---------- */
+body.chat-mode .navbar { display: none; }
+.thread-head { position: sticky; top: 0; z-index: 45; }
+@media (max-width: 860px) {
+  .thread-list { padding: 0.8rem 0.5rem; }
+  .msg-col { max-width: 88%; }
 }
