@@ -1425,3 +1425,30 @@ html[data-font="poster"] body, html[data-font="poster"] button, html[data-font="
 
 /* ---------- Lot n° 24 : styles découplés des couleurs ---------- */
 .style-preview { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 22px; border: 1px solid var(--border); border-radius: 6px; background: var(--hover-bg); font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+
+/* ---------- Lot n° 26 : la densité compacte serre TOUTE la page ---------- */
+html[data-density="compact"] main { padding-top: 1.1rem; padding-bottom: 1.6rem; }
+html[data-density="compact"] .card { margin-bottom: 0.55rem; }
+html[data-density="compact"] .hero { padding: 1.5rem 1rem; margin-bottom: 0.8rem; }
+html[data-density="compact"] .nav-inner { padding-top: 0.45rem; padding-bottom: 0.45rem; }
+html[data-density="compact"] footer { padding: 0.9rem; }
+html[data-density="compact"] .features, html[data-density="compact"] .posts-grid, html[data-density="compact"] .member-grid, html[data-density="compact"] .badges-grid { gap: 0.55rem; }
+html[data-density="compact"] .post-layout, html[data-density="compact"] .post-side { gap: 0.6rem; }
+html[data-density="compact"] .blog-header { margin-bottom: 0.55rem; }
+html[data-density="compact"] .seg-tabs, html[data-density="compact"] .tabs { margin-bottom: 0.55rem; }
+html[data-density="compact"] .reactions { margin: 0.6rem 0; }
+html[data-density="compact"] .modal-card { padding: 1.1rem; }
+html[data-density="ultra"] main { padding-top: 0.6rem; padding-bottom: 1rem; }
+html[data-density="ultra"] .card { margin-bottom: 0.32rem; }
+html[data-density="ultra"] .hero { padding: 0.8rem; margin-bottom: 0.45rem; }
+html[data-density="ultra"] .nav-inner { padding-top: 0.28rem; padding-bottom: 0.28rem; }
+html[data-density="ultra"] footer { padding: 0.55rem; }
+html[data-density="ultra"] .features, html[data-density="ultra"] .posts-grid, html[data-density="ultra"] .member-grid, html[data-density="ultra"] .badges-grid { gap: 0.32rem; }
+html[data-density="ultra"] .post-layout, html[data-density="ultra"] .post-side { gap: 0.35rem; }
+html[data-density="ultra"] .blog-header { margin-bottom: 0.32rem; }
+html[data-density="ultra"] .seg-tabs, html[data-density="ultra"] .tabs { margin-bottom: 0.32rem; }
+html[data-density="ultra"] .reactions { margin: 0.35rem 0; }
+html[data-density="ultra"] .modal-card { padding: 0.8rem; }
+html[data-density="airy"] .features, html[data-density="airy"] .posts-grid, html[data-density="airy"] .member-grid, html[data-density="airy"] .badges-grid { gap: 1.5rem; }
+html[data-density="airy"] .post-layout, html[data-density="airy"] .post-side { gap: 1.8rem; }
+html[data-density="airy"] .hero { margin-bottom: 2.2rem; }

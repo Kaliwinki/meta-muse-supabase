@@ -45,7 +45,7 @@
     }
   }
   </script>
-  <link rel="stylesheet" href="style.css?v=30">
+  <link rel="stylesheet" href="style.css?v=32">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#0f172a">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -78,16 +78,16 @@
           <div id="style-panel" class="style-panel hidden">
             <div class="settings-label" data-i18n="settings.fullstyles">Complete styles</div>
             <div class="palette-list">
-                            <button class="palette-chip" data-fullstyle="hacker" type="button"><span class="style-preview" style="font-family:ui-monospace, 'Courier New', monospace">Ag</span><span data-i18n="settings.style_hacker">Hacker</span></button>
-              <button class="palette-chip" data-fullstyle="playero" type="button"><span class="style-preview" style="font-family:ui-rounded, 'Trebuchet MS', sans-serif">Ag</span><span data-i18n="settings.style_playero">Playero</span></button>
-              <button class="palette-chip" data-fullstyle="kawaii" type="button"><span class="style-preview" style="font-family:ui-rounded, 'Trebuchet MS', sans-serif">Ag</span><span data-i18n="settings.style_kawaii">Kawaii</span></button>
-              <button class="palette-chip" data-fullstyle="cyberpunk" type="button"><span class="style-preview" style="font-family:'Arial Narrow', Impact, sans-serif">Ag</span><span data-i18n="settings.style_cyberpunk">Cyberpunk</span></button>
-              <button class="palette-chip" data-fullstyle="royal" type="button"><span class="style-preview" style="font-family:'Palatino Linotype', 'Book Antiqua', serif">Ag</span><span data-i18n="settings.style_royal">Royal</span></button>
-              <button class="palette-chip" data-fullstyle="arcade" type="button"><span class="style-preview" style="font-family:ui-monospace, 'Courier New', monospace">Ag</span><span data-i18n="settings.style_arcade">Arcade</span></button>
-              <button class="palette-chip" data-fullstyle="zen" type="button"><span class="style-preview" style="font-family:Georgia, serif">Ag</span><span data-i18n="settings.style_zen">Zen</span></button>
-              <button class="palette-chip" data-fullstyle="galaxy" type="button"><span class="style-preview" style="font-family:system-ui, sans-serif">Ag</span><span data-i18n="settings.style_galaxy">Galaxy</span></button>
+                            <button class="palette-chip" data-fullstyle="hacker" type="button"><span class="style-preview" style="font-family:ui-monospace, 'Courier New', monospace">Ag</span><span data-i18n="settings.style_hacker">Hacker</span><span class="palette-dots"><i style="background:#010802"></i><i style="background:#04150a"></i><i style="background:#22ff88"></i></span></button>
+              <button class="palette-chip" data-fullstyle="playero" type="button"><span class="style-preview" style="font-family:ui-rounded, 'Trebuchet MS', sans-serif">Ag</span><span data-i18n="settings.style_playero">Playero</span><span class="palette-dots"><i style="background:#0b2b33"></i><i style="background:#123f47"></i><i style="background:#ff6b4a"></i></span></button>
+              <button class="palette-chip" data-fullstyle="kawaii" type="button"><span class="style-preview" style="font-family:ui-rounded, 'Trebuchet MS', sans-serif">Ag</span><span data-i18n="settings.style_kawaii">Kawaii</span><span class="palette-dots"><i style="background:#fdf2f8"></i><i style="background:#ffffff"></i><i style="background:#ec4899"></i></span></button>
+              <button class="palette-chip" data-fullstyle="cyberpunk" type="button"><span class="style-preview" style="font-family:'Arial Narrow', Impact, sans-serif">Ag</span><span data-i18n="settings.style_cyberpunk">Cyberpunk</span><span class="palette-dots"><i style="background:#050510"></i><i style="background:#0d0d26"></i><i style="background:#00fff9"></i></span></button>
+              <button class="palette-chip" data-fullstyle="royal" type="button"><span class="style-preview" style="font-family:'Palatino Linotype', 'Book Antiqua', serif">Ag</span><span data-i18n="settings.style_royal">Royal</span><span class="palette-dots"><i style="background:#0a1030"></i><i style="background:#131c4e"></i><i style="background:#fbbf24"></i></span></button>
+              <button class="palette-chip" data-fullstyle="arcade" type="button"><span class="style-preview" style="font-family:ui-monospace, 'Courier New', monospace">Ag</span><span data-i18n="settings.style_arcade">Arcade</span><span class="palette-dots"><i style="background:#12001f"></i><i style="background:#1f0a38"></i><i style="background:#facc15"></i></span></button>
+              <button class="palette-chip" data-fullstyle="zen" type="button"><span class="style-preview" style="font-family:Georgia, serif">Ag</span><span data-i18n="settings.style_zen">Zen</span><span class="palette-dots"><i style="background:#f4f4f0"></i><i style="background:#ffffff"></i><i style="background:#84a98c"></i></span></button>
+              <button class="palette-chip" data-fullstyle="galaxy" type="button"><span class="style-preview" style="font-family:system-ui, sans-serif">Ag</span><span data-i18n="settings.style_galaxy">Galaxy</span><span class="palette-dots"><i style="background:#070213"></i><i style="background:#150833"></i><i style="background:#22d3ee"></i></span></button>
             </div>
-            <p class="small" data-i18n="settings.fullstyles_hint">Styles change the shape (font, corners, density) — colors stay yours: combine with any palette.</p>       <div class="settings-label" data-i18n="settings.accent">Accent color</div>
+            <p class="small" data-i18n="settings.fullstyles_hint">A style applies its palette AND its shape — afterwards, recolor freely with any palette: the shape stays.</p>       <div class="settings-label" data-i18n="settings.accent">Accent color</div>
             <div class="settings-accent">
               <input type="color" id="accent-picker" value="#38bdf8" aria-label="Accent color">
               <button class="btn small" id="accent-reset" type="button" data-i18n="settings.accent_reset">Reset</button>
@@ -259,6 +259,6 @@
     </div>
   </div>
 
-  <script type="module" src="app.js?v=30"></script>
+  <script type="module" src="app.js?v=32"></script>
 </body>
 </html>

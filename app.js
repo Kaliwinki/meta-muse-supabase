@@ -77,7 +77,7 @@ const I18N = {
     "settings.style_arcade": "Arcade",
     "settings.style_zen": "Zen",
     "settings.style_galaxy": "Galaxy",
-    "settings.fullstyles_hint": "Styles change the shape (font, corners, density) — colors stay yours: combine with any palette.",
+    "settings.fullstyles_hint": "A style applies its palette AND its shape — afterwards, recolor freely with any palette: the shape stays.",
     "settings.palette_default": "Default",
     "settings.palette_ocean": "Ocean",
     "settings.palette_forest": "Forest",
@@ -480,7 +480,7 @@ const I18N = {
     "settings.style_arcade": "Arcade",
     "settings.style_zen": "Zen",
     "settings.style_galaxy": "Galaxie",
-    "settings.fullstyles_hint": "Les styles changent la forme (police, coins, densité) — les couleurs restent les tiennes : combine avec n'importe quelle palette.",
+    "settings.fullstyles_hint": "Un style applique sa palette ET sa forme — ensuite, change les couleurs librement avec n'importe quelle palette : la forme reste.",
     "settings.palette_default": "Défaut",
     "settings.palette_ocean": "Océan",
     "settings.palette_forest": "Forêt",
@@ -1926,21 +1926,31 @@ document.querySelectorAll("[data-palette]").forEach((btn) => {
   });
 });
 
-// ---------- Styles complets pré-configurés (FORME seulement : police, coins, densité, animations) ----------
-// Indépendants des palettes : un style ne touche JAMAIS les couleurs, une palette ne touche JAMAIS la forme.
+// ---------- Styles complets pré-configurés (palette + forme, en un clic) ----------
+// Chaque style arrive AVEC sa palette et sa forme — mais rien n'est soudé : ensuite,
+// l'utilisateur peut changer la palette librement (section Palettes) sans perdre la forme,
+// et appliquer une palette seule ne change jamais la forme.
 const FULL_STYLES = {
-  hacker: { font: "typewriter", textsize: "normal", corners: "sharp", anim: "on", density: "compact" },
-  playero: { font: "rounded", textsize: "normal", corners: "pill", anim: "soft", density: "airy" },
-  kawaii: { font: "rounded", textsize: "normal", corners: "pill", anim: "soft", density: "airy" },
-  cyberpunk: { font: "condensed", textsize: "normal", corners: "square", anim: "on", density: "compact" },
-  royal: { font: "elegant", textsize: "normal", corners: "soft", anim: "soft", density: "airy" },
-  arcade: { font: "typewriter", textsize: "normal", corners: "square", anim: "on", density: "compact" },
-  zen: { font: "classic", textsize: "normal", corners: "soft", anim: "soft", density: "airy" },
-  galaxy: { font: "modern", textsize: "normal", corners: "pill", anim: "soft", density: "comfortable" },
+  hacker: { colors: { bg: "#010802", card: "#04150a", text: "#bbf7d0", muted: "#4ade80", border: "#14532d" }, accent: "#22ff88", font: "typewriter", textsize: "normal", corners: "sharp", anim: "on", density: "compact" },
+  playero: { colors: { bg: "#0b2b33", card: "#123f47", text: "#fff7d6", muted: "#ffd166", border: "#155e63" }, accent: "#ff6b4a", font: "rounded", textsize: "normal", corners: "pill", anim: "soft", density: "airy" },
+  kawaii: { colors: { bg: "#fdf2f8", card: "#ffffff", text: "#500f38", muted: "#a35a86", border: "#f5c6e0" }, accent: "#ec4899", font: "rounded", textsize: "normal", corners: "pill", anim: "soft", density: "airy" },
+  cyberpunk: { colors: { bg: "#050510", card: "#0d0d26", text: "#e0e7ff", muted: "#f472b6", border: "#312e81" }, accent: "#00fff9", font: "condensed", textsize: "normal", corners: "square", anim: "on", density: "compact" },
+  royal: { colors: { bg: "#0a1030", card: "#131c4e", text: "#fef9c3", muted: "#fde68a", border: "#854d0e" }, accent: "#fbbf24", font: "elegant", textsize: "normal", corners: "soft", anim: "soft", density: "airy" },
+  arcade: { colors: { bg: "#12001f", card: "#1f0a38", text: "#fef08a", muted: "#f0abfc", border: "#6d28d9" }, accent: "#facc15", font: "typewriter", textsize: "normal", corners: "square", anim: "on", density: "compact" },
+  zen: { colors: { bg: "#f4f4f0", card: "#ffffff", text: "#2f3330", muted: "#8a918a", border: "#dcdcd2" }, accent: "#84a98c", font: "classic", textsize: "normal", corners: "soft", anim: "soft", density: "airy" },
+  galaxy: { colors: { bg: "#070213", card: "#150833", text: "#e9d5ff", muted: "#a78bfa", border: "#4c1d95" }, accent: "#22d3ee", font: "modern", textsize: "normal", corners: "pill", anim: "soft", density: "comfortable" },
 };
 function applyFullStyle(name) {
   const st = FULL_STYLES[name];
   if (!st) return;
+  saveColors(st.colors);
+  applyColors();
+  refreshColorUI();
+  const picker = $("accent-picker");
+  if (picker && st.accent) {
+    picker.value = st.accent;
+    picker.dispatchEvent(new Event("input"));
+  }
   const prefs = loadStylePrefs();
   prefs.font = st.font; prefs.textsize = st.textsize; prefs.corners = st.corners;
   prefs.anim = st.anim; prefs.density = st.density;
