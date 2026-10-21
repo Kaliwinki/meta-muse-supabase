@@ -2465,8 +2465,8 @@ document.querySelectorAll("[data-feedmode]").forEach((b) => b.addEventListener("
   applyBlogPrefs();
   if (currentRoute().name === "blog") renderBlog();
 }));
-renderFavCatChips();
-applyBlogPrefs();
+// (Initialisation des réglages Blog : voir le bloc de démarrage en fin de fichier —
+// les variables du Blog sont déclarées plus bas, les appeler ici tuerait le script.)
 
 // ---------- Thème clair / sombre ----------
 let theme = localStorage.getItem("mm_theme") || "dark";
@@ -4579,6 +4579,8 @@ async function renderAdmin() {
 
 // ---------- Démarrage ----------
 applyStaticTexts();
+renderFavCatChips();
+applyBlogPrefs();
 
 // ---------- Annuaire des membres ----------
 async function renderAdminDms(username) {
